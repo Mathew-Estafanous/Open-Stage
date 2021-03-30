@@ -13,9 +13,9 @@ func main() {
 	r.HandleFunc("/", HelloWorld)
 
 	log.Printf("Open-Stage starting on port %v", port)
-	log.Fatal(http.ListenAndServe(port,r))
+	log.Fatal(http.ListenAndServe(port, r))
 }
 
-func HelloWorld(w http.ResponseWriter, r *http.Request)  {
+func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello World"))
 }
