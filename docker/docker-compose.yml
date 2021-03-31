@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  # This is a development database and is NOT meant for production.
+  database:
+    container_name: QA-Database
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'qa_platform'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'qa-password'
+      MYSQL_ROOT_PASSWORD: 'qa-password'
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+volumes:
+  my-db:
