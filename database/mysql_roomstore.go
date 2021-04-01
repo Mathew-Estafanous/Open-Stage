@@ -11,7 +11,7 @@ type mySQLRoomStore struct {
 	db *sql.DB
 }
 
-func NewMySQLRoomRepository(db *sql.DB) domain.RoomStore {
+func NewMySQLRoomStore(db *sql.DB) domain.RoomStore {
 	return &mySQLRoomStore{db}
 }
 

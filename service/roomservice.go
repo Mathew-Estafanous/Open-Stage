@@ -11,7 +11,7 @@ type roomService struct {
 	roomStore domain.RoomStore
 }
 
-func NewRoomStore(rs domain.RoomStore) domain.RoomService {
+func NewRoomService(rs domain.RoomStore) domain.RoomService {
 	return &roomService{
 		roomStore: rs,
 	}
@@ -33,7 +33,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 	return nil
 }
 
-func (r *roomService) FindRoom(roomCode string) (domain.Room , error) {
+func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 	room, err := r.roomStore.GetByRoomCode(roomCode)
 	if err != nil {
 		return domain.Room{}, ErrRoomNotFound
@@ -61,6 +61,6 @@ func (r *roomService) generateValidCode() string {
 
 var (
 	ErrHostNotAssigned = errors.New("a host has not be assigned to a room")
-	ErrRoomNotCreated = errors.New("room could not be created")
-	ErrRoomNotFound = errors.New("room was not found with given code")
+	ErrRoomNotCreated  = errors.New("room could not be created with duplicate room code")
+	ErrRoomNotFound    = errors.New("room was not found with given code")
 )

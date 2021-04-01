@@ -13,7 +13,7 @@ func TestGetByRoomCode(t *testing.T) {
 		t.Fatal("There was an unexpected error when mocking the database.")
 	}
 
-	mockRoom := domain.Room {
+	mockRoom := domain.Room{
 		RoomId: 1, RoomCode: "wantedCode", Host: "Mathew",
 	}
 
@@ -23,7 +23,7 @@ func TestGetByRoomCode(t *testing.T) {
 	query := "SELECT room_id, host, room_code FROM rooms WHERE room_code = ?"
 	mock.ExpectQuery(query).WithArgs("wantedCode").WillReturnRows(row)
 
-	m := NewMySQLRoomRepository(db)
+	m := NewMySQLRoomStore(db)
 	room, err := m.GetByRoomCode("wantedCode")
 
 	assert.NoError(t, err)
@@ -38,14 +38,14 @@ func TestCreate(t *testing.T) {
 
 	room := &domain.Room{
 		RoomCode: "jrhigh",
-		Host: "Mathew",
+		Host:     "Mathew",
 	}
 
 	insertQuery := "INSERT INTO rooms"
 	mock.ExpectExec(insertQuery).WithArgs(room.Host, room.RoomCode).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	m := NewMySQLRoomRepository(db)
+	m := NewMySQLRoomStore(db)
 	err = m.Create(room)
 	assert.NoError(t, err)
 }

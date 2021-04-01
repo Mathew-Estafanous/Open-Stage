@@ -1,7 +1,7 @@
 package domain
 
 type Room struct {
-	RoomId   int `json:"room_id"`
+	RoomId   int    `json:"room_id"`
 	RoomCode string `json:"room_code"`
 	Host     string `json:"host"`
 }

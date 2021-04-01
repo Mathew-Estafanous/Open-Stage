@@ -8,8 +8,7 @@ import (
 	"testing"
 )
 
-
-type mockRoomStore struct{
+type mockRoomStore struct {
 	mock.Mock
 }
 
@@ -23,12 +22,11 @@ func (m *mockRoomStore) Create(room *domain.Room) error {
 	return ret.Error(0)
 }
 
-
 func TestFindRoom(t *testing.T) {
 	store := new(mockRoomStore)
-	rs := NewRoomStore(store)
+	rs := NewRoomService(store)
 
-	expectedRoom := domain.Room {
+	expectedRoom := domain.Room{
 		RoomId: 1, RoomCode: "room1", Host: "Mathew",
 	}
 	store.On("GetByRoomCode", "room1").Return(expectedRoom, nil)
@@ -47,7 +45,7 @@ func TestFindRoom(t *testing.T) {
 
 func TestCreateRoom(t *testing.T) {
 	store := new(mockRoomStore)
-	rs := NewRoomStore(store)
+	rs := NewRoomService(store)
 
 	roomCreating := domain.Room{RoomCode: "room1", Host: "Mat"}
 	store.On("Create", &roomCreating).Return(nil)
