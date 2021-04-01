@@ -12,3 +12,8 @@ type RoomStore interface {
 	GetByRoomCode(code string) (Room, error)
 	Create(room *Room) error
 }
+
+type RoomService interface {
+	CreateRoom(room *Room) error
+	FindRoom(roomCode string) (Room, error)
+}
