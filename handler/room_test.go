@@ -53,7 +53,7 @@ func TestJoinRoom(t *testing.T) {
 
 func TestCreateRoom(t *testing.T) {
 	rs := new(mockRoomService)
-	room := domain.Room{RoomId: 0, RoomCode: "jrHigh", Host: "Mat"}
+	room := domain.Room{RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("CreateRoom", &room).Return(nil)
 
 	j, err := json.Marshal(room)
@@ -71,4 +71,14 @@ func TestCreateRoom(t *testing.T) {
 	assert.EqualValues(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, string(rj), w.Body.String())
 
+	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat"}
+	rs.On("CreateRoom", &duplicate).Return(service.ErrDuplicateRoom)
+	j, err = json.Marshal(duplicate)
+	assert.NoError(t, err)
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest("POST", "/room", strings.NewReader(string(j)))
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusConflict, w.Code)
 }

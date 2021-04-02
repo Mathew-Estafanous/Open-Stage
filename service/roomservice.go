@@ -28,7 +28,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 
 	err := r.roomStore.Create(room)
 	if err != nil {
-		return ErrRoomNotCreated
+		return ErrDuplicateRoom
 	}
 	return nil
 }
@@ -39,6 +39,14 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 		return domain.Room{}, ErrRoomNotFound
 	}
 	return room, nil
+}
+
+func (r *roomService) DeleteRoom(code string) error {
+	err := r.roomStore.Delete(code)
+	if err != nil {
+		return ErrRoomNotDeleted
+	}
+	return nil
 }
 
 func (r *roomService) generateValidCode() string {
@@ -61,6 +69,7 @@ func (r *roomService) generateValidCode() string {
 
 var (
 	ErrHostNotAssigned = errors.New("a host has not be assigned to a room")
-	ErrRoomNotCreated  = errors.New("room could not be created with duplicate room code")
+	ErrDuplicateRoom   = errors.New("room could not be created with duplicate room code")
 	ErrRoomNotFound    = errors.New("room was not found with given code")
+	ErrRoomNotDeleted = errors.New("a room with that code was unable to be deleted")
 )

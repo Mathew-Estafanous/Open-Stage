@@ -49,3 +49,24 @@ func TestCreate(t *testing.T) {
 	err = m.Create(room)
 	assert.NoError(t, err)
 }
+
+func TestDelete(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("There was an unexpected error when mocking the database.")
+	}
+
+	code := "roomCode"
+	deleteQuery := "DELETE FROM rooms"
+	mock.ExpectExec(deleteQuery).WithArgs(code).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	m := NewMySQLRoomStore(db)
+	err = m.Delete(code)
+	assert.NoError(t, err)
+
+	mock.ExpectExec(deleteQuery).WithArgs("wrongCode").
+		WillReturnResult(sqlmock.NewResult(0, 0))
+	err = m.Delete("wrongCode")
+	assert.Error(t, err)
+}

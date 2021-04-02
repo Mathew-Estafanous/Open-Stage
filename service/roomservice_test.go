@@ -22,6 +22,11 @@ func (m *mockRoomStore) Create(room *domain.Room) error {
 	return ret.Error(0)
 }
 
+func (m *mockRoomStore) Delete(code string) error {
+	ret := m.Called(code)
+	return ret.Error(0)
+}
+
 func TestFindRoom(t *testing.T) {
 	store := new(mockRoomStore)
 	rs := NewRoomService(store)
@@ -55,12 +60,26 @@ func TestCreateRoom(t *testing.T) {
 	store.AssertExpectations(t)
 
 	wrongRoom := domain.Room{RoomCode: "duplicateCode", Host: "Ja"}
-	store.On("Create", &wrongRoom).Return(ErrRoomNotCreated)
+	store.On("Create", &wrongRoom).Return(ErrDuplicateRoom)
 	err = rs.CreateRoom(&wrongRoom)
 
-	assert.ErrorIs(t, err, ErrRoomNotCreated)
+	assert.ErrorIs(t, err, ErrDuplicateRoom)
 	store.AssertExpectations(t)
 
 	err = rs.CreateRoom(&domain.Room{})
 	assert.ErrorIs(t, err, ErrHostNotAssigned)
+}
+
+func TestDeleteRoom(t *testing.T) {
+	store := new(mockRoomStore)
+	rs := NewRoomService(store)
+
+	validCode := "roomCode"
+	store.On("Delete", validCode).Return(nil)
+	err := rs.DeleteRoom(validCode)
+	assert.NoError(t, err)
+
+	store.On("Delete", "wrongCode").Return(errors.New("nothing deleted"))
+	err = rs.DeleteRoom("wrongCode")
+	assert.Error(t, err)
 }

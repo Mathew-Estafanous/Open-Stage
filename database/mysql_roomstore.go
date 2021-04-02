@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 )
 
@@ -34,5 +35,17 @@ func (m *mySQLRoomStore) Create(room *domain.Room) error {
 	}
 	id, _ := r.LastInsertId()
 	room.RoomId = int(id)
+	return nil
+}
+
+func (m *mySQLRoomStore) Delete(roomCode string) error {
+	r, err := m.db.Exec("DELETE FROM rooms WHERE room_code = ?", roomCode)
+	if err != nil {
+		return err
+	}
+
+	if a, _ := r.RowsAffected(); a == 0 {
+		return errors.New("no rows were deleted")
+	}
 	return nil
 }
