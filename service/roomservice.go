@@ -71,5 +71,5 @@ var (
 	ErrHostNotAssigned = errors.New("a host has not be assigned to a room")
 	ErrDuplicateRoom   = errors.New("room could not be created with duplicate room code")
 	ErrRoomNotFound    = errors.New("room was not found with given code")
-	ErrRoomNotDeleted = errors.New("a room with that code was unable to be deleted")
+	ErrRoomNotDeleted = errors.New("a room with that code was not found")
 )

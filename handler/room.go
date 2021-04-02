@@ -19,18 +19,12 @@ func NewRoomHandler(roomService domain.RoomService) *RoomHandler {
 func (r RoomHandler) Route(router *mux.Router) {
 	router.HandleFunc("/room/{code}", r.JoinRoom).Methods("GET")
 	router.HandleFunc("/room", r.CreateRoom).Methods("POST")
+	router.HandleFunc("/room/{code}", r.DeleteRoom).Methods("DELETE")
 }
 
 func (r *RoomHandler) JoinRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	roomCode, ok := mux.Vars(re)["code"]
-	if ok == false {
-		responseError := domain.NewResponseError(
-			"Unable to find a room code.", http.StatusBadRequest)
-		w.WriteHeader(responseError.Status)
-		json.NewEncoder(w).Encode(responseError)
-		return
-	}
+	roomCode := mux.Vars(re)["code"]
 
 	room, err := r.rs.FindRoom(roomCode)
 	if err != nil {
@@ -70,4 +64,16 @@ func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
 	}
 	w.WriteHeader(http.StatusCreated)
 	encoder.Encode(room)
+}
+
+func (r *RoomHandler) DeleteRoom(w http.ResponseWriter, re *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	code := mux.Vars(re)["code"]
+	err := r.rs.DeleteRoom(code)
+	if err != nil {
+		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
+		w.WriteHeader(responseErr.Status)
+		json.NewEncoder(w).Encode(responseErr)
+		return
+	}
 }
