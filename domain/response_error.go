@@ -8,6 +8,6 @@ type ResponseError struct {
 func NewResponseError(msg string, sts int) *ResponseError {
 	return &ResponseError{
 		Message: msg,
-		Status: sts,
+		Status:  sts,
 	}
 }
