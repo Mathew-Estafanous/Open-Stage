@@ -17,12 +17,12 @@ func NewRoomHandler(roomService domain.RoomService) *RoomHandler {
 }
 
 func (r RoomHandler) Route(router *mux.Router) {
-	router.HandleFunc("/room/{code}", r.JoinRoom).Methods("GET")
+	router.HandleFunc("/room/{code}", r.GetRoom).Methods("GET")
 	router.HandleFunc("/room", r.CreateRoom).Methods("POST")
 	router.HandleFunc("/room/{code}", r.DeleteRoom).Methods("DELETE")
 }
 
-func (r *RoomHandler) JoinRoom(w http.ResponseWriter, re *http.Request) {
+func (r *RoomHandler) GetRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	roomCode := mux.Vars(re)["code"]
 
@@ -30,10 +30,10 @@ func (r *RoomHandler) JoinRoom(w http.ResponseWriter, re *http.Request) {
 	if err != nil {
 		responseError := domain.NewResponseError(err.Error(), http.StatusNotFound)
 		w.WriteHeader(responseError.Status)
-		json.NewEncoder(w).Encode(responseError)
+		_ = json.NewEncoder(w).Encode(responseError)
 		return
 	}
-	json.NewEncoder(w).Encode(room)
+	_ = json.NewEncoder(w).Encode(room)
 }
 
 func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
@@ -45,7 +45,7 @@ func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
 		responseErr := domain.NewResponseError(
 			"Request body not formatted properly", http.StatusBadRequest)
 		w.WriteHeader(responseErr.Status)
-		encoder.Encode(responseErr)
+		_ = encoder.Encode(responseErr)
 		return
 	}
 
@@ -59,11 +59,11 @@ func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
 		responseErr := domain.NewResponseError(
 			err.Error(), status)
 		w.WriteHeader(responseErr.Status)
-		encoder.Encode(responseErr)
+		_ = encoder.Encode(responseErr)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	encoder.Encode(room)
+	_ = encoder.Encode(room)
 }
 
 func (r *RoomHandler) DeleteRoom(w http.ResponseWriter, re *http.Request) {
@@ -73,7 +73,7 @@ func (r *RoomHandler) DeleteRoom(w http.ResponseWriter, re *http.Request) {
 	if err != nil {
 		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
 		w.WriteHeader(responseErr.Status)
-		json.NewEncoder(w).Encode(responseErr)
+		_ = json.NewEncoder(w).Encode(responseErr)
 		return
 	}
 }
