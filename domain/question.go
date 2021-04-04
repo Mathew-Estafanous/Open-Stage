@@ -12,6 +12,7 @@ type Question struct {
 // that must be met for each question repo.
 type QuestionStore interface {
 	GetById(id int) (Question, error)
+	GetAllForRoom(roomCode string) ([]Question, error)
 	Create(q *Question) error
 }
 

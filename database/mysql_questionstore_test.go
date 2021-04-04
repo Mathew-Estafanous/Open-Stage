@@ -52,3 +52,34 @@ func TestMySQLQuestionStore_Create(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 1, mQuestion.QuestionId)
 }
+
+func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("There was an unexpected error when mocking the database.")
+	}
+
+	qs := []domain.Question{
+		{
+			QuestionId: 1, Question: "How you doing?", QuestionerName: "Mathew",
+			AssociatedRoom: "room1", TotalLikes: 1,
+		},
+		{
+			QuestionId: 2, Question: "Is everything good?", QuestionerName: "Anonymous",
+			AssociatedRoom: "room1", TotalLikes: 3,
+		},
+	}
+
+	rows := sqlmock.NewRows([]string{"question_id", "question", "questioner_name", "total_likes", "fk_room_id"}).
+		AddRow(qs[0].QuestionId, qs[0].Question, qs[0].QuestionerName, qs[0].TotalLikes, qs[0].AssociatedRoom).
+		AddRow(qs[1].QuestionId, qs[1].Question, qs[1].QuestionerName, qs[1].TotalLikes, qs[1].AssociatedRoom)
+
+	query := `SELECT question_id, question, questioner_name, total_likes, fk_room_id
+				FROM questions WHERE fk_room_id = ?`
+	mock.ExpectQuery(query).WithArgs("room1").WillReturnRows(rows)
+
+	qStore := NewMySQLQuestionStore(db)
+	result, err := qStore.GetAllForRoom(qs[0].AssociatedRoom)
+	assert.NoError(t, err)
+	assert.EqualValues(t, qs, result)
+}
