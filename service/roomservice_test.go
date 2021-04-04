@@ -27,7 +27,7 @@ func (m *mockRoomStore) Delete(code string) error {
 	return ret.Error(0)
 }
 
-func TestFindRoom(t *testing.T) {
+func TestRoomService_FindRoom(t *testing.T) {
 	store := new(mockRoomStore)
 	rs := NewRoomService(store)
 
@@ -48,7 +48,7 @@ func TestFindRoom(t *testing.T) {
 	store.AssertExpectations(t)
 }
 
-func TestCreateRoom(t *testing.T) {
+func TestRoomService_CreateRoom(t *testing.T) {
 	store := new(mockRoomStore)
 	rs := NewRoomService(store)
 
@@ -70,7 +70,7 @@ func TestCreateRoom(t *testing.T) {
 	assert.ErrorIs(t, err, ErrHostNotAssigned)
 }
 
-func TestDeleteRoom(t *testing.T) {
+func TestRoomService_DeleteRoom(t *testing.T) {
 	store := new(mockRoomStore)
 	rs := NewRoomService(store)
 

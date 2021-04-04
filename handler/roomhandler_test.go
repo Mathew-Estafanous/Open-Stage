@@ -32,7 +32,7 @@ func (m *mockRoomService) DeleteRoom(code string) error {
 	return ret.Error(0)
 }
 
-func TestJoinRoom(t *testing.T) {
+func TestRoomHandler_GetRoom(t *testing.T) {
 	rs := new(mockRoomService)
 	room := domain.Room{RoomId: 1, RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("FindRoom", "jrHigh").Return(room, nil)
@@ -49,13 +49,14 @@ func TestJoinRoom(t *testing.T) {
 	assert.JSONEq(t, string(roomJson), w.Body.String())
 
 	rs.On("FindRoom", "wrongCode").Return(domain.Room{}, service.ErrRoomNotFound)
+	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("GET", "/room/wrongCode", nil)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
 }
 
-func TestCreateRoom(t *testing.T) {
+func TestRoomHandler_CreateRoom(t *testing.T) {
 	rs := new(mockRoomService)
 	room := domain.Room{RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("CreateRoom", &room).Return(nil)
@@ -80,13 +81,14 @@ func TestCreateRoom(t *testing.T) {
 	j, err = json.Marshal(duplicate)
 	assert.NoError(t, err)
 
+	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("POST", "/room", strings.NewReader(string(j)))
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusConflict, w.Code)
 }
 
-func TestDeleteRoom(t *testing.T) {
+func TestRoomHandler_DeleteRoom(t *testing.T) {
 	rs := new(mockRoomService)
 	rs.On("DeleteRoom", "validCode").Return(nil)
 
@@ -99,6 +101,7 @@ func TestDeleteRoom(t *testing.T) {
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
 	rs.On("DeleteRoom", "wrongCode").Return(service.ErrRoomNotDeleted)
+	w = httptest.NewRecorder()
 	req, _ = http.NewRequest("DELETE", "/room/wrongCode", strings.NewReader(""))
 	r.ServeHTTP(w, req)
 

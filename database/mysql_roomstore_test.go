@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestGetByRoomCode(t *testing.T) {
+func TestMySQLRoomStore_GetByRoomCode(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -30,7 +30,7 @@ func TestGetByRoomCode(t *testing.T) {
 	assert.EqualValues(t, mockRoom, room)
 }
 
-func TestCreate(t *testing.T) {
+func TestMySQLRoomStore_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -48,9 +48,10 @@ func TestCreate(t *testing.T) {
 	m := NewMySQLRoomStore(db)
 	err = m.Create(room)
 	assert.NoError(t, err)
+	assert.Equal(t, 1, room.RoomId)
 }
 
-func TestDelete(t *testing.T) {
+func TestMySQLRoomStore_Delete(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")

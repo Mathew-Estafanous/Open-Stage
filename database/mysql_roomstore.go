@@ -28,7 +28,7 @@ func (m *mySQLRoomStore) GetByRoomCode(code string) (domain.Room, error) {
 }
 
 func (m *mySQLRoomStore) Create(room *domain.Room) error {
-	r, err := m.db.Exec("INSERT INTO rooms (host, room_code) VALUES (?, ?);",
+	r, err := m.db.Exec("INSERT INTO rooms (host, room_code) VALUES (?, ?)",
 		room.Host, room.RoomCode)
 	if err != nil {
 		return err
