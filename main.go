@@ -23,8 +23,13 @@ func main() {
 	roomService := service.NewRoomService(roomStore)
 	roomHandler := handler.NewRoomHandler(roomService)
 
+	questionStore := database.NewMySQLQuestionStore(db)
+	questionService := service.NewQuestionService(questionStore)
+	questionHandler := handler.NewQuestionHandler(questionService)
+
 	r := mux.NewRouter()
 	roomHandler.Route(r)
+	questionHandler.Route(r)
 
 	log.Printf("Open-Stage starting on port %v", port)
 	log.Fatal(http.ListenAndServe(port, r))

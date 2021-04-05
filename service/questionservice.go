@@ -54,6 +54,6 @@ var (
 	ErrQuestionNotFound     = errors.New("question with that id was not found")
 	ErrQuestionMustHaveRoom = errors.New("every question must be assigned a room")
 	ErrMissingQuestion      = errors.New("a question was not found")
-	ErrQuestionNotCreated   = errors.New("the question was not created")
+	ErrQuestionNotCreated   = errors.New("question could not be created with given room code")
 	ErrInternalIssue        = errors.New("there was an internal error")
 )
