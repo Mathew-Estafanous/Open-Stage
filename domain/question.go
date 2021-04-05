@@ -4,7 +4,7 @@ type Question struct {
 	QuestionId     int    `json:"question_id"`
 	Question       string `json:"question"`
 	QuestionerName string `json:"questioner_name"`
-	TotalLikes     int `json:"total_likes"`
+	TotalLikes     int    `json:"total_likes"`
 	AssociatedRoom string `json:"associated_room"`
 }
 
@@ -18,5 +18,6 @@ type QuestionStore interface {
 
 type QuestionService interface {
 	GetFromId(id int) (Question, error)
-	Create(q *Question) (int, error)
+	GetAllWithRoomCode(code string) ([]Question, error)
+	Create(q *Question) error
 }

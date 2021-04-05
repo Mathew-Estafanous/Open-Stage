@@ -17,12 +17,12 @@ func TestMySQLQuestionStore_GetById(t *testing.T) {
 		QuestionId: 2, Question: "How you doing?", QuestionerName: "Mathew", TotalLikes: 0, AssociatedRoom: "room1",
 	}
 
-	row := sqlmock.NewRows([]string{"question_id", "question", "questioner_name", "total_likes", "fk_room_id"}).
+	row := sqlmock.NewRows([]string{"question_id", "question", "questioner_name", "total_likes", "fk_room_code"}).
 		AddRow(mQuestion.QuestionId, mQuestion.Question, mQuestion.QuestionerName,
 			mQuestion.TotalLikes, mQuestion.AssociatedRoom)
 
 	questionId := 2
-	query := `SELECT question_id, question, questioner_name, total_likes, fk_room_id
+	query := `SELECT question_id, question, questioner_name, total_likes, fk_room_code
 				FROM questions WHERE question_id = ?`
 	mock.ExpectQuery(query).WithArgs(questionId).WillReturnRows(row)
 
@@ -70,12 +70,12 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 		},
 	}
 
-	rows := sqlmock.NewRows([]string{"question_id", "question", "questioner_name", "total_likes", "fk_room_id"}).
+	rows := sqlmock.NewRows([]string{"question_id", "question", "questioner_name", "total_likes", "fk_room_code"}).
 		AddRow(qs[0].QuestionId, qs[0].Question, qs[0].QuestionerName, qs[0].TotalLikes, qs[0].AssociatedRoom).
 		AddRow(qs[1].QuestionId, qs[1].Question, qs[1].QuestionerName, qs[1].TotalLikes, qs[1].AssociatedRoom)
 
-	query := `SELECT question_id, question, questioner_name, total_likes, fk_room_id
-				FROM questions WHERE fk_room_id = ?`
+	query := `SELECT question_id, question, questioner_name, total_likes, fk_room_code
+				FROM questions WHERE fk_room_code = ?`
 	mock.ExpectQuery(query).WithArgs("room1").WillReturnRows(rows)
 
 	qStore := NewMySQLQuestionStore(db)

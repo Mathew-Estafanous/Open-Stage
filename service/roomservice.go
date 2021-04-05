@@ -8,12 +8,12 @@ import (
 )
 
 type roomService struct {
-	roomStore domain.RoomStore
+	rStore domain.RoomStore
 }
 
 func NewRoomService(rs domain.RoomStore) domain.RoomService {
 	return &roomService{
-		roomStore: rs,
+		rStore: rs,
 	}
 }
 
@@ -26,7 +26,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 		room.RoomCode = r.generateValidCode()
 	}
 
-	err := r.roomStore.Create(room)
+	err := r.rStore.Create(room)
 	if err != nil {
 		return ErrDuplicateRoom
 	}
@@ -34,7 +34,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 }
 
 func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
-	room, err := r.roomStore.GetByRoomCode(roomCode)
+	room, err := r.rStore.GetByRoomCode(roomCode)
 	if err != nil {
 		return domain.Room{}, ErrRoomNotFound
 	}
@@ -42,7 +42,7 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 }
 
 func (r *roomService) DeleteRoom(code string) error {
-	err := r.roomStore.Delete(code)
+	err := r.rStore.Delete(code)
 	if err != nil {
 		return ErrRoomNotDeleted
 	}
@@ -60,7 +60,7 @@ func (r *roomService) generateValidCode() string {
 	}
 	sequence := string(b)
 
-	_, err := r.roomStore.GetByRoomCode(sequence)
+	_, err := r.rStore.GetByRoomCode(sequence)
 	if err == nil {
 		return r.generateValidCode()
 	}
@@ -71,5 +71,5 @@ var (
 	ErrHostNotAssigned = errors.New("a host has not be assigned to a room")
 	ErrDuplicateRoom   = errors.New("room could not be created with duplicate room code")
 	ErrRoomNotFound    = errors.New("room was not found with given code")
-	ErrRoomNotDeleted = errors.New("a room with that code was not found")
+	ErrRoomNotDeleted  = errors.New("a room with that code was not found")
 )
