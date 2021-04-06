@@ -71,10 +71,8 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	NewRoomHandler(rs).Route(r)
 	r.ServeHTTP(w, req)
 
-	rj, err := json.Marshal(room)
-	assert.NoError(t, err)
 	assert.EqualValues(t, http.StatusCreated, w.Code)
-	assert.JSONEq(t, string(rj), w.Body.String())
+	assert.JSONEq(t, string(j), w.Body.String())
 
 	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat"}
 	rs.On("CreateRoom", &duplicate).Return(service.ErrDuplicateRoom)
