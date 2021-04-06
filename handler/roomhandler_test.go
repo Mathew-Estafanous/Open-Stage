@@ -49,8 +49,10 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	assert.JSONEq(t, string(roomJson), w.Body.String())
 
 	rs.On("FindRoom", "wrongCode").Return(domain.Room{}, service.ErrRoomNotFound)
+	req, err = http.NewRequest("GET", "/room/wrongCode", nil)
+	assert.NoError(t, err)
+
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/room/wrongCode", nil)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
@@ -65,7 +67,8 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/room", strings.NewReader(string(j)))
+	req, err := http.NewRequest("POST", "/room", strings.NewReader(string(j)))
+	assert.NoError(t, err)
 
 	r := mux.NewRouter()
 	NewRoomHandler(rs).Route(r)
@@ -91,7 +94,9 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	rs.On("DeleteRoom", "validCode").Return(nil)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("DELETE", "/room/validCode", strings.NewReader(""))
+	req, err := http.NewRequest("DELETE", "/room/validCode", strings.NewReader(""))
+	assert.NoError(t, err)
+
 	r := mux.NewRouter()
 	NewRoomHandler(rs).Route(r)
 	r.ServeHTTP(w, req)
@@ -100,7 +105,9 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 
 	rs.On("DeleteRoom", "wrongCode").Return(service.ErrRoomNotDeleted)
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("DELETE", "/room/wrongCode", strings.NewReader(""))
+	req, err = http.NewRequest("DELETE", "/room/wrongCode", strings.NewReader(""))
+	assert.NoError(t, err)
+
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)

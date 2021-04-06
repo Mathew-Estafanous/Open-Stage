@@ -27,6 +27,11 @@ func (m *mockQuestionStore) Create(q *domain.Question) error {
 	return ret.Error(0)
 }
 
+func (m *mockQuestionStore) Delete(id int) error {
+	ret := m.Called(id)
+	return ret.Error(0)
+}
+
 func TestQuestionService_GetFromId(t *testing.T) {
 	qStore := new(mockQuestionStore)
 	qs := NewQuestionService(qStore)
@@ -45,6 +50,27 @@ func TestQuestionService_GetFromId(t *testing.T) {
 	res, err = qs.GetFromId(2)
 	assert.Error(t, err)
 	assert.Empty(t, res)
+}
+
+func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
+	qStore := new(mockQuestionStore)
+	qs := NewQuestionService(qStore)
+
+	foundQuestions := []domain.Question{
+		{
+			QuestionId: 1, QuestionerName: "Mat", Question: "Is this a test?", AssociatedRoom: "room1",
+		},
+	}
+
+	qStore.On("GetAllForRoom", "room1").Return(foundQuestions, nil)
+	res, err := qs.GetAllWithRoomCode("room1")
+	assert.NoError(t, err)
+	assert.EqualValues(t, foundQuestions, res)
+
+	qStore.On("GetAllForRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
+	res, err = qs.GetAllWithRoomCode("invalidRoom")
+	assert.ErrorIs(t, err, ErrInternalIssue)
+	assert.Nil(t, res)
 }
 
 func TestQuestionService_Create(t *testing.T) {
@@ -72,23 +98,15 @@ func TestQuestionService_Create(t *testing.T) {
 	assert.Error(t, err, ErrQuestionMustHaveRoom)
 }
 
-func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
+func TestQuestionService_Delete(t *testing.T) {
 	qStore := new(mockQuestionStore)
 	qs := NewQuestionService(qStore)
 
-	foundQuestions := []domain.Question{
-		{
-			QuestionId: 1, QuestionerName: "Mat", Question: "Is this a test?", AssociatedRoom: "room1",
-		},
-	}
-
-	qStore.On("GetAllForRoom", "room1").Return(foundQuestions, nil)
-	res, err := qs.GetAllWithRoomCode("room1")
+	qStore.On("Delete", 1).Return(nil)
+	err := qs.Delete(1)
 	assert.NoError(t, err)
-	assert.EqualValues(t, foundQuestions, res)
 
-	qStore.On("GetAllForRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
-	res, err = qs.GetAllWithRoomCode("invalidRoom")
+	qStore.On("Delete", 2).Return(errors.New("a database error occurred"))
+	err = qs.Delete(2)
 	assert.ErrorIs(t, err, ErrInternalIssue)
-	assert.Nil(t, res)
 }

@@ -17,12 +17,12 @@ func NewRoomHandler(roomService domain.RoomService) *RoomHandler {
 }
 
 func (r RoomHandler) Route(router *mux.Router) {
-	router.HandleFunc("/room/{code}", r.GetRoom).Methods("GET")
-	router.HandleFunc("/room", r.CreateRoom).Methods("POST")
-	router.HandleFunc("/room/{code}", r.DeleteRoom).Methods("DELETE")
+	router.HandleFunc("/room/{code}", r.getRoom).Methods("GET")
+	router.HandleFunc("/room", r.createRoom).Methods("POST")
+	router.HandleFunc("/room/{code}", r.deleteRoom).Methods("DELETE")
 }
 
-func (r RoomHandler) GetRoom(w http.ResponseWriter, re *http.Request) {
+func (r RoomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	roomCode := mux.Vars(re)["code"]
 
@@ -36,7 +36,7 @@ func (r RoomHandler) GetRoom(w http.ResponseWriter, re *http.Request) {
 	_ = json.NewEncoder(w).Encode(room)
 }
 
-func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
+func (r RoomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var room domain.Room
 	encoder := json.NewEncoder(w)
@@ -66,7 +66,7 @@ func (r RoomHandler) CreateRoom(w http.ResponseWriter, re *http.Request) {
 	_ = encoder.Encode(room)
 }
 
-func (r RoomHandler) DeleteRoom(w http.ResponseWriter, re *http.Request) {
+func (r RoomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	code := mux.Vars(re)["code"]
 	err := r.rs.DeleteRoom(code)

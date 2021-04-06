@@ -50,7 +50,18 @@ func (m *mySQLQuestionStore) Create(q *domain.Question) error {
 	if err != nil {
 		return err
 	}
-	id, _ := r.LastInsertId()
+	id, err := r.LastInsertId()
+	if err != nil {
+		return err
+	}
 	q.QuestionId = int(id)
+	return nil
+}
+
+func (m *mySQLQuestionStore) Delete(id int) error {
+	_, err := m.db.Exec("DELETE FROM questions WHERE question_id = ?", id)
+	if err != nil {
+		return err
+	}
 	return nil
 }

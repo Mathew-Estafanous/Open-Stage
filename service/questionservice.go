@@ -6,7 +6,7 @@ import (
 )
 
 type questionService struct {
-	questionStore domain.QuestionStore
+	qStore domain.QuestionStore
 }
 
 func NewQuestionService(qStore domain.QuestionStore) domain.QuestionService {
@@ -14,7 +14,7 @@ func NewQuestionService(qStore domain.QuestionStore) domain.QuestionService {
 }
 
 func (q questionService) GetFromId(id int) (domain.Question, error) {
-	question, err := q.questionStore.GetById(id)
+	question, err := q.qStore.GetById(id)
 	if err != nil {
 		return domain.Question{}, ErrQuestionNotFound
 	}
@@ -23,7 +23,7 @@ func (q questionService) GetFromId(id int) (domain.Question, error) {
 
 func (q questionService) GetAllWithRoomCode(code string) ([]domain.Question, error) {
 	//TODO: Create a check that the room code is a valid room.
-	qs, err := q.questionStore.GetAllForRoom(code)
+	qs, err := q.qStore.GetAllForRoom(code)
 	if err != nil {
 		return nil, ErrInternalIssue
 	}
@@ -43,9 +43,17 @@ func (q questionService) Create(question *domain.Question) error {
 		question.QuestionerName = "Anonymous"
 	}
 
-	err := q.questionStore.Create(question)
+	err := q.qStore.Create(question)
 	if err != nil {
 		return ErrQuestionNotCreated
+	}
+	return nil
+}
+
+func (q questionService) Delete(id int) error {
+	err := q.qStore.Delete(id)
+	if err != nil {
+		return ErrInternalIssue
 	}
 	return nil
 }

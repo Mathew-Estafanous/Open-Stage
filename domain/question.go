@@ -13,6 +13,7 @@ type Question struct {
 type QuestionStore interface {
 	GetById(id int) (Question, error)
 	GetAllForRoom(roomCode string) ([]Question, error)
+	Delete(id int) error
 	Create(q *Question) error
 }
 
@@ -20,4 +21,5 @@ type QuestionService interface {
 	GetFromId(id int) (Question, error)
 	GetAllWithRoomCode(code string) ([]Question, error)
 	Create(q *Question) error
+	Delete(id int) error
 }

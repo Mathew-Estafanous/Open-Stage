@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-type mockQuestionService struct{
+type mockQuestionService struct {
 	mock.Mock
 }
 
@@ -29,6 +29,11 @@ func (m *mockQuestionService) GetAllWithRoomCode(code string) ([]domain.Question
 
 func (m *mockQuestionService) Create(q *domain.Question) error {
 	ret := m.Called(q)
+	return ret.Error(0)
+}
+
+func (m *mockQuestionService) Delete(id int) error {
+	ret := m.Called(id)
 	return ret.Error(0)
 }
 
@@ -54,7 +59,7 @@ func TestQuestionHandler_CreateQuestion(t *testing.T) {
 	assert.EqualValues(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, string(j), w.Body.String())
 
-	invalidQuestion := domain.Question { QuestionerName: "Mathew", Question: "A question?" }
+	invalidQuestion := domain.Question{QuestionerName: "Mathew", Question: "A question?"}
 	j, err = json.Marshal(invalidQuestion)
 	assert.NoError(t, err)
 
@@ -92,4 +97,28 @@ func TestQuestionHandler_GetAllQuestionInRoom(t *testing.T) {
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 	assert.JSONEq(t, string(j), w.Body.String())
+}
+
+func TestQuestionHandler_deleteQuestion(t *testing.T) {
+	qs := new(mockQuestionService)
+
+	qs.On("Delete", 1).Return(nil)
+
+	req, err := http.NewRequest("DELETE", "/question/1", nil)
+	assert.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	r := mux.NewRouter()
+	NewQuestionHandler(qs).Route(r)
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusOK, w.Code)
+
+	req, err = http.NewRequest("DELETE", "/question/notInt", nil)
+	assert.NoError(t, err)
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusBadRequest, w.Code)
 }

@@ -83,3 +83,17 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 	assert.NoError(t, err)
 	assert.EqualValues(t, qs, result)
 }
+
+func TestMySQLQuestionStore_Delete(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("There was an unexpected error when mocking the database.")
+	}
+
+	mock.ExpectExec("DELETE FROM questions").WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	qStore := NewMySQLQuestionStore(db)
+	err = qStore.Delete(1)
+	assert.NoError(t, err)
+}
