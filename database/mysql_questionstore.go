@@ -25,7 +25,7 @@ func (m *mySQLQuestionStore) GetById(id int) (domain.Question, error) {
 	return question, nil
 }
 
-func (m mySQLQuestionStore) GetAllForRoom(code string) ([]domain.Question, error) {
+func (m mySQLQuestionStore) GetAllInRoom(code string) ([]domain.Question, error) {
 	rows, err := m.db.Query("SELECT question_id, question, questioner_name, total_likes, fk_room_code FROM questions WHERE fk_room_code = ?", code)
 	if err != nil {
 		return nil, err

@@ -12,14 +12,14 @@ type Question struct {
 // that must be met for each question repo.
 type QuestionStore interface {
 	GetById(id int) (Question, error)
-	GetAllForRoom(roomCode string) ([]Question, error)
+	GetAllInRoom(roomCode string) ([]Question, error)
 	Delete(id int) error
 	Create(q *Question) error
 }
 
 type QuestionService interface {
-	GetFromId(id int) (Question, error)
-	GetAllWithRoomCode(code string) ([]Question, error)
+	FindWithId(id int) (Question, error)
+	FindAllInRoom(code string) ([]Question, error)
 	Create(q *Question) error
 	Delete(id int) error
 }

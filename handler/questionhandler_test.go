@@ -17,12 +17,12 @@ type mockQuestionService struct {
 	mock.Mock
 }
 
-func (m *mockQuestionService) GetFromId(id int) (domain.Question, error) {
+func (m *mockQuestionService) FindWithId(id int) (domain.Question, error) {
 	ret := m.Called(id)
 	return ret.Get(0).(domain.Question), ret.Error(1)
 }
 
-func (m *mockQuestionService) GetAllWithRoomCode(code string) ([]domain.Question, error) {
+func (m *mockQuestionService) FindAllInRoom(code string) ([]domain.Question, error) {
 	ret := m.Called(code)
 	return ret.Get(0).([]domain.Question), ret.Error(1)
 }
@@ -82,7 +82,7 @@ func TestQuestionHandler_GetAllQuestionInRoom(t *testing.T) {
 			QuestionId: 1, QuestionerName: "Mat", Question: "Is this a test?", AssociatedRoom: "room1",
 		},
 	}
-	qs.On("GetAllWithRoomCode", "roomCode").Return(foundQuestions, nil)
+	qs.On("FindAllInRoom", "roomCode").Return(foundQuestions, nil)
 
 	req, err := http.NewRequest("GET", "/question/roomCode", nil)
 	assert.NoError(t, err)

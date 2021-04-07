@@ -13,7 +13,7 @@ func NewQuestionService(qStore domain.QuestionStore) domain.QuestionService {
 	return &questionService{qStore}
 }
 
-func (q questionService) GetFromId(id int) (domain.Question, error) {
+func (q questionService) FindWithId(id int) (domain.Question, error) {
 	question, err := q.qStore.GetById(id)
 	if err != nil {
 		return domain.Question{}, ErrQuestionNotFound
@@ -21,9 +21,9 @@ func (q questionService) GetFromId(id int) (domain.Question, error) {
 	return question, nil
 }
 
-func (q questionService) GetAllWithRoomCode(code string) ([]domain.Question, error) {
+func (q questionService) FindAllInRoom(code string) ([]domain.Question, error) {
 	//TODO: Create a check that the room code is a valid room.
-	qs, err := q.qStore.GetAllForRoom(code)
+	qs, err := q.qStore.GetAllInRoom(code)
 	if err != nil {
 		return nil, ErrInternalIssue
 	}

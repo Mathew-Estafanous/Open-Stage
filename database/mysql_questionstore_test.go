@@ -79,7 +79,7 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 	mock.ExpectQuery(query).WithArgs("room1").WillReturnRows(rows)
 
 	qStore := NewMySQLQuestionStore(db)
-	result, err := qStore.GetAllForRoom(qs[0].AssociatedRoom)
+	result, err := qStore.GetAllInRoom(qs[0].AssociatedRoom)
 	assert.NoError(t, err)
 	assert.EqualValues(t, qs, result)
 }

@@ -5,8 +5,8 @@ type ResponseError struct {
 	Status  int    `json:"status"`
 }
 
-func NewResponseError(msg string, sts int) *ResponseError {
-	return &ResponseError{
+func NewResponseError(msg string, sts int) ResponseError {
+	return ResponseError{
 		Message: msg,
 		Status:  sts,
 	}

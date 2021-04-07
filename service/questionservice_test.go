@@ -17,7 +17,7 @@ func (m *mockQuestionStore) GetById(id int) (domain.Question, error) {
 	return ret.Get(0).(domain.Question), ret.Error(1)
 }
 
-func (m *mockQuestionStore) GetAllForRoom(roomCode string) ([]domain.Question, error) {
+func (m *mockQuestionStore) GetAllInRoom(roomCode string) ([]domain.Question, error) {
 	ret := m.Called(roomCode)
 	return ret.Get(0).([]domain.Question), ret.Error(1)
 }
@@ -42,12 +42,12 @@ func TestQuestionService_GetFromId(t *testing.T) {
 
 	qStore.On("GetById", 1).Return(question, nil)
 
-	res, err := qs.GetFromId(1)
+	res, err := qs.FindWithId(1)
 	assert.NoError(t, err)
 	assert.EqualValues(t, question, res)
 
 	qStore.On("GetById", 2).Return(domain.Question{}, errors.New("some error"))
-	res, err = qs.GetFromId(2)
+	res, err = qs.FindWithId(2)
 	assert.Error(t, err)
 	assert.Empty(t, res)
 }
@@ -62,13 +62,13 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 		},
 	}
 
-	qStore.On("GetAllForRoom", "room1").Return(foundQuestions, nil)
-	res, err := qs.GetAllWithRoomCode("room1")
+	qStore.On("GetAllInRoom", "room1").Return(foundQuestions, nil)
+	res, err := qs.FindAllInRoom("room1")
 	assert.NoError(t, err)
 	assert.EqualValues(t, foundQuestions, res)
 
-	qStore.On("GetAllForRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
-	res, err = qs.GetAllWithRoomCode("invalidRoom")
+	qStore.On("GetAllInRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
+	res, err = qs.FindAllInRoom("invalidRoom")
 	assert.ErrorIs(t, err, ErrInternalIssue)
 	assert.Nil(t, res)
 }

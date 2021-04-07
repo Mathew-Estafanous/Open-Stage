@@ -5,47 +5,49 @@ import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
-type RoomHandler struct {
+type roomHandler struct {
 	rs domain.RoomService
 }
 
-func NewRoomHandler(roomService domain.RoomService) *RoomHandler {
-	return &RoomHandler{rs: roomService}
+func NewRoomHandler(roomService domain.RoomService) *roomHandler {
+	return &roomHandler{rs: roomService}
 }
 
-func (r RoomHandler) Route(router *mux.Router) {
+func (r roomHandler) Route(router *mux.Router) {
 	router.HandleFunc("/room/{code}", r.getRoom).Methods("GET")
-	router.HandleFunc("/room", r.createRoom).Methods("POST")
 	router.HandleFunc("/room/{code}", r.deleteRoom).Methods("DELETE")
+	router.HandleFunc("/room", r.createRoom).Methods("POST")
 }
 
-func (r RoomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
+func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	roomCode := mux.Vars(re)["code"]
 
 	room, err := r.rs.FindRoom(roomCode)
 	if err != nil {
-		responseError := domain.NewResponseError(err.Error(), http.StatusNotFound)
-		w.WriteHeader(responseError.Status)
-		_ = json.NewEncoder(w).Encode(responseError)
+		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
+		writeResponseErr(w, responseErr)
 		return
 	}
-	_ = json.NewEncoder(w).Encode(room)
+
+	if err = json.NewEncoder(w).Encode(room); err != nil {
+		log.Print(err)
+	}
 }
 
-func (r RoomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
+func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
 	var room domain.Room
-	encoder := json.NewEncoder(w)
 	err := json.NewDecoder(re.Body).Decode(&room)
 	if err != nil {
 		responseErr := domain.NewResponseError(
 			"Request body not formatted properly", http.StatusBadRequest)
-		w.WriteHeader(responseErr.Status)
-		_ = encoder.Encode(responseErr)
+		writeResponseErr(w, responseErr)
 		return
 	}
 
@@ -56,24 +58,24 @@ func (r RoomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 			status = http.StatusBadRequest
 		}
 
-		responseErr := domain.NewResponseError(
-			err.Error(), status)
-		w.WriteHeader(responseErr.Status)
-		_ = encoder.Encode(responseErr)
+		responseErr := domain.NewResponseError(err.Error(), status)
+		writeResponseErr(w, responseErr)
 		return
 	}
+
 	w.WriteHeader(http.StatusCreated)
-	_ = encoder.Encode(room)
+	if err = json.NewEncoder(w).Encode(room); err != nil {
+		log.Print(err)
+	}
 }
 
-func (r RoomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
+func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	code := mux.Vars(re)["code"]
+
 	err := r.rs.DeleteRoom(code)
 	if err != nil {
 		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
-		w.WriteHeader(responseErr.Status)
-		_ = json.NewEncoder(w).Encode(responseErr)
-		return
+		writeResponseErr(w, responseErr)
 	}
 }
