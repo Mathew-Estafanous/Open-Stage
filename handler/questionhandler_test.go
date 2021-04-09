@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +36,7 @@ func (m *mockQuestionService) Delete(id int) error {
 	return ret.Error(0)
 }
 
-func TestQuestionHandler_CreateQuestion(t *testing.T) {
+func TestQuestionHandler_createQuestion(t *testing.T) {
 	qs := new(mockQuestionService)
 
 	question := domain.Question{
@@ -63,7 +62,7 @@ func TestQuestionHandler_CreateQuestion(t *testing.T) {
 	j, err = json.Marshal(invalidQuestion)
 	assert.NoError(t, err)
 
-	qs.On("Create", &invalidQuestion).Return(errors.New("an error occurred"))
+	qs.On("Create", &invalidQuestion).Return(domain.BadRequest(""))
 
 	req, err = http.NewRequest("POST", "/question", strings.NewReader(string(j)))
 	assert.NoError(t, err)
@@ -74,7 +73,7 @@ func TestQuestionHandler_CreateQuestion(t *testing.T) {
 	assert.EqualValues(t, http.StatusBadRequest, w.Code)
 }
 
-func TestQuestionHandler_GetAllQuestionInRoom(t *testing.T) {
+func TestQuestionHandler_getAllQuestionInRoom(t *testing.T) {
 	qs := new(mockQuestionService)
 
 	foundQuestions := []domain.Question{

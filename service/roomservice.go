@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"math/rand"
 	"time"
@@ -19,7 +18,7 @@ func NewRoomService(rs domain.RoomStore) domain.RoomService {
 
 func (r *roomService) CreateRoom(room *domain.Room) error {
 	if room.Host == "" {
-		return ErrHostNotAssigned
+		return errHostNotAssigned
 	}
 
 	if room.RoomCode == "" {
@@ -28,7 +27,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 
 	err := r.rStore.Create(room)
 	if err != nil {
-		return ErrDuplicateRoom
+		return errDuplicateRoom
 	}
 	return nil
 }
@@ -36,7 +35,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 	room, err := r.rStore.GetByRoomCode(roomCode)
 	if err != nil {
-		return domain.Room{}, ErrRoomNotFound
+		return domain.Room{}, errRoomNotFound
 	}
 	return room, nil
 }
@@ -44,7 +43,7 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 func (r *roomService) DeleteRoom(code string) error {
 	err := r.rStore.Delete(code)
 	if err != nil {
-		return ErrRoomNotDeleted
+		return errRoomNotDeleted
 	}
 	return nil
 }
@@ -68,8 +67,8 @@ func (r *roomService) generateValidCode() string {
 }
 
 var (
-	ErrHostNotAssigned = errors.New("a host has not be assigned to a room")
-	ErrDuplicateRoom   = errors.New("room could not be created with duplicate room code")
-	ErrRoomNotFound    = errors.New("room was not found with given code")
-	ErrRoomNotDeleted  = errors.New("a room with that code was not found")
+	errHostNotAssigned = domain.BadRequest("A host has not be assigned to a room")
+	errDuplicateRoom   = domain.Conflict("Room could not be created since the room code is taken.")
+	errRoomNotFound    = domain.NotFound("Room was not found with given code")
+	errRoomNotDeleted  = domain.InternalServerError("There was an error while trying to delete the room.")
 )

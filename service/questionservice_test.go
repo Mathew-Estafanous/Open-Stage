@@ -69,7 +69,7 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 
 	qStore.On("GetAllInRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
 	res, err = qs.FindAllInRoom("invalidRoom")
-	assert.ErrorIs(t, err, ErrInternalIssue)
+	assert.ErrorIs(t, err, errInternalIssue)
 	assert.Nil(t, res)
 }
 
@@ -89,13 +89,13 @@ func TestQuestionService_Create(t *testing.T) {
 		QuestionerName: "Mat", AssociatedRoom: "room1",
 	}
 	err = qs.Create(&missingQuestion)
-	assert.ErrorIs(t, err, ErrMissingQuestion)
+	assert.ErrorIs(t, err, errMissingQuestion)
 
 	missingRoom := domain.Question{
 		QuestionerName: "Mat", Question: "Is this a test?",
 	}
 	err = qs.Create(&missingRoom)
-	assert.Error(t, err, ErrQuestionMustHaveRoom)
+	assert.Error(t, err, errQuestionMustHaveRoom)
 }
 
 func TestQuestionService_Delete(t *testing.T) {
@@ -108,5 +108,5 @@ func TestQuestionService_Delete(t *testing.T) {
 
 	qStore.On("Delete", 2).Return(errors.New("a database error occurred"))
 	err = qs.Delete(2)
-	assert.ErrorIs(t, err, ErrInternalIssue)
+	assert.ErrorIs(t, err, errInternalIssue)
 }

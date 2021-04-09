@@ -30,16 +30,13 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 	var question domain.Question
 	err := json.NewDecoder(r.Body).Decode(&question)
 	if err != nil {
-		responseErr := domain.NewResponseError(
-			"There was an issue parsing the request body.", http.StatusInternalServerError)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
 	err = q.qs.Create(&question)
 	if err != nil {
-		responseErr := domain.NewResponseError(err.Error(), http.StatusBadRequest)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
@@ -56,9 +53,7 @@ func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Re
 	questions, err := q.qs.FindAllInRoom(code)
 	e := json.NewEncoder(w)
 	if err != nil {
-		responseErr := domain.NewResponseError(
-			"there was an internal error on our server", http.StatusInternalServerError)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
@@ -73,23 +68,27 @@ func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) 
 
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		responseErr := domain.NewResponseError(
-			"the given question id is not a valid int", http.StatusBadRequest)
-		writeResponseErr(w, responseErr)
+		err = domain.BadRequest("Given question Id is not a valid int type.")
+		handleError(w, err)
 		return
 	}
 
 	err = q.qs.Delete(idInt)
 	if err != nil {
-		responseErr := domain.NewResponseError(
-			"there was an internal error on our server", http.StatusInternalServerError)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 	}
 }
 
-func writeResponseErr(w http.ResponseWriter, respErr domain.ResponseError) {
-	w.WriteHeader(respErr.Status)
-	err := json.NewEncoder(w).Encode(respErr)
+func handleError(w http.ResponseWriter, err error) {
+	log.Print(err)
+	respErr, ok := err.(domain.ResponseError)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(respErr.Sts)
+	err = json.NewEncoder(w).Encode(respErr)
 	if err != nil {
 		log.Print(err)
 	}

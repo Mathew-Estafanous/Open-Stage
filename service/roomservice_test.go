@@ -43,7 +43,7 @@ func TestRoomService_FindRoom(t *testing.T) {
 
 	store.On("GetByRoomCode", "wrongCode").Return(domain.Room{}, errors.New("no room"))
 	room, err = rs.FindRoom("wrongCode")
-	assert.ErrorIs(t, err, ErrRoomNotFound)
+	assert.ErrorIs(t, err, errRoomNotFound)
 	assert.EqualValues(t, domain.Room{}, room)
 	store.AssertExpectations(t)
 }
@@ -60,14 +60,14 @@ func TestRoomService_CreateRoom(t *testing.T) {
 	store.AssertExpectations(t)
 
 	wrongRoom := domain.Room{RoomCode: "duplicateCode", Host: "Ja"}
-	store.On("Create", &wrongRoom).Return(ErrDuplicateRoom)
+	store.On("Create", &wrongRoom).Return(errDuplicateRoom)
 	err = rs.CreateRoom(&wrongRoom)
 
-	assert.ErrorIs(t, err, ErrDuplicateRoom)
+	assert.ErrorIs(t, err, errDuplicateRoom)
 	store.AssertExpectations(t)
 
 	err = rs.CreateRoom(&domain.Room{})
-	assert.ErrorIs(t, err, ErrHostNotAssigned)
+	assert.ErrorIs(t, err, errHostNotAssigned)
 }
 
 func TestRoomService_DeleteRoom(t *testing.T) {

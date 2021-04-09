@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
-	"github.com/Mathew-Estafanous/Open-Stage/service"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -29,8 +28,7 @@ func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 
 	room, err := r.rs.FindRoom(roomCode)
 	if err != nil {
-		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
@@ -45,21 +43,13 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 	var room domain.Room
 	err := json.NewDecoder(re.Body).Decode(&room)
 	if err != nil {
-		responseErr := domain.NewResponseError(
-			"Request body not formatted properly", http.StatusBadRequest)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
 	err = r.rs.CreateRoom(&room)
 	if err != nil {
-		status := http.StatusConflict
-		if err == service.ErrHostNotAssigned {
-			status = http.StatusBadRequest
-		}
-
-		responseErr := domain.NewResponseError(err.Error(), status)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 		return
 	}
 
@@ -75,7 +65,6 @@ func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 
 	err := r.rs.DeleteRoom(code)
 	if err != nil {
-		responseErr := domain.NewResponseError(err.Error(), http.StatusNotFound)
-		writeResponseErr(w, responseErr)
+		handleError(w, err)
 	}
 }
