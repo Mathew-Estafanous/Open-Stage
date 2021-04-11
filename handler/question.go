@@ -24,8 +24,6 @@ func (q questionHandler) Route(r *mux.Router) {
 }
 
 func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	var question domain.Question
 	err := json.NewDecoder(r.Body).Decode(&question)
 	if err != nil {
@@ -43,7 +41,6 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 }
 
 func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	code := mux.Vars(r)["roomCode"]
 
 	questions, err := q.qs.FindAllInRoom(code)
@@ -56,7 +53,6 @@ func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Re
 }
 
 func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)["questionId"]
 
 	idInt, err := strconv.Atoi(id)

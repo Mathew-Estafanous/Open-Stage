@@ -3,8 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"github.com/Mathew-Estafanous/Open-Stage/database"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
+	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/mysql"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -19,13 +19,13 @@ func main() {
 	db := connectToDB()
 	defer db.Close()
 
-	roomStore := database.NewMySQLRoomStore(db)
-	roomService := service.NewRoomService(roomStore)
-	roomHandler := handler.NewRoomHandler(roomService)
+	rStore := mysql.NewRoomStore(db)
+	rService := service.NewRoomService(rStore)
+	roomHandler := handler.NewRoomHandler(rService)
 
-	questionStore := database.NewMySQLQuestionStore(db)
-	questionService := service.NewQuestionService(questionStore)
-	questionHandler := handler.NewQuestionHandler(questionService)
+	qStore := mysql.NewQuestionStore(db)
+	qService := service.NewQuestionService(qStore)
+	questionHandler := handler.NewQuestionHandler(qService)
 
 	r := mux.NewRouter()
 	roomHandler.Route(r)

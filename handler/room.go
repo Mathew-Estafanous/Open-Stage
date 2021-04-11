@@ -52,7 +52,6 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 }
 
 func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	code := mux.Vars(re)["code"]
 
 	err := r.rs.DeleteRoom(code)

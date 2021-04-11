@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"database/sql"
@@ -12,7 +12,7 @@ type mySQLRoomStore struct {
 	db *sql.DB
 }
 
-func NewMySQLRoomStore(db *sql.DB) domain.RoomStore {
+func NewRoomStore(db *sql.DB) domain.RoomStore {
 	return &mySQLRoomStore{db}
 }
 

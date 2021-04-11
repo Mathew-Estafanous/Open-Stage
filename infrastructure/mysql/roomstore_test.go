@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
@@ -23,7 +23,7 @@ func TestMySQLRoomStore_GetByRoomCode(t *testing.T) {
 	query := "SELECT room_id, host, room_code FROM rooms WHERE room_code = ?"
 	mock.ExpectQuery(query).WithArgs("wantedCode").WillReturnRows(row)
 
-	m := NewMySQLRoomStore(db)
+	m := NewRoomStore(db)
 	room, err := m.GetByRoomCode("wantedCode")
 
 	assert.NoError(t, err)
@@ -45,7 +45,7 @@ func TestMySQLRoomStore_Create(t *testing.T) {
 	mock.ExpectExec(insertQuery).WithArgs(room.Host, room.RoomCode).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	m := NewMySQLRoomStore(db)
+	m := NewRoomStore(db)
 	err = m.Create(room)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, room.RoomId)
@@ -62,7 +62,7 @@ func TestMySQLRoomStore_Delete(t *testing.T) {
 	mock.ExpectExec(deleteQuery).WithArgs(code).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	m := NewMySQLRoomStore(db)
+	m := NewRoomStore(db)
 	err = m.Delete(code)
 	assert.NoError(t, err)
 

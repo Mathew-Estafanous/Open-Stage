@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
@@ -26,7 +26,7 @@ func TestMySQLQuestionStore_GetById(t *testing.T) {
 				FROM questions WHERE question_id = ?`
 	mock.ExpectQuery(query).WithArgs(questionId).WillReturnRows(row)
 
-	qStore := NewMySQLQuestionStore(db)
+	qStore := NewQuestionStore(db)
 	q, err := qStore.GetById(2)
 
 	assert.NoError(t, err)
@@ -47,7 +47,7 @@ func TestMySQLQuestionStore_Create(t *testing.T) {
 		WithArgs(&mQuestion.Question, &mQuestion.QuestionerName, &mQuestion.AssociatedRoom).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	qStore := NewMySQLQuestionStore(db)
+	qStore := NewQuestionStore(db)
 	err = qStore.Create(&mQuestion)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, mQuestion.QuestionId)
@@ -78,7 +78,7 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 				FROM questions WHERE fk_room_code = ?`
 	mock.ExpectQuery(query).WithArgs("room1").WillReturnRows(rows)
 
-	qStore := NewMySQLQuestionStore(db)
+	qStore := NewQuestionStore(db)
 	result, err := qStore.GetAllInRoom(qs[0].AssociatedRoom)
 	assert.NoError(t, err)
 	assert.EqualValues(t, qs, result)
@@ -93,7 +93,7 @@ func TestMySQLQuestionStore_Delete(t *testing.T) {
 	mock.ExpectExec("DELETE FROM questions").WithArgs(1).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	qStore := NewMySQLQuestionStore(db)
+	qStore := NewQuestionStore(db)
 	err = qStore.Delete(1)
 	assert.NoError(t, err)
 }

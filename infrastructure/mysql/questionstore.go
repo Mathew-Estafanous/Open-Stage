@@ -1,4 +1,4 @@
-package database
+package mysql
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ type mySQLQuestionStore struct {
 	db *sql.DB
 }
 
-func NewMySQLQuestionStore(db *sql.DB) domain.QuestionStore {
+func NewQuestionStore(db *sql.DB) domain.QuestionStore {
 	return &mySQLQuestionStore{db}
 }
 
