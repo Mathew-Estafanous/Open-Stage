@@ -70,7 +70,7 @@ func TestMySQLQuestionStore_UpdateLikeTotal(t *testing.T) {
 		t.Fatal("there was an unexpected error when mocking the database.")
 	}
 
-	mock.ExpectExec("UPDATE questions SET total_likes = ? WHERE question_id = ?").
+	mock.ExpectExec("UPDATE questions").
 		WithArgs(1, 23).WillReturnResult(sqlmock.NewResult(23, 1))
 
 	qStore := NewQuestionStore(db)

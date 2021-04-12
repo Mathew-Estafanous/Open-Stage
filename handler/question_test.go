@@ -3,41 +3,17 @@ package handler
 import (
 	"encoding/json"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-type mockQuestionService struct {
-	mock.Mock
-}
-
-func (m *mockQuestionService) FindWithId(id int) (domain.Question, error) {
-	ret := m.Called(id)
-	return ret.Get(0).(domain.Question), ret.Error(1)
-}
-
-func (m *mockQuestionService) FindAllInRoom(code string) ([]domain.Question, error) {
-	ret := m.Called(code)
-	return ret.Get(0).([]domain.Question), ret.Error(1)
-}
-
-func (m *mockQuestionService) Create(q *domain.Question) error {
-	ret := m.Called(q)
-	return ret.Error(0)
-}
-
-func (m *mockQuestionService) Delete(id int) error {
-	ret := m.Called(id)
-	return ret.Error(0)
-}
-
 func TestQuestionHandler_createQuestion(t *testing.T) {
-	qs := new(mockQuestionService)
+	qs := new(mock.QuestionService)
 
 	question := domain.Question{
 		QuestionerName: "Mathew", Question: "A question?", AssociatedRoom: "room1",
@@ -74,7 +50,7 @@ func TestQuestionHandler_createQuestion(t *testing.T) {
 }
 
 func TestQuestionHandler_getAllQuestionInRoom(t *testing.T) {
-	qs := new(mockQuestionService)
+	qs := new(mock.QuestionService)
 
 	foundQuestions := []domain.Question{
 		{
@@ -99,7 +75,7 @@ func TestQuestionHandler_getAllQuestionInRoom(t *testing.T) {
 }
 
 func TestQuestionHandler_deleteQuestion(t *testing.T) {
-	qs := new(mockQuestionService)
+	qs := new(mock.QuestionService)
 
 	qs.On("Delete", 1).Return(nil)
 

@@ -29,7 +29,7 @@ func main() {
 	roomHandler := handler.NewRoomHandler(rService)
 
 	qStore := mysql.NewQuestionStore(db)
-	qService := service.NewQuestionService(qStore, rStore)
+	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
 	r := mux.NewRouter()

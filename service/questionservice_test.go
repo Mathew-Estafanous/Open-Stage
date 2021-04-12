@@ -40,14 +40,21 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 		},
 	}
 
+	room := domain.Room{
+		RoomCode: "room1",
+		Host: "Mathew",
+	}
+
 	qStore.On("GetAllInRoom", "room1").Return(foundQuestions, nil)
+	rService.On("FindRoom", "room1").Return(room, nil)
 	res, err := qs.FindAllInRoom("room1")
 	assert.NoError(t, err)
 	assert.EqualValues(t, foundQuestions, res)
 
-	qStore.On("GetAllInRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occured"))
+	qStore.On("GetAllInRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occurred"))
+	rService.On("FindRoom", "invalidRoom").Return(domain.Room{}, errRoomNotFound)
 	res, err = qs.FindAllInRoom("invalidRoom")
-	assert.ErrorIs(t, err, errInternalIssue)
+	assert.ErrorIs(t, err, errRoomCodeNotFound)
 	assert.Nil(t, res)
 }
 
