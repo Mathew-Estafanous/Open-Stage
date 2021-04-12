@@ -33,26 +33,6 @@ func TestMySQLQuestionStore_GetById(t *testing.T) {
 	assert.EqualValues(t, mQuestion, q)
 }
 
-func TestMySQLQuestionStore_Create(t *testing.T) {
-	db, mock, err := sqlmock.New()
-	if err != nil {
-		t.Fatal("There was an unexpected error when mocking the database.")
-	}
-
-	mQuestion := domain.Question{
-		Question: "How you doing?", QuestionerName: "Mathew", AssociatedRoom: "room1",
-	}
-
-	mock.ExpectExec("INSERT INTO questions").
-		WithArgs(&mQuestion.Question, &mQuestion.QuestionerName, &mQuestion.AssociatedRoom).
-		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	qStore := NewQuestionStore(db)
-	err = qStore.Create(&mQuestion)
-	assert.NoError(t, err)
-	assert.Equal(t, 1, mQuestion.QuestionId)
-}
-
 func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -82,6 +62,40 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 	result, err := qStore.GetAllInRoom(qs[0].AssociatedRoom)
 	assert.NoError(t, err)
 	assert.EqualValues(t, qs, result)
+}
+
+func TestMySQLQuestionStore_UpdateLikeTotal(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("there was an unexpected error when mocking the database.")
+	}
+
+	mock.ExpectExec("UPDATE questions SET total_likes = ? WHERE question_id = ?").
+		WithArgs(1, 23).WillReturnResult(sqlmock.NewResult(23, 1))
+
+	qStore := NewQuestionStore(db)
+	err = qStore.UpdateLikeTotal(23, 1)
+	assert.NoError(t, err)
+}
+
+func TestMySQLQuestionStore_Create(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("There was an unexpected error when mocking the database.")
+	}
+
+	mQuestion := domain.Question{
+		Question: "How you doing?", QuestionerName: "Mathew", AssociatedRoom: "room1",
+	}
+
+	mock.ExpectExec("INSERT INTO questions").
+		WithArgs(&mQuestion.Question, &mQuestion.QuestionerName, &mQuestion.AssociatedRoom).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	qStore := NewQuestionStore(db)
+	err = qStore.Create(&mQuestion)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, mQuestion.QuestionId)
 }
 
 func TestMySQLQuestionStore_Delete(t *testing.T) {

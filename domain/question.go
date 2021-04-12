@@ -13,6 +13,7 @@ type Question struct {
 type QuestionStore interface {
 	GetById(id int) (Question, error)
 	GetAllInRoom(roomCode string) ([]Question, error)
+	UpdateLikeTotal(id int, total int) error
 	Delete(id int) error
 	Create(q *Question) error
 }

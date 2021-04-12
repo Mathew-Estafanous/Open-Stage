@@ -3,32 +3,13 @@ package service
 import (
 	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
-type mockRoomStore struct {
-	mock.Mock
-}
-
-func (m *mockRoomStore) GetByRoomCode(code string) (domain.Room, error) {
-	ret := m.Called(code)
-	return ret.Get(0).(domain.Room), ret.Error(1)
-}
-
-func (m *mockRoomStore) Create(room *domain.Room) error {
-	ret := m.Called(room)
-	return ret.Error(0)
-}
-
-func (m *mockRoomStore) Delete(code string) error {
-	ret := m.Called(code)
-	return ret.Error(0)
-}
-
 func TestRoomService_FindRoom(t *testing.T) {
-	store := new(mockRoomStore)
+	store := new(mock.RoomStore)
 	rs := NewRoomService(store)
 
 	expectedRoom := domain.Room{
@@ -49,7 +30,7 @@ func TestRoomService_FindRoom(t *testing.T) {
 }
 
 func TestRoomService_CreateRoom(t *testing.T) {
-	store := new(mockRoomStore)
+	store := new(mock.RoomStore)
 	rs := NewRoomService(store)
 
 	roomCreating := domain.Room{RoomCode: "room1", Host: "Mat"}
@@ -71,7 +52,7 @@ func TestRoomService_CreateRoom(t *testing.T) {
 }
 
 func TestRoomService_DeleteRoom(t *testing.T) {
-	store := new(mockRoomStore)
+	store := new(mock.RoomStore)
 	rs := NewRoomService(store)
 
 	validCode := "roomCode"

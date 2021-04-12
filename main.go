@@ -17,14 +17,19 @@ const port string = ":8080"
 
 func main() {
 	db := connectToDB()
-	defer db.Close()
+	defer func() {
+		err := db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	rStore := mysql.NewRoomStore(db)
 	rService := service.NewRoomService(rStore)
 	roomHandler := handler.NewRoomHandler(rService)
 
 	qStore := mysql.NewQuestionStore(db)
-	qService := service.NewQuestionService(qStore)
+	qService := service.NewQuestionService(qStore, rStore)
 	questionHandler := handler.NewQuestionHandler(qService)
 
 	r := mux.NewRouter()

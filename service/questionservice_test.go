@@ -3,38 +3,15 @@ package service
 import (
 	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"testing"
 )
 
-type mockQuestionStore struct {
-	mock.Mock
-}
-
-func (m *mockQuestionStore) GetById(id int) (domain.Question, error) {
-	ret := m.Called(id)
-	return ret.Get(0).(domain.Question), ret.Error(1)
-}
-
-func (m *mockQuestionStore) GetAllInRoom(roomCode string) ([]domain.Question, error) {
-	ret := m.Called(roomCode)
-	return ret.Get(0).([]domain.Question), ret.Error(1)
-}
-
-func (m *mockQuestionStore) Create(q *domain.Question) error {
-	ret := m.Called(q)
-	return ret.Error(0)
-}
-
-func (m *mockQuestionStore) Delete(id int) error {
-	ret := m.Called(id)
-	return ret.Error(0)
-}
-
 func TestQuestionService_GetFromId(t *testing.T) {
-	qStore := new(mockQuestionStore)
-	qs := NewQuestionService(qStore)
+	qStore := new(mock.QuestionStore)
+	rService := new(mock.RoomService)
+	qs := NewQuestionService(qStore, rService)
 
 	question := domain.Question{
 		QuestionId: 1, QuestionerName: "Mat", Question: "Is this a test?", AssociatedRoom: "room1",
@@ -53,8 +30,9 @@ func TestQuestionService_GetFromId(t *testing.T) {
 }
 
 func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
-	qStore := new(mockQuestionStore)
-	qs := NewQuestionService(qStore)
+	qStore := new(mock.QuestionStore)
+	rService := new(mock.RoomService)
+	qs := NewQuestionService(qStore, rService)
 
 	foundQuestions := []domain.Question{
 		{
@@ -74,8 +52,9 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 }
 
 func TestQuestionService_Create(t *testing.T) {
-	qStore := new(mockQuestionStore)
-	qs := NewQuestionService(qStore)
+	qStore := new(mock.QuestionStore)
+	rService := new(mock.RoomService)
+	qs := NewQuestionService(qStore, rService)
 
 	validQuestion := domain.Question{
 		QuestionerName: "Mat", Question: "Is this a test?", AssociatedRoom: "room1",
@@ -99,8 +78,9 @@ func TestQuestionService_Create(t *testing.T) {
 }
 
 func TestQuestionService_Delete(t *testing.T) {
-	qStore := new(mockQuestionStore)
-	qs := NewQuestionService(qStore)
+	qStore := new(mock.QuestionStore)
+	rService := new(mock.RoomService)
+	qs := NewQuestionService(qStore, rService)
 
 	qStore.On("Delete", 1).Return(nil)
 	err := qs.Delete(1)

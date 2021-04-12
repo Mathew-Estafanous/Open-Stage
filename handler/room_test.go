@@ -3,36 +3,17 @@ package handler
 import (
 	"encoding/json"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-type mockRoomService struct {
-	mock.Mock
-}
-
-func (m *mockRoomService) CreateRoom(room *domain.Room) error {
-	ret := m.Called(room)
-	return ret.Error(0)
-}
-
-func (m *mockRoomService) FindRoom(roomCode string) (domain.Room, error) {
-	ret := m.Called(roomCode)
-	return ret.Get(0).(domain.Room), ret.Error(1)
-}
-
-func (m *mockRoomService) DeleteRoom(code string) error {
-	ret := m.Called(code)
-	return ret.Error(0)
-}
-
 func TestRoomHandler_GetRoom(t *testing.T) {
-	rs := new(mockRoomService)
+	rs := new(mock.RoomService)
 	room := domain.Room{RoomId: 1, RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("FindRoom", "jrHigh").Return(room, nil)
 
@@ -59,7 +40,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 }
 
 func TestRoomHandler_CreateRoom(t *testing.T) {
-	rs := new(mockRoomService)
+	rs := new(mock.RoomService)
 	room := domain.Room{RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("CreateRoom", &room).Return(nil)
 
@@ -90,7 +71,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 }
 
 func TestRoomHandler_DeleteRoom(t *testing.T) {
-	rs := new(mockRoomService)
+	rs := new(mock.RoomService)
 	rs.On("DeleteRoom", "validCode").Return(nil)
 
 	w := httptest.NewRecorder()

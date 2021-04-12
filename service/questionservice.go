@@ -5,11 +5,12 @@ import (
 )
 
 type questionService struct {
-	qStore domain.QuestionStore
+	qStore   domain.QuestionStore
+	rService domain.RoomService
 }
 
-func NewQuestionService(qStore domain.QuestionStore) domain.QuestionService {
-	return &questionService{qStore}
+func NewQuestionService(qStore domain.QuestionStore, rService domain.RoomService) domain.QuestionService {
+	return &questionService{qStore, rService}
 }
 
 func (q questionService) FindWithId(id int) (domain.Question, error) {
@@ -21,7 +22,11 @@ func (q questionService) FindWithId(id int) (domain.Question, error) {
 }
 
 func (q questionService) FindAllInRoom(code string) ([]domain.Question, error) {
-	//TODO: Create a check that the room code is a valid room.
+	_, err := q.rService.FindRoom(code)
+	if err != nil {
+		return nil, errRoomCodeNotFound
+	}
+
 	qs, err := q.qStore.GetAllInRoom(code)
 	if err != nil {
 		return nil, errInternalIssue
@@ -58,6 +63,7 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
+	errRoomCodeNotFound     = domain.NotFound("The given room code was not found.")
 	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
 	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
 	errMissingQuestion      = domain.BadRequest("A question was not provided.")

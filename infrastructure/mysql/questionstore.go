@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 )
 
@@ -42,6 +43,23 @@ func (m mySQLQuestionStore) GetAllInRoom(code string) ([]domain.Question, error)
 		question = append(question, q)
 	}
 	return question, nil
+}
+
+func (m *mySQLQuestionStore) UpdateLikeTotal(id int, total int) error {
+	r, err := m.db.Exec("UPDATE questions SET total_likes = ? WHERE question_id = ?", total, id)
+	if err != nil {
+		return err
+	}
+
+	a, err := r.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if a == 0 {
+		return errors.New("no rows were altered as expected")
+	}
+	return nil
 }
 
 func (m *mySQLQuestionStore) Create(q *domain.Question) error {
