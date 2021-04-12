@@ -52,7 +52,7 @@ func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Re
 	q.respond(w, http.StatusOK, questions)
 }
 
-func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request)  {
+func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["questionId"]
 
 	idInt, err := strconv.Atoi(id)

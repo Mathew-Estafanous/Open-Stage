@@ -42,7 +42,7 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 
 	room := domain.Room{
 		RoomCode: "room1",
-		Host: "Mathew",
+		Host:     "Mathew",
 	}
 
 	qStore.On("GetAllInRoom", "room1").Return(foundQuestions, nil)

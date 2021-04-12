@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type baseHandler struct {}
+type baseHandler struct{}
 
 func (h baseHandler) error(w http.ResponseWriter, err error) {
 	log.Print(err)

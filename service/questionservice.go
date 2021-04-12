@@ -80,7 +80,7 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
-	errTotalBelowZero = domain.BadRequest("The given total is below zero")
+	errTotalBelowZero       = domain.BadRequest("The given total is below zero")
 	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
 	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
 	errMissingQuestion      = domain.BadRequest("A question was not provided.")

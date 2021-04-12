@@ -10,7 +10,6 @@ import (
 	"testing"
 )
 
-
 func TestBaseHandler_error(t *testing.T) {
 	base := baseHandler{}
 
@@ -34,7 +33,7 @@ func TestBaseHandler_respond(t *testing.T) {
 	base := baseHandler{}
 
 	type fake struct {
-		Id int `json:"id"`
+		Id   int    `json:"id"`
 		Name string `json:"name"`
 	}
 

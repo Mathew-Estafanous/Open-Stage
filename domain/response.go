@@ -17,8 +17,8 @@ func (r ResponseError) Error() string {
 
 func NewResponseError(msg string, sts int) ResponseError {
 	return ResponseError{
-		Msg: msg,
-		Sts: sts,
+		Msg:       msg,
+		Sts:       sts,
 		TimeStamp: time.Now(),
 	}
 }
