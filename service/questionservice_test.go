@@ -54,8 +54,31 @@ func TestQuestionService_GetAllWithRoomCode(t *testing.T) {
 	qStore.On("GetAllInRoom", "invalidRoom").Return([]domain.Question{}, errors.New("error occurred"))
 	rService.On("FindRoom", "invalidRoom").Return(domain.Room{}, errRoomNotFound)
 	res, err = qs.FindAllInRoom("invalidRoom")
-	assert.ErrorIs(t, err, errRoomCodeNotFound)
+	assert.ErrorIs(t, err, errRoomNotFound)
 	assert.Nil(t, res)
+}
+
+func TestQuestionService_ChangeTotalLikes(t *testing.T) {
+	qStore := new(mock.QuestionStore)
+	rService := new(mock.RoomService)
+	qs := NewQuestionService(qStore, rService)
+
+	qStore.On("UpdateLikeTotal", 12, 1).Return(nil)
+	qStore.On("GetById", 12).Return(domain.Question{}, nil)
+	err := qs.ChangeTotalLikes(12, 1)
+	assert.NoError(t, err)
+
+	qStore.On("GetById", 20).Return(domain.Question{}, errQuestionNotFound)
+	err = qs.ChangeTotalLikes(20, 1)
+	assert.ErrorIs(t, err, errQuestionNotFound)
+
+	err = qs.ChangeTotalLikes(12, -1)
+	assert.ErrorIs(t, err, errTotalBelowZero)
+
+	qStore.On("UpdateLikeTotal", 25, 1).Return(errors.New("some sql internal error"))
+	qStore.On("GetById", 25).Return(domain.Question{}, nil)
+	err = qs.ChangeTotalLikes(25, 1)
+	assert.ErrorIs(t, err, errInternalIssue)
 }
 
 func TestQuestionService_Create(t *testing.T) {

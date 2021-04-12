@@ -21,6 +21,7 @@ type QuestionStore interface {
 type QuestionService interface {
 	FindWithId(id int) (Question, error)
 	FindAllInRoom(code string) ([]Question, error)
+	ChangeTotalLikes(id int, total int) error
 	Create(q *Question) error
 	Delete(id int) error
 }

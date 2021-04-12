@@ -24,7 +24,7 @@ func (q questionService) FindWithId(id int) (domain.Question, error) {
 func (q questionService) FindAllInRoom(code string) ([]domain.Question, error) {
 	_, err := q.rService.FindRoom(code)
 	if err != nil {
-		return nil, errRoomCodeNotFound
+		return nil, err
 	}
 
 	qs, err := q.qStore.GetAllInRoom(code)
@@ -32,6 +32,23 @@ func (q questionService) FindAllInRoom(code string) ([]domain.Question, error) {
 		return nil, errInternalIssue
 	}
 	return qs, nil
+}
+
+func (q questionService) ChangeTotalLikes(id int, total int) error {
+	_, err := q.FindWithId(id)
+	if err != nil {
+		return err
+	}
+
+	if total < 0 {
+		return errTotalBelowZero
+	}
+
+	err = q.qStore.UpdateLikeTotal(id, total)
+	if err != nil {
+		return errInternalIssue
+	}
+	return nil
 }
 
 func (q questionService) Create(question *domain.Question) error {
@@ -63,7 +80,7 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
-	errRoomCodeNotFound     = domain.NotFound("The given room code was not found.")
+	errTotalBelowZero = domain.BadRequest("The given total is below zero")
 	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
 	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
 	errMissingQuestion      = domain.BadRequest("A question was not provided.")

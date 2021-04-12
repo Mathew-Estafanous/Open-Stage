@@ -21,6 +21,11 @@ func (m *QuestionService) FindAllInRoom(code string) ([]domain.Question, error) 
 	return ret.Get(0).([]domain.Question), ret.Error(1)
 }
 
+func (m *QuestionStore) ChangeTotalLikes(id int, total int) error {
+	ret := m.Called(id, total)
+	return ret.Error(0)
+}
+
 func (m *QuestionService) Create(q *domain.Question) error {
 	ret := m.Called(q)
 	return ret.Error(0)
