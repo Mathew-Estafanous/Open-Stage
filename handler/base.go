@@ -13,8 +13,7 @@ func (h baseHandler) error(w http.ResponseWriter, err error) {
 	log.Print(err)
 	respErr, ok := err.(domain.ResponseError)
 	if !ok {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		respErr = domain.InternalServerError("")
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

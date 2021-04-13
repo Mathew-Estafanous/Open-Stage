@@ -32,7 +32,7 @@ func (m mySQLQuestionStore) GetAllInRoom(code string) ([]domain.Question, error)
 		return nil, err
 	}
 
-	var question []domain.Question
+	question := make([]domain.Question, 0)
 	for rows.Next() {
 		var q domain.Question
 		err := rows.Scan(&q.QuestionId, &q.Question,

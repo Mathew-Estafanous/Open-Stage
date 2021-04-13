@@ -24,7 +24,7 @@ func TestQuestionHandler_createQuestion(t *testing.T) {
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "/question", strings.NewReader(string(j)))
+	req, err := http.NewRequest("POST", "/questions", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
@@ -40,7 +40,7 @@ func TestQuestionHandler_createQuestion(t *testing.T) {
 
 	qs.On("Create", &invalidQuestion).Return(domain.BadRequest(""))
 
-	req, err = http.NewRequest("POST", "/question", strings.NewReader(string(j)))
+	req, err = http.NewRequest("POST", "/questions", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 
 	w = httptest.NewRecorder()
@@ -59,7 +59,7 @@ func TestQuestionHandler_getAllQuestionInRoom(t *testing.T) {
 	}
 	qs.On("FindAllInRoom", "roomCode").Return(foundQuestions, nil)
 
-	req, err := http.NewRequest("GET", "/question/roomCode", nil)
+	req, err := http.NewRequest("GET", "/questions/roomCode", nil)
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
@@ -79,7 +79,7 @@ func TestQuestionHandler_deleteQuestion(t *testing.T) {
 
 	qs.On("Delete", 1).Return(nil)
 
-	req, err := http.NewRequest("DELETE", "/question/1", nil)
+	req, err := http.NewRequest("DELETE", "/questions/1", nil)
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
@@ -89,7 +89,7 @@ func TestQuestionHandler_deleteQuestion(t *testing.T) {
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
-	req, err = http.NewRequest("DELETE", "/question/notInt", nil)
+	req, err = http.NewRequest("DELETE", "/questions/notInt", nil)
 	assert.NoError(t, err)
 
 	w = httptest.NewRecorder()

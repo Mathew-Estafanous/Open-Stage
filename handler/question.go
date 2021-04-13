@@ -13,14 +13,20 @@ type questionHandler struct {
 	qs domain.QuestionService
 }
 
+type updateLike struct {
+	Id int `json:"question_id"`
+	TotalLikes int `json:"total_likes"`
+}
+
 func NewQuestionHandler(qService domain.QuestionService) *questionHandler {
 	return &questionHandler{qs: qService}
 }
 
 func (q questionHandler) Route(r *mux.Router) {
-	r.HandleFunc("/question", q.createQuestion).Methods("POST")
-	r.HandleFunc("/question/{roomCode}", q.getAllQuestionsInRoom).Methods("GET")
-	r.HandleFunc("/question/{questionId}", q.deleteQuestion).Methods("DELETE")
+	r.HandleFunc("/questions", q.createQuestion).Methods("POST")
+	r.HandleFunc("/questions", q.updateTotalLikes).Methods("PUT")
+	r.HandleFunc("/questions/{roomCode}", q.getAllQuestionsInRoom).Methods("GET")
+	r.HandleFunc("/questions/{questionId}", q.deleteQuestion).Methods("DELETE")
 }
 
 func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +44,21 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 	}
 
 	q.respond(w, http.StatusCreated, question)
+}
+
+func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request) {
+	var body updateLike
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		q.error(w, err)
+		return
+	}
+
+	err = q.qs.ChangeTotalLikes(body.Id, body.TotalLikes)
+	if err != nil {
+		q.error(w, err)
+		return
+	}
 }
 
 func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Request) {
