@@ -18,7 +18,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	rs.On("FindRoom", "jrHigh").Return(room, nil)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/room/jrHigh", nil)
+	req, _ := http.NewRequest("GET", "/rooms/jrHigh", nil)
 	r := mux.NewRouter()
 	NewRoomHandler(rs).Route(r)
 	r.ServeHTTP(w, req)
@@ -30,7 +30,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 
 	rs.On("FindRoom", "wrongCode").
 		Return(domain.Room{}, domain.NotFound(""))
-	req, err = http.NewRequest("GET", "/room/wrongCode", nil)
+	req, err = http.NewRequest("GET", "/rooms/wrongCode", nil)
 	assert.NoError(t, err)
 
 	w = httptest.NewRecorder()
@@ -48,7 +48,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "/room", strings.NewReader(string(j)))
+	req, err := http.NewRequest("POST", "/rooms", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
@@ -64,7 +64,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("POST", "/room", strings.NewReader(string(j)))
+	req, _ = http.NewRequest("POST", "/rooms", strings.NewReader(string(j)))
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusConflict, w.Code)
@@ -75,7 +75,7 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	rs.On("DeleteRoom", "validCode").Return(nil)
 
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("DELETE", "/room/validCode", strings.NewReader(""))
+	req, err := http.NewRequest("DELETE", "/rooms/validCode", strings.NewReader(""))
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
@@ -86,7 +86,7 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 
 	rs.On("DeleteRoom", "wrongCode").Return(domain.NotFound(""))
 	w = httptest.NewRecorder()
-	req, err = http.NewRequest("DELETE", "/room/wrongCode", strings.NewReader(""))
+	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)
 
 	r.ServeHTTP(w, req)
