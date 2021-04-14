@@ -17,9 +17,9 @@ func NewRoomHandler(roomService domain.RoomService) *roomHandler {
 }
 
 func (r roomHandler) Route(ro *mux.Router) {
-	ro.HandleFunc("/room/{code}", r.getRoom).Methods("GET")
-	ro.HandleFunc("/room/{code}", r.deleteRoom).Methods("DELETE")
-	ro.HandleFunc("/room", r.createRoom).Methods("POST")
+	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
+	ro.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
+	ro.HandleFunc("/rooms", r.createRoom).Methods("POST")
 }
 
 func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
