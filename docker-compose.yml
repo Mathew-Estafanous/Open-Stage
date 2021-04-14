@@ -1,19 +1,39 @@
 version: "3.8"
 
+# This is a development docker compose file and is NOT meant for production.
 services:
-  # This is a development database and is NOT meant for production.
   database:
     container_name: QA-Database
     image: mysql:8
-    restart: always
+    restart: on-failure
     environment:
       MYSQL_DATABASE: 'qa_platform'
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: 'qa-password'
       MYSQL_ROOT_PASSWORD: 'qa-password'
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 7
     ports:
       - "3306:3306"
     volumes:
       - my-db:/var/lib/mysql
+
+  api:
+    container_name: Open-Stage
+    image: open-stage:1.0
+    environment:
+      DATABASE_PORT: '3306'
+      DATABASE_NAME: 'qa_platform'
+      DATABASE_USERNAME: 'admin'
+      DATABASE_PASSWORD: 'qa-password'
+      DATABASE_ADDRESS: database
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
 volumes:
   my-db:
