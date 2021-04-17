@@ -14,7 +14,7 @@ type questionHandler struct {
 }
 
 type updateLike struct {
-	Id int `json:"question_id"`
+	Id         int `json:"question_id"`
 	TotalLikes int `json:"total_likes"`
 }
 

@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
-	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/mysql"
+	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	"log"
 	"net/http"
 	"os"
@@ -24,11 +24,11 @@ func main() {
 		}
 	}()
 
-	rStore := mysql.NewRoomStore(db)
+	rStore := postgres.NewRoomStore(db)
 	rService := service.NewRoomService(rStore)
 	roomHandler := handler.NewRoomHandler(rService)
 
-	qStore := mysql.NewQuestionStore(db)
+	qStore := postgres.NewQuestionStore(db)
 	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
@@ -47,8 +47,9 @@ func connectToDB() *sql.DB {
 	user := os.Getenv("DATABASE_USERNAME")
 	pass := os.Getenv("DATABASE_PASSWORD")
 
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v", user, pass, dbAddress, dbPort, dbName)
-	db, err := sql.Open("mysql", dsn)
+	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", dbAddress, dbPort, user, pass, dbName)
+	log.Println(dsn)
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

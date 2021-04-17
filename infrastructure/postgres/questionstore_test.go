@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
