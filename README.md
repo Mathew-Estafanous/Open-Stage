@@ -19,7 +19,7 @@ The following is an image of the database schema that is used for the web app.
 
 ## TODO
 The project is still under development and is continually changing so here are a few things underworks
-- [ ] Moving from MySQL to PostgreSQL.
+- [x] Moving from MySQL to PostgreSQL.
 - [ ] Refactor the database schema to a better format.
 - [ ] Create REST endpoint documentation for the API
 - [ ] Host the API on a cloud platform (AWS or Heroku)
