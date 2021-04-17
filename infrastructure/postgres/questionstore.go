@@ -1,4 +1,4 @@
-package mysql
+package postgres
 
 import (
 	"database/sql"
@@ -15,7 +15,7 @@ func NewQuestionStore(db *sql.DB) domain.QuestionStore {
 }
 
 func (m *mySQLQuestionStore) GetById(id int) (domain.Question, error) {
-	row := m.db.QueryRow("SELECT question_id, question, questioner_name, total_likes, fk_room_code FROM questions WHERE question_id = ?", id)
+	row := m.db.QueryRow("SELECT question_id, question, questioner_name, total_likes, fk_room_code FROM questions WHERE question_id = $1", id)
 
 	var question domain.Question
 	err := row.Scan(&question.QuestionId, &question.Question,
@@ -27,7 +27,7 @@ func (m *mySQLQuestionStore) GetById(id int) (domain.Question, error) {
 }
 
 func (m mySQLQuestionStore) GetAllInRoom(code string) ([]domain.Question, error) {
-	rows, err := m.db.Query("SELECT question_id, question, questioner_name, total_likes, fk_room_code FROM questions WHERE fk_room_code = ?", code)
+	rows, err := m.db.Query("SELECT question_id, question, questioner_name, total_likes, fk_room_code FROM questions WHERE fk_room_code = $1", code)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (m mySQLQuestionStore) GetAllInRoom(code string) ([]domain.Question, error)
 }
 
 func (m *mySQLQuestionStore) UpdateLikeTotal(id int, total int) error {
-	r, err := m.db.Exec("UPDATE questions SET total_likes = ? WHERE question_id = ?", total, id)
+	r, err := m.db.Exec("UPDATE questions SET total_likes = $1 WHERE question_id = $2", total, id)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (m *mySQLQuestionStore) UpdateLikeTotal(id int, total int) error {
 }
 
 func (m *mySQLQuestionStore) Create(q *domain.Question) error {
-	r, err := m.db.Exec("INSERT INTO questions (question, questioner_name, fk_room_code) VALUES (?, ?, ?)",
+	r, err := m.db.Exec("INSERT INTO questions (question, questioner_name, fk_room_code) VALUES ($1, $2, $3)",
 		q.Question, q.QuestionerName, q.AssociatedRoom)
 	if err != nil {
 		return err
@@ -77,7 +77,7 @@ func (m *mySQLQuestionStore) Create(q *domain.Question) error {
 }
 
 func (m *mySQLQuestionStore) Delete(id int) error {
-	_, err := m.db.Exec("DELETE FROM questions WHERE question_id = ?", id)
+	_, err := m.db.Exec("DELETE FROM questions WHERE question_id = $1", id)
 	if err != nil {
 		return err
 	}
