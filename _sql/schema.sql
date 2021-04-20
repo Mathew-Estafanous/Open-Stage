@@ -1,7 +1,6 @@
 CREATE TABLE "rooms" (
-     "room_id" SERIAL PRIMARY KEY,
-     "host" varchar(100) NOT NULL,
-     "room_code" varchar(15) UNIQUE NOT NULL
+     "room_code" varchar(15) PRIMARY KEY,
+     "host" varchar(100) NOT NULL
 );
 
 CREATE TABLE "questions" (
