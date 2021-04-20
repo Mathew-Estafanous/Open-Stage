@@ -15,12 +15,12 @@ for easy unit testing since each layer is independant of the other.
 
 ### Database Schema
 The following is an image of the database schema that is used for the web app.
-[![schema](https://user-images.githubusercontent.com/56979977/114913465-37922000-9def-11eb-9093-250cce0c6e86.png)](https://dbdiagram.io/d/606262f8ecb54e10c33dd900)
+[![schema](https://user-images.githubusercontent.com/56979977/115421799-494a3d80-a1ca-11eb-9a6b-975733597be2.png)](https://dbdiagram.io/d/606262f8ecb54e10c33dd900)
 
 ## TODO
 The project is still under development and is continually changing so here are a few things underworks
-- [x] Moving from MySQL to PostgreSQL.
-- [ ] Refactor the database schema to a better format.
+- [X] Moving from MySQL to PostgreSQL.
+- [X] Refactor the database schema to a better format.
 - [ ] Create REST endpoint documentation for the API
 - [ ] Host the API on a cloud platform (AWS or Heroku)
 
