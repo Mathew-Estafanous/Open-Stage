@@ -14,7 +14,7 @@ import (
 
 func TestRoomHandler_GetRoom(t *testing.T) {
 	rs := new(mock.RoomService)
-	room := domain.Room{RoomId: 1, RoomCode: "jrHigh", Host: "Mat"}
+	room := domain.Room{RoomCode: "jrHigh", Host: "Mat"}
 	rs.On("FindRoom", "jrHigh").Return(room, nil)
 
 	w := httptest.NewRecorder()
