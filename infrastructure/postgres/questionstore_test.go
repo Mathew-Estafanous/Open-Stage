@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestMySQLQuestionStore_GetById(t *testing.T) {
+func TestPostgresQuestionStore_GetById(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -33,7 +33,7 @@ func TestMySQLQuestionStore_GetById(t *testing.T) {
 	assert.EqualValues(t, mQuestion, q)
 }
 
-func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
+func TestPostgresQuestionStore_GetAllInRoom(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -64,7 +64,7 @@ func TestMySQLQuestionStore_GetAllForRoom(t *testing.T) {
 	assert.EqualValues(t, qs, result)
 }
 
-func TestMySQLQuestionStore_UpdateLikeTotal(t *testing.T) {
+func TestPostgresQuestionStore_UpdateLikeTotal(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("there was an unexpected error when mocking the database.")
@@ -78,7 +78,7 @@ func TestMySQLQuestionStore_UpdateLikeTotal(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-func TestMySQLQuestionStore_Create(t *testing.T) {
+func TestPostgresQuestionStore_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -98,7 +98,7 @@ func TestMySQLQuestionStore_Create(t *testing.T) {
 	assert.Equal(t, 1, mQuestion.QuestionId)
 }
 
-func TestMySQLQuestionStore_Delete(t *testing.T) {
+func TestPostgresQuestionStore_Delete(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")

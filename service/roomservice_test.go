@@ -13,7 +13,7 @@ func TestRoomService_FindRoom(t *testing.T) {
 	rs := NewRoomService(store)
 
 	expectedRoom := domain.Room{
-		RoomId: 1, RoomCode: "room1", Host: "Mathew",
+		RoomCode: "room1", Host: "Mathew",
 	}
 	store.On("GetByRoomCode", "room1").Return(expectedRoom, nil)
 	room, err := rs.FindRoom("room1")

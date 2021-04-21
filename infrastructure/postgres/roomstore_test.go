@@ -7,20 +7,20 @@ import (
 	"testing"
 )
 
-func TestMySQLRoomStore_GetByRoomCode(t *testing.T) {
+func TestPostgresRoomStore_GetByRoomCode(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
 	}
 
 	mockRoom := domain.Room{
-		RoomId: 1, RoomCode: "wantedCode", Host: "Mathew",
+		RoomCode: "wantedCode", Host: "Mathew",
 	}
 
-	row := sqlmock.NewRows([]string{"room_id", "host", "room_code"}).
-		AddRow(mockRoom.RoomId, mockRoom.Host, mockRoom.RoomCode)
+	row := sqlmock.NewRows([]string{"host", "room_code"}).
+		AddRow(mockRoom.Host, mockRoom.RoomCode)
 
-	query := "SELECT room_id, host, room_code FROM rooms WHERE room_code = ?"
+	query := "SELECT host, room_code FROM rooms WHERE room_code = ?"
 	mock.ExpectQuery(query).WithArgs("wantedCode").WillReturnRows(row)
 
 	m := NewRoomStore(db)
@@ -30,7 +30,7 @@ func TestMySQLRoomStore_GetByRoomCode(t *testing.T) {
 	assert.EqualValues(t, mockRoom, room)
 }
 
-func TestMySQLRoomStore_Create(t *testing.T) {
+func TestPostgresRoomStore_Create(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
@@ -48,10 +48,9 @@ func TestMySQLRoomStore_Create(t *testing.T) {
 	m := NewRoomStore(db)
 	err = m.Create(room)
 	assert.NoError(t, err)
-	assert.Equal(t, 1, room.RoomId)
 }
 
-func TestMySQLRoomStore_Delete(t *testing.T) {
+func TestPostgresRoomStore_Delete(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")

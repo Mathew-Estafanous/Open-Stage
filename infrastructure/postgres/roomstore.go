@@ -17,10 +17,10 @@ func NewRoomStore(db *sql.DB) domain.RoomStore {
 }
 
 func (p *postgresRoomStore) GetByRoomCode(code string) (domain.Room, error) {
-	row := p.db.QueryRow("SELECT room_id, host, room_code FROM rooms WHERE room_code = $1", code)
+	row := p.db.QueryRow("SELECT host, room_code FROM rooms WHERE room_code = $1", code)
 
 	var room domain.Room
-	err := row.Scan(&room.RoomId, &room.Host, &room.RoomCode)
+	err := row.Scan(&room.Host, &room.RoomCode)
 	if err != nil {
 		return domain.Room{}, err
 	}
@@ -28,13 +28,11 @@ func (p *postgresRoomStore) GetByRoomCode(code string) (domain.Room, error) {
 }
 
 func (p *postgresRoomStore) Create(room *domain.Room) error {
-	r, err := p.db.Exec("INSERT INTO rooms (host, room_code) VALUES ($1, $2)",
+	_, err := p.db.Exec("INSERT INTO rooms (host, room_code) VALUES ($1, $2)",
 		room.Host, room.RoomCode)
 	if err != nil {
 		return err
 	}
-	id, _ := r.LastInsertId()
-	room.RoomId = int(id)
 	return nil
 }
 
