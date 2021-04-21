@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
@@ -11,18 +12,15 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 const port string = ":8080"
 
 func main() {
 	db := connectToDB()
-	defer func() {
-		err := db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
 
 	rStore := postgres.NewRoomStore(db)
 	rService := service.NewRoomService(rStore)
@@ -32,22 +30,47 @@ func main() {
 	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
-	r := mux.NewRouter()
+	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
 	roomHandler.Route(r)
 	questionHandler.Route(r)
 
 	log.Printf("Open-Stage starting on port %v", port)
-	log.Fatal(http.ListenAndServe(port, r))
+	server := configureServer(r)
+
+	go func() {
+		c := make(chan os.Signal)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGTERM)
+		<-c
+
+		log.Println("Shutting down server..")
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+		defer cancel()
+
+		if err := db.Close(); err != nil {
+			log.Fatal(err)
+		}
+		log.Println("Database connection closed.")
+
+		if err := server.Shutdown(ctx); err != nil {
+			log.Fatalf("Error during server shutdown: %+v", err)
+		}
+		log.Println("Server successfully shutdown.")
+	}()
+
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Server started")
 }
 
 func connectToDB() *sql.DB {
-	dbPort := os.Getenv("DATABASE_PORT")
-	dbName := os.Getenv("DATABASE_NAME")
-	dbAddress := os.Getenv("DATABASE_ADDRESS")
+	port := os.Getenv("DATABASE_PORT")
+	name := os.Getenv("DATABASE_NAME")
+	address := os.Getenv("DATABASE_ADDRESS")
 	user := os.Getenv("DATABASE_USERNAME")
 	pass := os.Getenv("DATABASE_PASSWORD")
 
-	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", dbAddress, dbPort, user, pass, dbName)
+	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", address, port, user, pass, name)
 	log.Println(dsn)
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
@@ -58,4 +81,13 @@ func connectToDB() *sql.DB {
 		log.Fatalf("Could not make a connection with the database.\n%v", err)
 	}
 	return db
+}
+
+func configureServer(r http.Handler) *http.Server {
+	return &http.Server{
+		Addr: port,
+		Handler: r,
+		ReadTimeout:  time.Second * 20,
+		WriteTimeout: time.Second * 20,
+	}
 }
