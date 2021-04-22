@@ -60,7 +60,6 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Server started")
 }
 
 func connectToDB() *sql.DB {
@@ -87,7 +86,7 @@ func configureServer(r http.Handler) *http.Server {
 	return &http.Server{
 		Addr: port,
 		Handler: r,
-		ReadTimeout:  time.Second * 20,
-		WriteTimeout: time.Second * 20,
+		ReadTimeout:  time.Second * 25,
+		WriteTimeout: time.Second * 25,
 	}
 }
