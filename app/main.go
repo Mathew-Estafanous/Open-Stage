@@ -12,12 +12,9 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 )
-
-const port string = ":8080"
 
 func main() {
 	db := connectToDB()
@@ -34,8 +31,9 @@ func main() {
 	roomHandler.Route(r)
 	questionHandler.Route(r)
 
+	port := PortByProfile()
 	log.Printf("Open-Stage starting on port %v", port)
-	server := configureServer(r)
+	server := configureServer(r, port)
 
 	go func() {
 		c := make(chan os.Signal)
@@ -43,7 +41,7 @@ func main() {
 		<-c
 
 		log.Println("Shutting down server..")
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second * 5)
+		ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 		defer cancel()
 
 		if err := db.Close(); err != nil {
@@ -63,12 +61,7 @@ func main() {
 }
 
 func connectToDB() *sql.DB {
-	dbUrl := os.Getenv("DATABASE_URL")
-	sslDisabled := os.Getenv("SSL_DISABLED")
-	if strings.ToLower(sslDisabled) == "true" {
-		dbUrl += "?sslmode=disable"
-	}
-
+	dbUrl := DbUrlByProfile()
 	db, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -80,11 +73,11 @@ func connectToDB() *sql.DB {
 	return db
 }
 
-func configureServer(r http.Handler) *http.Server {
+func configureServer(r http.Handler, port string) *http.Server {
 	return &http.Server{
 		Addr: port,
 		Handler: r,
-		ReadTimeout:  time.Second * 25,
-		WriteTimeout: time.Second * 25,
+		ReadTimeout:  25 * time.Second,
+		WriteTimeout: 25 * time.Second,
 	}
 }
