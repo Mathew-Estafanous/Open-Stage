@@ -21,8 +21,8 @@ The following is an image of the database schema that is used for the web app.
 The project is still under development and is continually changing so here are a few things underworks
 - [X] Moving from MySQL to PostgreSQL.
 - [X] Refactor the database schema to a better format.
+- [X] Host the API on Heroku.
 - [ ] Create REST endpoint documentation for the API
-- [ ] Host the API on a cloud platform (AWS or Heroku)
 
 ## Contact
 **Mathew Estafanous -** mathewestafanous13@gmail.com
