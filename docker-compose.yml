@@ -26,10 +26,8 @@ services:
       context: .
     container_name: Open-Stage
     environment:
-      DATABASE_PORT: '5432'
-      DATABASE_NAME: 'qa_platform'
-      DATABASE_USERNAME: 'admin'
-      DATABASE_PASSWORD: 'qa-password'
+      DATABASE_URL: 'postgres://admin:qa-password@127.0.0.1:5432/qa_platform'
+      SSL_DISABLED: true
       DATABASE_ADDRESS: db
     depends_on:
       db:

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
@@ -13,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -63,15 +63,13 @@ func main() {
 }
 
 func connectToDB() *sql.DB {
-	port := os.Getenv("DATABASE_PORT")
-	name := os.Getenv("DATABASE_NAME")
-	address := os.Getenv("DATABASE_ADDRESS")
-	user := os.Getenv("DATABASE_USERNAME")
-	pass := os.Getenv("DATABASE_PASSWORD")
+	dbUrl := os.Getenv("DATABASE_URL")
+	sslDisabled := os.Getenv("SSL_DISABLED")
+	if strings.ToLower(sslDisabled) == "true" {
+		dbUrl += "?sslmode=disable"
+	}
 
-	dsn := fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable", address, port, user, pass, name)
-	log.Println(dsn)
-	db, err := sql.Open("postgres", dsn)
+	db, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
