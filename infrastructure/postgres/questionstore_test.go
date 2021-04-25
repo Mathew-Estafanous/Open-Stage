@@ -1,9 +1,9 @@
 package postgres
 
 import (
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"testing"
 )
 
@@ -79,7 +79,7 @@ func TestPostgresQuestionStore_UpdateLikeTotal(t *testing.T) {
 }
 
 func TestPostgresQuestionStore_Create(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	db, mock, err := sqlmock.New(sqlmock.QueryMatcherOption(sqlmock.QueryMatcherEqual))
 	if err != nil {
 		t.Fatal("There was an unexpected error when mocking the database.")
 	}
@@ -88,9 +88,12 @@ func TestPostgresQuestionStore_Create(t *testing.T) {
 		Question: "How you doing?", QuestionerName: "Mathew", AssociatedRoom: "room1",
 	}
 
-	mock.ExpectExec("INSERT INTO questions").
+	insertQuery := `INSERT INTO questions (question, questioner_name, fk_room_code) 
+						VALUES ($1, $2, $3) 
+						RETURNING question_id`
+	mock.ExpectQuery(insertQuery).
 		WithArgs(&mQuestion.Question, &mQuestion.QuestionerName, &mQuestion.AssociatedRoom).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WillReturnRows(sqlmock.NewRows([]string{"question_id"}).AddRow(1))
 
 	qStore := NewQuestionStore(db)
 	err = qStore.Create(&mQuestion)
