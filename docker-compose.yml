@@ -26,9 +26,9 @@ services:
       context: .
     container_name: Open-Stage
     environment:
-      DATABASE_URL: 'postgres://admin:qa-password@127.0.0.1:5432/qa_platform'
-      SSL_DISABLED: true
-      DATABASE_ADDRESS: db
+      DATABASE_URL: 'postgres://admin:qa-password@[address]:5432/qa_platform'
+      PROFILE: 'ctr'
+      CONTAINER_ADDRESS: db
     depends_on:
       db:
         condition: service_healthy

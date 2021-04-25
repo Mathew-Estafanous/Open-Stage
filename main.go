@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -31,7 +32,7 @@ func main() {
 	roomHandler.Route(r)
 	questionHandler.Route(r)
 
-	port := PortByProfile()
+	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)
 	server := configureServer(r, port)
 
@@ -61,7 +62,7 @@ func main() {
 }
 
 func connectToDB() *sql.DB {
-	dbUrl := DbUrlByProfile()
+	dbUrl := dbUrlByProfile()
 	db, err := sql.Open("postgres", dbUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -80,4 +81,31 @@ func configureServer(r http.Handler, port string) *http.Server {
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}
+}
+
+func portByProfile() string {
+	//If 'prod' profile, then use the assigned PORT env.
+	if os.Getenv("PROFILE") == "prod" {
+		return ":" + os.Getenv("PORT")
+	}
+	//Not 'prod', so use default 8080 port.
+	return ":8080"
+}
+
+func dbUrlByProfile() string {
+	dbUrl := os.Getenv("DATABASE_URL")
+	//If the 'prod' profile, return the given database_url
+	if os.Getenv("PROFILE") == "prod" {
+		return dbUrl
+	}
+
+	//Not a prod, so SSL is not required and cane be disabled.
+	dbUrl += "?sslmode=disable"
+	//Check if profile is a container. If so, replace address with container address.
+	if os.Getenv("PROFILE") == "ctr" {
+		ctrAddr := os.Getenv("CONTAINER_ADDRESS")
+		return strings.Replace(dbUrl, "[address]", ctrAddr, 1)
+	}
+	//If profile isn't any of the above, assume 'dev' and return altered dbUrl.
+	return dbUrl
 }

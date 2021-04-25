@@ -1,9 +1,9 @@
 package postgres
 
 import (
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"testing"
 )
 

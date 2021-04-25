@@ -65,16 +65,16 @@ func (p *postgresQuestionStore) UpdateLikeTotal(id int, total int) error {
 }
 
 func (p *postgresQuestionStore) Create(q *domain.Question) error {
-	r, err := p.db.Exec("INSERT INTO questions (question, questioner_name, fk_room_code) VALUES ($1, $2, $3)",
+	r, err := p.db.Query("INSERT INTO questions (question, questioner_name, fk_room_code) VALUES ($1, $2, $3) RETURNING question_id",
 		q.Question, q.QuestionerName, q.AssociatedRoom)
 	if err != nil {
 		return err
 	}
-	id, err := r.LastInsertId()
+	r.Next()
+	err = r.Scan(&q.QuestionId)
 	if err != nil {
 		return err
 	}
-	q.QuestionId = int(id)
 	return nil
 }
 
