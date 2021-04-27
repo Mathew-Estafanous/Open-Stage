@@ -6,7 +6,6 @@ import (
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
-	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"log"
@@ -17,17 +16,6 @@ import (
 	"syscall"
 	"time"
 )
-
-// @title Open-Stage API
-// @version 1.0
-// @description The api involved with managing Open-Stage, a live Q&A platform.
-//
-// @license.name MIT License
-// @license https://opensource.org/licenses/MIT
-//
-// @host open-stage-platform.herokuapp.com
-// @BasePath /v1
-// @schemes http https
 
 func main() {
 	db := connectToDB()
@@ -40,16 +28,13 @@ func main() {
 	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
-	router := mux.NewRouter()
-	configureDocsRoute(router)
-
-	apiRouter := router.PathPrefix("/v1").Subrouter()
-	roomHandler.Route(apiRouter)
-	questionHandler.Route(apiRouter)
+	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
+	roomHandler.Route(r)
+	questionHandler.Route(r)
 
 	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)
-	server := configureServer(router, port)
+	server := configureServer(r, port)
 
 	go func() {
 		c := make(chan os.Signal)
@@ -74,13 +59,6 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func configureDocsRoute(router *mux.Router) {
-	opts := middleware.RedocOpts{SpecURL: "/docs/swagger.yaml"}
-	doc := middleware.Redoc(opts, nil)
-	router.Handle("/docs", doc)
-	router.Handle("/docs/swagger.yaml", http.FileServer(http.Dir("./")))
 }
 
 func connectToDB() *sql.DB {
