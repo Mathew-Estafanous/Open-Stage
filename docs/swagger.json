@@ -1,0 +1,19 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "The api involved with managing Open-Stage, a live Q\u0026A platform.",
+        "title": "Open-Stage API",
+        "contact": {},
+        "license": {
+            "name": "MIT License"
+        },
+        "version": "1.0"
+    },
+    "host": "open-stage-platform.herokuapp.com",
+    "basePath": "/v1",
+    "paths": {}
+}

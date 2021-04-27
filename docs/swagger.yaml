@@ -1,0 +1,14 @@
+basePath: /v1
+host: open-stage-platform.herokuapp.com
+info:
+  contact: {}
+  description: The api involved with managing Open-Stage, a live Q&A platform.
+  license:
+    name: MIT License
+  title: Open-Stage API
+  version: "1.0"
+paths: {}
+schemes:
+- http
+- https
+swagger: "2.0"
