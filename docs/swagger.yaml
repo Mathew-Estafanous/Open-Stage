@@ -1,0 +1,13 @@
+basePath: /v1/
+consumes:
+- application/json
+info:
+  description: Documentation for Open-Stage API
+  title: of Open-Stage API
+  version: "1.0"
+paths: {}
+produces:
+- application/json
+schemes:
+- http https
+swagger: "2.0"

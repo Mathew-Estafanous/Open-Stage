@@ -6,6 +6,7 @@ import (
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
+	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"log"
@@ -28,13 +29,16 @@ func main() {
 	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
-	r := mux.NewRouter().PathPrefix("/v1").Subrouter()
-	roomHandler.Route(r)
-	questionHandler.Route(r)
+	router := mux.NewRouter()
+	configureDocsRoute(router)
+
+	apiRouter := router.PathPrefix("/v1").Subrouter()
+	roomHandler.Route(apiRouter)
+	questionHandler.Route(apiRouter)
 
 	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)
-	server := configureServer(r, port)
+	server := configureServer(router, port)
 
 	go func() {
 		c := make(chan os.Signal)
@@ -72,6 +76,16 @@ func connectToDB() *sql.DB {
 		log.Fatalf("Could not make a connection with the database.\n%v", err)
 	}
 	return db
+}
+
+func configureDocsRoute(router *mux.Router) {
+	opts := middleware.RedocOpts{
+		SpecURL: "/docs/swagger.yaml",
+		Title: "Open-Stage API Docs",
+	}
+	doc := middleware.Redoc(opts, nil)
+	router.Handle("/docs", doc)
+	router.Handle("/docs/swagger.yaml", http.FileServer(http.Dir("./")))
 }
 
 func configureServer(r http.Handler, port string) *http.Server {
