@@ -10,13 +10,12 @@ type Question struct {
 	// The id for each question
 	//
 	// example: 3452
-	QuestionId     int    `json:"question_id"`
+	QuestionId int `json:"question_id"`
 
 	// The question that was asked.
 	//
-	// required: true
 	// example: What is 2 + 2?
-	Question       string `json:"question"`
+	Question string `json:"question"`
 
 	// Name of the questioner.
 	//
@@ -27,11 +26,10 @@ type Question struct {
 	//
 	// min: 0
 	// example: 2
-	TotalLikes     int    `json:"total_likes"`
+	TotalLikes int `json:"total_likes"`
 
 	// The room that the question was asked in.
 	//
-	// required: true
 	// example: conference20
 	AssociatedRoom string `json:"associated_room"`
 }

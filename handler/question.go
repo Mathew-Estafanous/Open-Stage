@@ -21,7 +21,7 @@ type UpdateLike struct {
 	//
 	// required: true
 	// example: 3452
-	Id         int `json:"question_id"`
+	Id int `json:"question_id"`
 
 	// New total likes for question
 	//
