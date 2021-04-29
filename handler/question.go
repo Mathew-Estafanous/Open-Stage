@@ -13,8 +13,21 @@ type questionHandler struct {
 	qs domain.QuestionService
 }
 
-type updateLike struct {
+// UpdateLike represents the question's new like total.
+//
+// swagger:model updateLikes
+type UpdateLike struct {
+	// The ID of the question
+	//
+	// required: true
+	// example: 3452
 	Id         int `json:"question_id"`
+
+	// New total likes for question
+	//
+	// required: true
+	// min: 0
+	// example: 2
 	TotalLikes int `json:"total_likes"`
 }
 
@@ -57,8 +70,19 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 	q.respond(w, http.StatusCreated, question)
 }
 
+// swagger:route PUT /questions Questions updateLikes
+//
+// Update question's total number of likes.
+//
+// Updates the total # of likes for the question with the matching question_id
+//
+// Responses:
+//  200: questionResponse
+//  404: errorResponse
+//  400: errorResponse
+//  500: errorResponse
 func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request) {
-	var body updateLike
+	var body UpdateLike
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		q.error(w, err)

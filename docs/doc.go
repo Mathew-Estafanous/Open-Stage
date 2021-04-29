@@ -20,11 +20,14 @@
 // swagger:meta
 package docs
 
-import "github.com/Mathew-Estafanous/Open-Stage/domain"
+import (
+	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/handler"
+)
 
 // A question that has been posted within a room.
 // swagger:response questionResponse
-type questionWrapper struct {
+type questionResponse struct {
 	// in: body
 	Body domain.Question
 }
@@ -34,4 +37,10 @@ type questionWrapper struct {
 type errorResponse struct {
 	// in: body
 	Body domain.ResponseError
+}
+
+// swagger:parameters updateLikes
+type updateLikesReq struct {
+	// in: body
+	Body handler.UpdateLike
 }
