@@ -29,6 +29,17 @@ func (q questionHandler) Route(r *mux.Router) {
 	r.HandleFunc("/questions/{questionId}", q.deleteQuestion).Methods("DELETE")
 }
 
+// swagger:route POST /questions Questions createQuestion
+//
+// Create new question in associated room.
+//
+// Uploads a new question to the room. The questioner's name is optional
+// and will be left as "Anonymous" by default.
+//
+// Responses:
+//   201: questionResponse
+//   400: errorResponse
+//   500: errorResponse
 func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
 	var question domain.Question
 	err := json.NewDecoder(r.Body).Decode(&question)

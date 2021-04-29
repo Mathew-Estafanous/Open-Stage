@@ -1,13 +1,86 @@
 basePath: /v1/
 consumes:
 - application/json
+definitions:
+  Question:
+    properties:
+      associated_room:
+        type: string
+        x-go-name: AssociatedRoom
+      question:
+        type: string
+        x-go-name: Question
+      question_id:
+        format: int64
+        type: integer
+        x-go-name: QuestionId
+      questioner_name:
+        type: string
+        x-go-name: QuestionerName
+      total_likes:
+        format: int64
+        type: integer
+        x-go-name: TotalLikes
+    type: object
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  ResponseError:
+    properties:
+      message:
+        type: string
+        x-go-name: Msg
+      status:
+        format: int64
+        type: integer
+        x-go-name: Sts
+      timestamp:
+        format: date-time
+        type: string
+        x-go-name: TimeStamp
+    type: object
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+host: open-stage-platform.herokuapp.com
 info:
-  description: Documentation for Open-Stage API
-  title: of Open-Stage API
+  contact:
+    email: mathewestafanous13@gmail.com
+    name: Mathew Estafanous
+    url: https://mathewestafanous.com/
+  description: |-
+    The Open-Stage API is a REST service and is the platform for the
+    live Q&A platform open stage. Allowing for the creation of rooms and
+    associated questions within those rooms.
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  title: Documentation for Open-Stage API
   version: "1.0"
-paths: {}
+paths:
+  /questions:
+    post:
+      description: |-
+        Uploads a new question to the room. The questioner's name is optional
+        and will be left as "Anonymous" by default.
+      operationId: createQuestion
+      responses:
+        "201":
+          $ref: '#/responses/questionResponse'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Create new question in associated room.
+      tags:
+      - Questions
 produces:
 - application/json
+responses:
+  errorResponse:
+    description: An http error response.
+    schema:
+      $ref: '#/definitions/ResponseError'
+  questionResponse:
+    description: A question that has been posted within a room.
+    schema:
+      $ref: '#/definitions/Question'
 schemes:
 - http https
 swagger: "2.0"
