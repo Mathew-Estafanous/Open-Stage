@@ -8,11 +8,6 @@ import (
 	"strconv"
 )
 
-type questionHandler struct {
-	baseHandler
-	qs domain.QuestionService
-}
-
 // UpdateLike represents the question's new like total.
 //
 // swagger:model updateLikes
@@ -31,6 +26,34 @@ type UpdateLike struct {
 	TotalLikes int `json:"total_likes"`
 }
 
+// NewQuestion represents the request body of new questions.
+//
+// swagger:model newQuestion
+type NewQuestion struct {
+	// The question that was asked.
+	//
+	// required: true
+	// example: Do you like this API?
+	Question string `json:"question"`
+
+	// The room the question was asked in.
+	//
+	// required: true
+	// example: conference20
+	Room string `json:"associated_room"`
+
+	// Name of the questioner.
+	//
+	// default: Anonymous
+	// example: Mathew
+	Questioner string `json:"questioner_name"`
+}
+
+type questionHandler struct {
+	baseHandler
+	qs domain.QuestionService
+}
+
 func NewQuestionHandler(qService domain.QuestionService) *questionHandler {
 	return &questionHandler{qs: qService}
 }
@@ -44,24 +67,30 @@ func (q questionHandler) Route(r *mux.Router) {
 
 // swagger:route POST /questions Questions createQuestion
 //
-// Create new question in associated room.
+// Create new question in room.
 //
 // Uploads a new question to the room. The questioner's name is optional
 // and will be left as "Anonymous" by default.
 //
 // Responses:
-//   201: questionResponse
-//   400: errorResponse
-//   500: errorResponse
+//  201: questionResponse
+//  400: errorResponse
+//  500: errorResponse
 func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
-	var question domain.Question
-	err := json.NewDecoder(r.Body).Decode(&question)
+	var body *NewQuestion
+	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		q.error(w, err)
 		return
 	}
 
-	err = q.qs.Create(&question)
+	question := &domain.Question{
+		Question: body.Question,
+		QuestionerName: body.Questioner,
+		AssociatedRoom: body.Room,
+	}
+
+	err = q.qs.Create(question)
 	if err != nil {
 		q.error(w, err)
 		return
@@ -77,7 +106,7 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 // Updates the total # of likes for the question with the matching question_id
 //
 // Responses:
-//  200: questionResponse
+//  200: description: OK - Question's like total has been updated.
 //  404: errorResponse
 //  400: errorResponse
 //  500: errorResponse
@@ -96,6 +125,16 @@ func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// swagger:route GET /questions/{roomCode} Questions roomCode
+//
+// Get all questions in a room.
+//
+// Uses the given room code and retrieves all questions that have been posted.
+//
+// Responses:
+//  200: multiQuestionResponse
+//  404: errorResponse
+//  500: errorResponse
 func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Request) {
 	code := mux.Vars(r)["roomCode"]
 
@@ -108,6 +147,15 @@ func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Re
 	q.respond(w, http.StatusOK, questions)
 }
 
+// swagger:route DELETE /questions/{questionId} Questions questionId
+//
+// Delete a question by ID
+//
+// Uses the given question ID to delete the question with that ID.
+//
+// Responses:
+//  200: description: OK - Question has been properly deleted.
+//  500: errorResponse
 func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["questionId"]
 

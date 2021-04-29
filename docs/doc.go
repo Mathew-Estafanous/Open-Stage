@@ -4,7 +4,7 @@
 // live Q&A platform open stage. Allowing for the creation of rooms and
 // associated questions within those rooms.
 //
-// Schemes: http https
+// Schemes: https
 // BasePath: /v1/
 // Host: open-stage-platform.herokuapp.com
 // Version: 1.0
@@ -32,6 +32,13 @@ type questionResponse struct {
 	Body domain.Question
 }
 
+// A list of questions posted within a room.
+// swagger:response multiQuestionResponse
+type multiQuestionResponse struct {
+	// in: body
+	Body []domain.Question
+}
+
 // An http error response.
 // swagger:response errorResponse
 type errorResponse struct {
@@ -40,7 +47,27 @@ type errorResponse struct {
 }
 
 // swagger:parameters updateLikes
-type updateLikesReq struct {
+type updateLikesBody struct {
 	// in: body
 	Body handler.UpdateLike
+}
+
+// swagger:parameters createQuestion
+type createQuestionBody struct {
+	// in: body
+	Body handler.NewQuestion
+}
+
+// swagger:parameters roomCode
+type roomCodePath struct {
+	// The room code that all questions will be retrieved from.
+	// in: path
+	Code string `json:"roomCode"`
+}
+
+// swagger:parameters questionId
+type questionIdPath struct {
+	// The question's ID
+	// in: path
+	ID string `json:"question_id"`
 }

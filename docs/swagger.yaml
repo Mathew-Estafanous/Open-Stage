@@ -17,6 +17,31 @@ definitions:
         x-go-name: TimeStamp
     type: object
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  newQuestion:
+    properties:
+      associated_room:
+        description: The room the question was asked in.
+        example: conference20
+        type: string
+        x-go-name: Room
+      question:
+        description: The question that was asked.
+        example: Do you like this API?
+        type: string
+        x-go-name: Question
+      questioner_name:
+        default: Anonymous
+        description: Name of the questioner.
+        example: Mathew
+        type: string
+        x-go-name: Questioner
+    required:
+    - question
+    - associated_room
+    title: NewQuestion represents the request body of new questions.
+    type: object
+    x-go-name: NewQuestion
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
   question:
     description: |-
       Every question is given an associated room that the question has been
@@ -50,9 +75,6 @@ definitions:
         minimum: 0
         type: integer
         x-go-name: TotalLikes
-    required:
-    - question
-    - associated_room
     title: Question represents every question asked within a room.
     type: object
     x-go-name: Question
@@ -101,6 +123,11 @@ paths:
         Uploads a new question to the room. The questioner's name is optional
         and will be left as "Anonymous" by default.
       operationId: createQuestion
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/newQuestion'
       responses:
         "201":
           $ref: '#/responses/questionResponse'
@@ -108,7 +135,7 @@ paths:
           $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
-      summary: Create new question in associated room.
+      summary: Create new question in room.
       tags:
       - Questions
     put:
@@ -122,7 +149,7 @@ paths:
           $ref: '#/definitions/updateLikes'
       responses:
         "200":
-          $ref: '#/responses/questionResponse'
+          description: ' OK - Question''s like total has been updated.'
         "400":
           $ref: '#/responses/errorResponse'
         "404":
@@ -132,6 +159,47 @@ paths:
       summary: Update question's total number of likes.
       tags:
       - Questions
+  /questions/{questionId}:
+    delete:
+      description: Uses the given question ID to delete the question with that ID.
+      operationId: questionId
+      parameters:
+      - description: The question's ID
+        in: path
+        name: question_id
+        required: true
+        type: string
+        x-go-name: ID
+      responses:
+        "200":
+          description: ' OK - Question has been properly deleted.'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Delete a question by ID
+      tags:
+      - Questions
+  /questions/{roomCode}:
+    get:
+      description: Uses the given room code and retrieves all questions that have
+        been posted.
+      operationId: roomCode
+      parameters:
+      - description: The room code that all questions will be retrieved from.
+        in: path
+        name: roomCode
+        required: true
+        type: string
+        x-go-name: Code
+      responses:
+        "200":
+          $ref: '#/responses/multiQuestionResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Get all questions in a room.
+      tags:
+      - Questions
 produces:
 - application/json
 responses:
@@ -139,10 +207,16 @@ responses:
     description: An http error response.
     schema:
       $ref: '#/definitions/ResponseError'
+  multiQuestionResponse:
+    description: A list of questions posted within a room.
+    schema:
+      items:
+        $ref: '#/definitions/question'
+      type: array
   questionResponse:
     description: A question that has been posted within a room.
     schema:
       $ref: '#/definitions/question'
 schemes:
-- http https
+- https
 swagger: "2.0"
