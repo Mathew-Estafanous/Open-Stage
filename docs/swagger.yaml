@@ -1,13 +1,222 @@
 basePath: /v1/
 consumes:
 - application/json
+definitions:
+  ResponseError:
+    properties:
+      message:
+        type: string
+        x-go-name: Msg
+      status:
+        format: int64
+        type: integer
+        x-go-name: Sts
+      timestamp:
+        format: date-time
+        type: string
+        x-go-name: TimeStamp
+    type: object
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  newQuestion:
+    properties:
+      associated_room:
+        description: The room the question was asked in.
+        example: conference20
+        type: string
+        x-go-name: Room
+      question:
+        description: The question that was asked.
+        example: Do you like this API?
+        type: string
+        x-go-name: Question
+      questioner_name:
+        default: Anonymous
+        description: Name of the questioner.
+        example: Mathew
+        type: string
+        x-go-name: Questioner
+    required:
+    - question
+    - associated_room
+    title: NewQuestion represents the request body of new questions.
+    type: object
+    x-go-name: NewQuestion
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+  question:
+    description: |-
+      Every question is given an associated room that the question has been
+      asked.
+    properties:
+      associated_room:
+        description: The room that the question was asked in.
+        example: conference20
+        type: string
+        x-go-name: AssociatedRoom
+      question:
+        description: The question that was asked.
+        example: What is 2 + 2?
+        type: string
+        x-go-name: Question
+      question_id:
+        description: The id for each question
+        example: 3452
+        format: int64
+        type: integer
+        x-go-name: QuestionId
+      questioner_name:
+        description: Name of the questioner.
+        example: Anonymous
+        type: string
+        x-go-name: QuestionerName
+      total_likes:
+        description: 'The total # of likes for that question.'
+        example: 2
+        format: int64
+        minimum: 0
+        type: integer
+        x-go-name: TotalLikes
+    title: Question represents every question asked within a room.
+    type: object
+    x-go-name: Question
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  updateLikes:
+    properties:
+      question_id:
+        description: The ID of the question
+        example: 3452
+        format: int64
+        type: integer
+        x-go-name: Id
+      total_likes:
+        description: New total likes for question
+        example: 2
+        format: int64
+        minimum: 0
+        type: integer
+        x-go-name: TotalLikes
+    required:
+    - question_id
+    - total_likes
+    title: UpdateLike represents the question's new like total.
+    type: object
+    x-go-name: UpdateLike
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+host: open-stage-platform.herokuapp.com
 info:
-  description: Documentation for Open-Stage API
-  title: of Open-Stage API
+  contact:
+    email: mathewestafanous13@gmail.com
+    name: Mathew Estafanous
+    url: https://mathewestafanous.com/
+  description: |-
+    The Open-Stage API is a REST service and is the platform for the
+    live Q&A platform open stage. Allowing for the creation of rooms and
+    associated questions within those rooms.
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  title: Documentation for Open-Stage API
   version: "1.0"
-paths: {}
+paths:
+  /questions:
+    post:
+      description: |-
+        Uploads a new question to the room. The questioner's name is optional
+        and will be left as "Anonymous" by default.
+      operationId: createQuestion
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/newQuestion'
+      responses:
+        "201":
+          $ref: '#/responses/questionResponse'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Create new question in room.
+      tags:
+      - Questions
+    put:
+      description: 'Updates the total # of likes for the question with the matching
+        question_id'
+      operationId: updateLikes
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/updateLikes'
+      responses:
+        "200":
+          description: ' OK - Question''s like total has been updated.'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Update question's total number of likes.
+      tags:
+      - Questions
+  /questions/{questionId}:
+    delete:
+      description: Uses the given question ID to delete the question with that ID.
+      operationId: questionId
+      parameters:
+      - description: The question's ID
+        in: path
+        name: question_id
+        required: true
+        type: string
+        x-go-name: ID
+      responses:
+        "200":
+          description: ' OK - Question has been properly deleted.'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Delete a question by ID
+      tags:
+      - Questions
+  /questions/{roomCode}:
+    get:
+      description: Uses the given room code and retrieves all questions that have
+        been posted.
+      operationId: roomCode
+      parameters:
+      - description: The room code that all questions will be retrieved from.
+        in: path
+        name: roomCode
+        required: true
+        type: string
+        x-go-name: Code
+      responses:
+        "200":
+          $ref: '#/responses/multiQuestionResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Get all questions in a room.
+      tags:
+      - Questions
 produces:
 - application/json
+responses:
+  errorResponse:
+    description: An http error response.
+    schema:
+      $ref: '#/definitions/ResponseError'
+  multiQuestionResponse:
+    description: A list of questions posted within a room.
+    schema:
+      items:
+        $ref: '#/definitions/question'
+      type: array
+  questionResponse:
+    description: A question that has been posted within a room.
+    schema:
+      $ref: '#/definitions/question'
 schemes:
-- http https
+- https
 swagger: "2.0"

@@ -46,7 +46,7 @@ func main() {
 		<-c
 
 		log.Println("Shutting down server..")
-		ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		if err := db.Close(); err != nil {
@@ -81,7 +81,7 @@ func connectToDB() *sql.DB {
 func configureDocsRoute(router *mux.Router) {
 	opts := middleware.RedocOpts{
 		SpecURL: "/docs/swagger.yaml",
-		Title: "Open-Stage API Docs",
+		Title:   "Open-Stage API Docs",
 	}
 	doc := middleware.Redoc(opts, nil)
 	router.Handle("/docs", doc)
@@ -90,8 +90,8 @@ func configureDocsRoute(router *mux.Router) {
 
 func configureServer(r http.Handler, port string) *http.Server {
 	return &http.Server{
-		Addr: port,
-		Handler: r,
+		Addr:         port,
+		Handler:      r,
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}
