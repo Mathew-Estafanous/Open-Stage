@@ -5,13 +5,16 @@ definitions:
   ResponseError:
     properties:
       message:
+        description: The server error message.
         type: string
         x-go-name: Msg
       status:
+        description: The https status error.
         format: int64
         type: integer
         x-go-name: Sts
       timestamp:
+        description: Time in which the error has occurred.
         format: date-time
         type: string
         x-go-name: TimeStamp
@@ -79,6 +82,28 @@ definitions:
     type: object
     x-go-name: Question
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  room:
+    description: |-
+      Every room contains one main host and a unique room code which
+      then contains questions that pertain to the room and whatever
+      topic is in discussion.
+    properties:
+      host:
+        description: The host of the room.
+        example: Mathew
+        type: string
+        x-go-name: Host
+      room_code:
+        description: Unique ID for the room.
+        example: gopherCon
+        type: string
+        x-go-name: RoomCode
+    required:
+    - host
+    title: Room models every group Q&A session/room.
+    type: object
+    x-go-name: Room
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
   updateLikes:
     properties:
       question_id:
@@ -113,7 +138,7 @@ info:
     associated questions within those rooms.
   license:
     name: MIT
-    url: http://opensource.org/licenses/MIT
+    url: https://opensource.org/licenses/MIT
   title: Documentation for Open-Stage API
   version: "1.0"
 paths:
@@ -200,6 +225,68 @@ paths:
       summary: Get all questions in a room.
       tags:
       - Questions
+  /rooms:
+    post:
+      description: |-
+        Startup a new room with an assigned host. However, the room code is
+        not required and if left empty will be randomly generated. If a code
+        is already in use by another room, a 409 Conflict will occur.
+      operationId: createRoom
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/room'
+      responses:
+        "201":
+          $ref: '#/responses/roomResponse'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "409":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Create a new room.
+      tags:
+      - Rooms
+  /rooms/{code}:
+    delete:
+      operationId: delCode
+      parameters:
+      - description: The unique room code.
+        in: path
+        name: code
+        required: true
+        type: string
+        x-go-name: Code
+      responses:
+        "200":
+          description: ' OK'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Delete a room by code.
+      tags:
+      - Rooms
+    get:
+      description: Simply fetches the room that equals the code that was passed in.
+      operationId: getCode
+      parameters:
+      - description: The unique room code.
+        in: path
+        name: code
+        required: true
+        type: string
+        x-go-name: Code
+      responses:
+        "200":
+          $ref: '#/responses/roomResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Get room by code.
+      tags:
+      - Rooms
 produces:
 - application/json
 responses:
@@ -217,6 +304,10 @@ responses:
     description: A question that has been posted within a room.
     schema:
       $ref: '#/definitions/question'
+  roomResponse:
+    description: The conference room.
+    schema:
+      $ref: '#/definitions/room'
 schemes:
 - https
 swagger: "2.0"

@@ -6,8 +6,11 @@ import (
 )
 
 type ResponseError struct {
-	Msg       string    `json:"message"`
-	Sts       int       `json:"status"`
+	// The server error message.
+	Msg string `json:"message"`
+	// The https status error.
+	Sts int `json:"status"`
+	// Time in which the error has occurred.
 	TimeStamp time.Time `json:"timestamp"`
 }
 
