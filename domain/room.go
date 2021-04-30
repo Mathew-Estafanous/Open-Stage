@@ -1,8 +1,23 @@
 package domain
 
+// Room models every group Q&A session/room.
+//
+// Every room contains one main host and a unique room code which
+// then contains questions that pertain to the room and whatever
+// topic is in discussion.
+//
+// swagger:model room
 type Room struct {
+	// Unique ID for the room.
+	//
+	// example: gopherCon
 	RoomCode string `json:"room_code"`
-	Host     string `json:"host"`
+
+	// The host of the room.
+	//
+	// required: true
+	// example: Mathew
+	Host string `json:"host"`
 }
 
 // RoomStore is an interface that describes the given contract

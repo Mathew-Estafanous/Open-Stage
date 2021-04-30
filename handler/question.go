@@ -85,7 +85,7 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 	}
 
 	question := &domain.Question{
-		Question: body.Question,
+		Question:       body.Question,
 		QuestionerName: body.Questioner,
 		AssociatedRoom: body.Room,
 	}

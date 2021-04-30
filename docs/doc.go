@@ -8,7 +8,7 @@
 // BasePath: /v1/
 // Host: open-stage-platform.herokuapp.com
 // Version: 1.0
-// License: MIT http://opensource.org/licenses/MIT
+// License: MIT https://opensource.org/licenses/MIT
 // Contact: Mathew Estafanous<mathewestafanous13@gmail.com> https://mathewestafanous.com/
 //
 // Consumes:
@@ -39,6 +39,13 @@ type multiQuestionResponse struct {
 	Body []domain.Question
 }
 
+// The conference room.
+// swagger:response roomResponse
+type roomResponse struct {
+	// in: body
+	Body domain.Room
+}
+
 // An http error response.
 // swagger:response errorResponse
 type errorResponse struct {
@@ -58,11 +65,25 @@ type createQuestionBody struct {
 	Body handler.NewQuestion
 }
 
+// swagger:parameters createRoom
+type createRoomBody struct {
+	// in: body
+	Body domain.Room
+}
+
 // swagger:parameters roomCode
 type roomCodePath struct {
 	// The room code that all questions will be retrieved from.
 	// in: path
 	Code string `json:"roomCode"`
+}
+
+// swagger:parameters getCode
+// swagger:parameters delCode
+type codePath struct {
+	// The unique room code.
+	// in: path
+	Code string `json:"code"`
 }
 
 // swagger:parameters questionId
