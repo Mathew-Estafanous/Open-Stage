@@ -1,0 +1,94 @@
+div.wrapper {
+    height: 100%;
+}
+
+div.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+h1.title {
+    margin-left: 10px;
+    font-size: 35px;
+    font-weight: 400;
+}
+
+img.logo {
+    max-width: 70px;
+    max-height: 70px;
+}
+
+img.profile {
+    margin-left: auto;
+    margin-right: 1vw;
+    max-width: 40px;
+    max-height: 40px;
+}
+
+@media(max-width: 950px) {
+    h1.title {
+        font-size: 30px;
+    }
+
+    img.logo {
+        max-width: 55px;
+        max-height: 55px;
+    }
+}
+
+@media(max-width: 550px) {
+    h1.title {
+        font-size: 25px;
+    }
+
+    img.logo {
+        max-width: 45px;
+        max-height: 45px;
+    }
+
+    img.profile {
+        max-width: 35px;
+        max-height: 35px;
+    }
+}
+
+/*
+Styling for Room FORM
+*/
+form {
+    text-align: center;
+    width: 100%;
+    align-items: center;
+}
+
+form h1 {
+    font-size: 40px;
+    font-weight: 400;
+    margin: 0;
+}
+
+form hr {
+    width: 8%;
+    border-style: none;
+    height: 4px;
+    background-color: #eeeeee;
+    border-radius: 25px;
+    margin-bottom: 15px;
+}
+
+form input {
+    border-radius: 50px;
+    width: 350px;
+    height: 40px;
+}
+
+form input:focus {
+    outline: none;
+}
+
+form ::placeholder {
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 15px;
+}

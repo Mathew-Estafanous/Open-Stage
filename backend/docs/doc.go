@@ -21,8 +21,8 @@
 package docs
 
 import (
-	"github.com/Mathew-Estafanous/Open-Stage/domain"
-	"github.com/Mathew-Estafanous/Open-Stage/handler"
+	"github.com/Mathew-Estafanous/Open-Stage/backend/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/backend/handler"
 )
 
 // A question that has been posted within a room.
