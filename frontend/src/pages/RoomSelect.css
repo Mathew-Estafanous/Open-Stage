@@ -57,6 +57,8 @@ img.profile {
 Styling for Room FORM
 */
 form {
+    position: absolute;
+    top: 40%;
     text-align: center;
     width: 100%;
     align-items: center;
@@ -65,7 +67,8 @@ form {
 form h1 {
     font-size: 40px;
     font-weight: 400;
-    margin: 0;
+    margin-top: 0;
+    margin-bottom: 2.5vh;
 }
 
 form hr {
@@ -74,21 +77,44 @@ form hr {
     height: 4px;
     background-color: #eeeeee;
     border-radius: 25px;
-    margin-bottom: 15px;
+    margin-bottom: 3vh;
 }
 
 form input {
+    font-size: 20px;
+    font-weight: 600;
+    padding-left: 40px;
+    color: #232931;
+
     border-radius: 50px;
     width: 350px;
     height: 40px;
+}
+
+form ::placeholder {
+    font-size: 18px;
+    font-weight: 600;
 }
 
 form input:focus {
     outline: none;
 }
 
-form ::placeholder {
-    font-size: 15px;
-    font-weight: 600;
-    padding-left: 15px;
+form div img.hashtag {
+    position: relative;
+    opacity: 40%;
+    top: 7px;
+    left: 35px;
+    max-width: 25px;
+}
+
+form div img.btn {
+    position: relative;
+    top: 11px;
+    right: 40px;
+    max-width: 35px;
+}
+
+form div img.btn:hover {
+    cursor: pointer;
 }
