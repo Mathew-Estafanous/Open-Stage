@@ -31,7 +31,7 @@ At the heart of the API documentations is the swagger yaml files. Majority of th
 [go-swagger](https://github.com/go-swagger/go-swagger) library, in which the majority of this documentation can be found
 in the [docs](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/docs) package.
 
-You can also find the application's database schema as both a [SQL file](https://github.com/Mathew-Estafanous/Open-Stage/blob/main/_sql/schema.sql)
+You can also find the application's database schema as both a [SQL file](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/backend/_sql)
 or take a look at the [schema diagram](https://dbdiagram.io/d/606262f8ecb54e10c33dd900)
 
 # Getting Started
