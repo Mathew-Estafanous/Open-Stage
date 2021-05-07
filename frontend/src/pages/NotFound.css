@@ -1,0 +1,19 @@
+div.notFound {
+    margin-top: 10vw;
+    align-content: center;
+    text-align: center;
+}
+
+div.notFound img {
+    max-width: 250px;
+}
+
+div.notFound h1 {
+    margin: 0;
+    font-size: 50px;
+}
+
+div.notFound h3 {
+    font-size: 25px;
+    font-weight: 300;
+}

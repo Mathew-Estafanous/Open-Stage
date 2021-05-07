@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './RoomSelect.css'
 
 const RoomSelect = () => {
+    const [code, setCode] = useState("");
+
     const joinRoom = () => {
-        console.log("HEYYYY");
+        console.log(code);
     }
 
     return (
@@ -20,7 +22,8 @@ const RoomSelect = () => {
                 <hr/>
                 <div>
                     <img className='hashtag' src="/Hashtag-Symbol.png" alt="hashtag symbol"/>
-                    <input maxLength={20} placeholder='Enter Room Code' />
+                    <input maxLength={20} placeholder='Enter Room Code'
+                           onChange={e => setCode(e.target.value)} />
                     <img className='btn'
                          src="/Select-Arrow.png" alt=""
                          onClick={joinRoom} />
