@@ -25,7 +25,7 @@ and [service](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/service)
 dependencies like the infrastructure and handlers outside the specific business model.
 
 ### Documentation
-**API Docs: https://open-stage-platform.herokuapp.com/docs**
+**API Docs: https://open-stage-api.herokuapp.com/docs**
 
 At the heart of the API documentations is the swagger yaml files. Majority of the documentation was created using the
 [go-swagger](https://github.com/go-swagger/go-swagger) library, in which the majority of this documentation can be found
