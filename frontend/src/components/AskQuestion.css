@@ -1,7 +1,99 @@
+div.askdiv {
+    margin-top: 5vw;
+    display: block;
+    text-align: center;
+}
+
 form.askform {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 650px;
+    padding: 15px 25px;
+    border-radius: 20px;
     background-color: #393E46;
 }
 
 form.askform img {
-    max-width: 40px;
+    max-width: 30px;
+}
+
+.askform textarea {
+    border: none;
+    resize: none;
+    position: relative;
+    background-color: #393E46;
+    color: #eeeeee;
+
+    width: 100%;
+    font-family: 'Poppins', serif;
+    font-size: 15px;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+}
+
+.askform div {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.askform input {
+    margin-left: 10px;
+    border: none;
+    background-color: #393E46;
+    color: #eeeeee;
+}
+
+.askform button {
+    margin-left: auto;
+    margin-right: 3%;
+
+    border: none;
+    border-radius: 50px;
+    width: 15%;
+    height: 25px;
+
+    font-weight: 600;
+    color: #eeeeee;
+    background-color: #219897;
+}
+
+@media (max-width: 950px) {
+    form.askform {
+        padding: 10px 15px;
+        width: 500px;
+    }
+}
+
+@media (max-width: 700px) {
+    form.askform {
+        padding: 10px 15px;
+        width: 425px;
+    }
+
+    .askform textarea {
+        font-size: 13px;
+    }
+
+    .askform div {
+        margin-top: 0;
+    }
+
+    .askform button {
+        width: 22%;
+    }
+}
+
+@media (max-width: 400px) {
+    div.askdiv {
+        margin-top: 50px;
+    }
+
+    form.askform {
+        padding: 10px 15px;
+        width: 325px;
+    }
 }

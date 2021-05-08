@@ -3,13 +3,16 @@ import "./AskQuestion.css"
 
 const AskQuestion = () => {
     return (
-        <form className='askform' >
-            <input placeholder='Write your question here...' />
-            <div>
-                <img src="/User.png" alt="User" />
-                <button>Post</button>
-            </div>
-        </form>
+        <div className='askdiv'>
+            <form className='askform' >
+                <textarea rows='2' placeholder='Write your question here...' />
+                <div>
+                    <img src="/User.png" alt="User" />
+                    <input maxLength={20} placeholder='Name (Optional)' />
+                    <button>Post</button>
+                </div>
+            </form>
+        </div>
     )
 }
 
