@@ -17,7 +17,7 @@ const RoomSelect = () => {
                 <img className='profile' src="/Profile.png" alt=""/>
             </div>
 
-            <form>
+            <form className='roomCode' >
                 <h1>Join Room</h1>
                 <hr/>
                 <div>
