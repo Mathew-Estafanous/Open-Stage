@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
-import AskQuestion from "../components/AskQuestion";
+import { AskQuestion } from "../components/AskQuestion";
 import "./Room.css"
+import { Question } from "../components/Question";
 
 const Room = () => {
     const [roomName] = useState("GopherCon");
+
+    let props = {
+        likes: 3,
+        name: "Anonymous",
+        question: "If 1 + 1 = 2, then what does 2 + 2 equal?"
+    };
 
     return (
         <>
@@ -17,6 +24,7 @@ const Room = () => {
         </header>
 
         <AskQuestion />
+        <Question {...props} />
         </>
     )
 }

@@ -6,9 +6,6 @@ div.askdiv {
 
 form.askform {
     display: inline-block;
-    margin-left: auto;
-    margin-right: auto;
-
     width: 650px;
     padding: 15px 25px;
     border-radius: 20px;
@@ -53,9 +50,10 @@ form.askform img {
 
     border: none;
     border-radius: 50px;
-    width: 15%;
-    height: 25px;
+    width: 18%;
+    height: 30px;
 
+    font-size: 17px;
     font-weight: 600;
     color: #eeeeee;
     background-color: #219897;
@@ -84,6 +82,7 @@ form.askform img {
 
     .askform button {
         width: 22%;
+        font-size: 15px;
     }
 }
 

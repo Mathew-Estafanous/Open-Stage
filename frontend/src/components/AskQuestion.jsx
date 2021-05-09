@@ -1,7 +1,7 @@
 import React from "react";
 import "./AskQuestion.css"
 
-const AskQuestion = () => {
+export const AskQuestion = () => {
     return (
         <div className='askdiv'>
             <form className='askform' >
@@ -15,5 +15,3 @@ const AskQuestion = () => {
         </div>
     )
 }
-
-export default AskQuestion;
