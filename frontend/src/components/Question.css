@@ -50,6 +50,10 @@ div.question {
     color: #232931;
 }
 
+.liked {
+    color: #219897 !important;
+}
+
 .head .name h3 {
     margin-left: 10px;
     font-weight: 400;
@@ -61,4 +65,39 @@ div.question {
     font-weight: 300;
     margin-top: 10px;
     margin-bottom: 0;
+}
+
+@media (max-width: 950px) {
+    div.question {
+        padding: 10px 15px;
+        width: 500px;
+    }
+
+    .head .name h3 {
+        font-size: 15px;
+    }
+
+    .question p {
+        font-size: 13px;
+    }
+
+    .head .like img {
+        max-width: 22px;
+    }
+
+    .head.like h3 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 700px) {
+    div.question {
+        width: 425px;
+    }
+}
+
+@media (max-width: 400px) {
+    div.question {
+        width: 325px;
+    }
 }

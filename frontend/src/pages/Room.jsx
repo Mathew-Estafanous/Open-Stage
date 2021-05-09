@@ -6,11 +6,32 @@ import { Question } from "../components/Question";
 const Room = () => {
     const [roomName] = useState("GopherCon");
 
-    let props = {
-        likes: 3,
-        name: "Anonymous",
-        question: "If 1 + 1 = 2, then what does 2 + 2 equal?"
-    };
+    let allQuestions = [
+        {
+            likes: 3,
+            name: "Anonymous",
+            question: "If 1 + 1 = 2, then what does 2 + 2 equal?",
+            isLiked: true
+        },
+        {
+            likes: 2,
+            name: "Mathew Estafanous",
+            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
+            isLiked: true
+        },
+        {
+            likes: 0,
+            name: "Anonymous",
+            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
+            isLiked: false
+        },
+        {
+            likes: 0,
+            name: "Anonymous",
+            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
+            isLiked: false
+        }
+    ]
 
     return (
         <>
@@ -24,7 +45,9 @@ const Room = () => {
         </header>
 
         <AskQuestion />
-        <Question {...props} />
+        {allQuestions.map(question => {
+            return <Question {...question}/>;
+        })}
         </>
     )
 }
