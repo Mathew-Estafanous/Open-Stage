@@ -1,0 +1,103 @@
+div.question {
+    width: 650px;
+    padding: 15px 25px;
+    border-radius: 20px;
+    background-color: #393E46;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.question .head {
+    display: flex;
+}
+
+.head h3 {
+    vertical-align: middle;
+    display: inline-block;
+
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.head img {
+    max-width: 30px;
+    vertical-align: middle;
+}
+
+.head .like {
+    display: inline-block;
+    margin-left: auto;
+    margin-right: 0;
+
+    text-align: center;
+    width: 70px;
+}
+
+.head .like img {
+    padding-right: 8px;
+    max-width: 25px;
+}
+
+.head .like img:hover {
+    cursor: pointer;
+}
+
+.head .like h3 {
+    font-size: 25px;
+    font-weight: 600;
+    color: #232931;
+}
+
+.liked {
+    color: #219897 !important;
+}
+
+.head .name h3 {
+    margin-left: 10px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.question p {
+    font-size: 15px;
+    font-weight: 300;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 950px) {
+    div.question {
+        padding: 10px 15px;
+        width: 500px;
+    }
+
+    .head .name h3 {
+        font-size: 15px;
+    }
+
+    .question p {
+        font-size: 13px;
+    }
+
+    .head .like img {
+        max-width: 22px;
+    }
+
+    .head.like h3 {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 700px) {
+    div.question {
+        width: 425px;
+    }
+}
+
+@media (max-width: 400px) {
+    div.question {
+        width: 325px;
+    }
+}
