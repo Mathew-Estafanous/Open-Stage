@@ -7,6 +7,7 @@ import (
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"log"
@@ -91,7 +92,7 @@ func configureDocsRoute(router *mux.Router) {
 func configureServer(r http.Handler, port string) *http.Server {
 	return &http.Server{
 		Addr:         port,
-		Handler:      r,
+		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r),
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}

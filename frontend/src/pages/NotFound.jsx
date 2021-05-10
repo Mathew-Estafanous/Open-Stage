@@ -1,7 +1,7 @@
 import React from "react";
 import "./NotFound.css"
 
-const NotFound = () => {
+export const NotFound = () => {
     return (
         <div className="notFound">
             <img className='logo' src='/Logo.png' alt="Logo"/>
@@ -10,5 +10,3 @@ const NotFound = () => {
         </div>
     )
 }
-
-export default NotFound

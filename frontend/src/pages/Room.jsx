@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { AskQuestion } from "../components/AskQuestion";
 import "./Room.css"
 import { Question } from "../components/Question";
 
-const Room = () => {
+export const Room = () => {
     const [roomName] = useState("GopherCon");
 
-    let allQuestions = [
+    let questions = [
         {
             likes: 3,
             name: "Anonymous",
@@ -45,11 +45,9 @@ const Room = () => {
         </header>
 
         <AskQuestion />
-        {allQuestions.map(question => {
+        {questions.map(question => {
             return <Question {...question}/>;
         })}
         </>
     )
 }
-
-export default Room;

@@ -1,11 +1,20 @@
 import React, {useState} from 'react'
+import { useHistory } from 'react-router-dom';
 import './RoomSelect.css'
+import {GetRoom} from "../http/Rooms";
 
-const RoomSelect = () => {
+export const RoomSelect = () => {
     const [code, setCode] = useState("");
+    const history = useHistory();
 
-    const joinRoom = () => {
-        console.log(code);
+    const joinRoom = async () => {
+        let result = await GetRoom(code);
+        if(result.notFound === true) {
+            alert(result.error);
+            return;
+        }
+
+        history.push('/room/' + code)
     }
 
     return (
@@ -32,5 +41,3 @@ const RoomSelect = () => {
         </>
     )
 }
-
-export default RoomSelect;

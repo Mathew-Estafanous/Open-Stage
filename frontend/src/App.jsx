@@ -5,9 +5,9 @@ import {
     Route,
     Redirect
 } from "react-router-dom";
-import RoomSelect from './pages/RoomSelect'
-import NotFound from "./pages/NotFound";
-import Room from "./pages/Room";
+import { RoomSelect } from './pages/RoomSelect'
+import { NotFound } from "./pages/NotFound";
+import { Room } from "./pages/Room";
 
 const App = () => {
     return (
