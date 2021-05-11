@@ -1,37 +1,43 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from "react";
+import {useHistory, useParams} from "react-router-dom";
 import { AskQuestion } from "../components/AskQuestion";
-import "./Room.css"
 import { Question } from "../components/Question";
+import { GetRoom } from "../http/Rooms";
+import { GetAllQuestions } from "../http/Questions";
+import "./Room.css";
 
-const Room = () => {
-    const [roomName] = useState("GopherCon");
+export const Room = () => {
+    const [room, setRoom] = useState("");
+    const [questions, setQuestions] = useState([])
+    const { code } = useParams();
+    const history = useHistory();
 
-    let allQuestions = [
-        {
-            likes: 3,
-            name: "Anonymous",
-            question: "If 1 + 1 = 2, then what does 2 + 2 equal?",
-            isLiked: true
-        },
-        {
-            likes: 2,
-            name: "Mathew Estafanous",
-            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
-            isLiked: true
-        },
-        {
-            likes: 0,
-            name: "Anonymous",
-            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
-            isLiked: false
-        },
-        {
-            likes: 0,
-            name: "Anonymous",
-            question: "As as an employee, I am worried that my job may be in jeprody, how  would you explain your choices to us?",
-            isLiked: false
+    // INITIAL setup of the room that gets room information such as code,
+    // and all the questions.
+    useEffect( () => {
+        async function callAPIs() {
+            let roomResult = await GetRoom(code);
+            if(roomResult.error !== '') {
+                history.push("/?error=" + roomResult.error);
+                return;
+            }
+            setRoom(roomResult.body.room_code);
+
+            let questionResult = await GetAllQuestions(code);
+            if(questionResult.error !== '') {
+                history.push("/?error=" + questionResult.error);
+                return;
+            }
+
+            questionResult.body
+                .sort((a, b) => {
+                    return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
+                }).map(q => q.isLiked = false)
+
+            setQuestions(questionResult.body);
         }
-    ]
+        callAPIs();
+    }, [code])
 
     return (
         <>
@@ -40,16 +46,14 @@ const Room = () => {
 
             <div className='roomInfo'>
                 <h2 className='title'>Current Room</h2>
-                <h3 className='name'>{roomName}</h3>
+                <h3 className='name'>{room}</h3>
             </div>
         </header>
 
         <AskQuestion />
-        {allQuestions.map(question => {
-            return <Question {...question}/>;
+        {questions.map(q => {
+            return <Question key={q.question_id} {...q}/>;
         })}
         </>
     )
 }
-
-export default Room;

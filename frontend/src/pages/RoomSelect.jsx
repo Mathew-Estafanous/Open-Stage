@@ -1,11 +1,27 @@
 import React, {useState} from 'react'
-import './RoomSelect.css'
+import { useHistory, useLocation } from 'react-router-dom';
+import { GetRoom } from "../http/Rooms";
+import './RoomSelect.css';
 
-const RoomSelect = () => {
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
+export const RoomSelect = () => {
     const [code, setCode] = useState("");
 
-    const joinRoom = () => {
-        console.log(code);
+    const query = useQuery();
+    const history = useHistory();
+
+    const joinRoom = async () => {
+        let result = await GetRoom(code);
+        if(result.error !== '') {
+            history.push("/?error=" + result.error)
+            return;
+        }
+
+        history.push("/room/" + code);
     }
 
     return (
@@ -29,8 +45,16 @@ const RoomSelect = () => {
                      onClick={joinRoom} />
             </div>
         </form>
+
+        {query.get("error")?
+            <div className='errContainer' >
+                <div className='error'>
+                    <img src="/Warning.png" alt="Warning"/>
+                    <p>{query.get("error")}</p>
+                </div>
+            </div>
+            :null
+        }
         </>
     )
 }
-
-export default RoomSelect;
