@@ -1,24 +1,27 @@
 import React, {useState} from 'react'
-import { useHistory } from 'react-router-dom';
-import './RoomSelect.css'
-import {GetRoom} from "../http/Rooms";
+import { useHistory, useLocation } from 'react-router-dom';
+import { GetRoom } from "../http/Rooms";
+import './RoomSelect.css';
+
+
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 export const RoomSelect = () => {
     const [code, setCode] = useState("");
-    const [isValid, setValid] = useState(true);
-    const [error, setError] = useState('');
 
+    const query = useQuery();
     const history = useHistory();
 
     const joinRoom = async () => {
         let result = await GetRoom(code);
-        if(result.status !== 200) {
-            setValid(false);
-            setError(result.error);
+        if(result.error !== '') {
+            history.push("/?error=" + result.error)
             return;
         }
 
-        history.push('/room/' + code)
+        history.push("/room/" + code);
     }
 
     return (
@@ -43,13 +46,14 @@ export const RoomSelect = () => {
             </div>
         </form>
 
-        {isValid? null:
+        {query.get("error")?
             <div className='errContainer' >
                 <div className='error'>
                     <img src="/Warning.png" alt="Warning"/>
-                    <p>{error}</p>
+                    <p>{query.get("error")}</p>
                 </div>
             </div>
+            :null
         }
         </>
     )

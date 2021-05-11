@@ -73,9 +73,9 @@ form.roomCode div img.hashtag {
 
 form.roomCode div img.btn {
     position: relative;
-    top: 11px;
-    right: 40px;
-    max-width: 35px;
+    top: 13px;
+    right: 42px;
+    max-width: 37px;
 }
 
 form.roomCode div img.btn:hover {

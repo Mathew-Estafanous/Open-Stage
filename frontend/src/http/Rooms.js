@@ -5,8 +5,6 @@ const roomResponse = {
         host: '',
         room_code: ''
     },
-    status: 200,
-    notFound: false,
     error: ''
 }
 
@@ -20,14 +18,11 @@ export const GetRoom = async (code) => {
             if(!ok) {
                 let errResp = {...data}
                 if(errResp.status === 404) {
-                    response.status = 404
-                    response.notFound = true
                     response.error = errResp.message
                     return response
                 }
 
-                response.error = 'Internal error, please try again.'
-                response.status = 500
+                response.error = "Internal error, please try again."
                 return response
             }
 

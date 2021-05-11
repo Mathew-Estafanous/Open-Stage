@@ -15,11 +15,11 @@ export const Question = (prop) => {
             <div className='head' >
                 <div className='name' >
                     <img className='user' src="/User.png" alt="user"/>
-                    <h3>{prop.name}</h3>
+                    <h3>{prop.questioner_name}</h3>
                 </div>
                 <div className='like'>
                     <img src={upvoteImg()} alt="Upvote"/>
-                    <h3 className={likeColour()}>{prop.likes}</h3>
+                    <h3 className={likeColour()}>{prop.total_likes}</h3>
                 </div>
             </div>
             <p>{prop.question}</p>

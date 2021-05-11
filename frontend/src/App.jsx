@@ -14,7 +14,7 @@ const App = () => {
         <Router>
             <Switch>
                 <Route exact path="/" component={RoomSelect} />
-                <Route path="/room" component={Room} />
+                <Route path="/room/:code" component={Room} />
                 <Route exact path="/404" component={NotFound} />
                 <Redirect to="/404" />
             </Switch>
