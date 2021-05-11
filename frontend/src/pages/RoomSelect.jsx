@@ -5,12 +5,16 @@ import {GetRoom} from "../http/Rooms";
 
 export const RoomSelect = () => {
     const [code, setCode] = useState("");
+    const [isValid, setValid] = useState(true);
+    const [error, setError] = useState('');
+
     const history = useHistory();
 
     const joinRoom = async () => {
         let result = await GetRoom(code);
-        if(result.notFound === true) {
-            alert(result.error);
+        if(result.status !== 200) {
+            setValid(false);
+            setError(result.error);
             return;
         }
 
@@ -38,6 +42,15 @@ export const RoomSelect = () => {
                      onClick={joinRoom} />
             </div>
         </form>
+
+        {isValid? null:
+            <div className='errContainer' >
+                <div className='error'>
+                    <img src="/Warning.png" alt="Warning"/>
+                    <p>{error}</p>
+                </div>
+            </div>
+        }
         </>
     )
 }

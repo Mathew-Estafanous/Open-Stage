@@ -23,11 +23,10 @@ header img.profile {
 }
 
 /*
-Styling for Room FORM
+Styling for Room Form
 */
 form.roomCode {
-    position: relative;
-    top: 150px;
+    margin-top: 20vh;
     text-align: center;
     width: 100%;
 }
@@ -49,7 +48,7 @@ form.roomCode hr {
 }
 
 form.roomCode input {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
     padding-left: 40px;
     color: #232931;
@@ -83,6 +82,38 @@ form.roomCode div img.btn:hover {
     cursor: pointer;
 }
 
+
+/*
+Styling for Error Message
+ */
+
+.errContainer {
+    width: 100%;
+    text-align: center;
+    margin-top: 2vw;
+}
+
+.error {
+    display: inline-block;
+    background-color: rgba(255, 0, 0, 0.2);
+    padding: 10px;
+
+    border-radius: 15px;
+    border-style: solid;
+    border-color: red;
+}
+
+.error img {
+    vertical-align: middle;
+    max-width: 30px;
+}
+.error p {
+    font-weight: 300;
+    font-size: 15px;
+    margin: 0 0 0 10px;
+    display: inline-block;
+}
+
 @media(max-width: 950px) {
     .header h1.title {
         font-size: 30px;
@@ -95,13 +126,20 @@ form.roomCode div img.btn:hover {
 
     form.roomCode input {
         width: 300px;
-        font-size: 18px;
+        font-size: 17px;
     }
 
     form.roomCode h1 {
         font-size: 37px;
     }
 
+    .error img {
+        max-width: 25px;
+    }
+
+    .error p {
+        font-size: 13px;
+    }
 }
 
 @media(max-width: 550px) {
@@ -121,10 +159,18 @@ form.roomCode div img.btn:hover {
 
     form.roomCode input {
         width: 250px;
-        font-size: 18px;
+        font-size: 15px;
     }
 
     form.roomCode h1 {
         font-size: 34px;
+    }
+
+    .error {
+        padding: 6px;
+    }
+
+    .error img {
+        max-width: 22px;
     }
 }
