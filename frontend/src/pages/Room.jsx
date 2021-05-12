@@ -50,7 +50,7 @@ export const Room = () => {
             </div>
         </header>
 
-        <AskQuestion />
+        <AskQuestion code={room} />
         {questions.map(q => {
             return <Question key={q.question_id} {...q}/>;
         })}
