@@ -13,11 +13,11 @@ let questionsResponse = {
     error: ''
 }
 
-export const GetAllQuestions = async (code) => {
+export const GetAllQuestions = (code) => {
     let path = url + '/questions/' + code;
     console.log(path)
     let response = {...questionsResponse}
-    return await fetch(path)
+    return fetch(path)
         .then(resp => Promise.all([resp.ok, resp.json()]))
         .then(([ok, data]) => {
             if(!ok) {
@@ -42,7 +42,7 @@ let postQuestionResponse = {
     err: ''
 }
 
-export const PostQuestion = async (roomCode, question, name) => {
+export const PostQuestion = (roomCode, question, name) => {
     let path = url + '/questions';
     let data = {
         associated_room: roomCode,
@@ -53,7 +53,7 @@ export const PostQuestion = async (roomCode, question, name) => {
     }
 
     let response = {...postQuestionResponse}
-    return await fetch(path, {
+    return fetch(path, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -69,5 +69,33 @@ export const PostQuestion = async (roomCode, question, name) => {
 
             response.body = data
             return response
+        })
+}
+
+export const UpdateLikes = (likes, id) => {
+    let path = url + '/questions'
+    let data = {
+        question_id: id,
+        total_likes: likes
+    }
+
+    let result = {
+        status: 200,
+        error: ''
+    };
+    return fetch(path, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(resp => {
+            if(!resp.ok) {
+                let error = resp.json();
+                result.status = error.status;
+                result.error = error.message;
+            }
+            return result;
         })
 }
