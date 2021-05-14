@@ -12,6 +12,21 @@ export const Room = () => {
     const { code } = useParams();
     const history = useHistory();
 
+    const updateAllQuestions = async () => {
+        let questionResult = await GetAllQuestions(code);
+        if(questionResult.error !== '') {
+            history.push("/?error=" + questionResult.error);
+            return;
+        }
+
+        questionResult.body
+            .sort((a, b) => {
+                return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
+            }).map(q => q.isLiked = false)
+
+        setQuestions(questionResult.body);
+    }
+
     // INITIAL setup of the room that gets room information such as code,
     // and all the questions.
     useEffect( () => {
@@ -23,21 +38,17 @@ export const Room = () => {
             }
             setRoom(roomResult.body.room_code);
 
-            let questionResult = await GetAllQuestions(code);
-            if(questionResult.error !== '') {
-                history.push("/?error=" + questionResult.error);
-                return;
-            }
-
-            questionResult.body
-                .sort((a, b) => {
-                    return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
-                }).map(q => q.isLiked = false)
-
-            setQuestions(questionResult.body);
+            await updateAllQuestions();
         }
         callAPIs();
     }, [code])
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            await updateAllQuestions()
+        }, 8000)
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <>
