@@ -90,9 +90,12 @@ func configureDocsRoute(router *mux.Router) {
 }
 
 func configureServer(r http.Handler, port string) *http.Server {
+	headerOpts := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	originOpts := handlers.AllowedOrigins([]string{"*"})
+	methodOpts := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 	return &http.Server{
 		Addr:         port,
-		Handler:      handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r),
+		Handler:      handlers.CORS(originOpts, methodOpts, headerOpts)(r),
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}

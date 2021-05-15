@@ -12,7 +12,22 @@ export const Room = () => {
     const { code } = useParams();
     const history = useHistory();
 
-    // INITIAL setup of the room that gets room information such as code,
+    const updateAllQuestions = async () => {
+        let questionResult = await GetAllQuestions(code);
+        if(questionResult.error !== '') {
+            history.push("/?error=" + questionResult.error);
+            return;
+        }
+
+        questionResult.body
+            .sort((a, b) => {
+                return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
+            });
+
+        setQuestions(questionResult.body);
+    }
+
+    // Initial setup of the room that gets room information such as code,
     // and all the questions.
     useEffect( () => {
         async function callAPIs() {
@@ -23,21 +38,17 @@ export const Room = () => {
             }
             setRoom(roomResult.body.room_code);
 
-            let questionResult = await GetAllQuestions(code);
-            if(questionResult.error !== '') {
-                history.push("/?error=" + questionResult.error);
-                return;
-            }
-
-            questionResult.body
-                .sort((a, b) => {
-                    return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
-                }).map(q => q.isLiked = false)
-
-            setQuestions(questionResult.body);
+            await updateAllQuestions();
         }
         callAPIs();
-    }, [code])
+    }, [code, history])
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            await updateAllQuestions()
+        }, 5000)
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <>
@@ -50,7 +61,7 @@ export const Room = () => {
             </div>
         </header>
 
-        <AskQuestion />
+        <AskQuestion code={room} />
         {questions.map(q => {
             return <Question key={q.question_id} {...q}/>;
         })}

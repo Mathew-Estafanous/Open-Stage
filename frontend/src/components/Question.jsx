@@ -1,14 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import "./Question.css"
+import {UpdateLikes} from "../http/Questions";
 
 export const Question = (prop) => {
-    const upvoteImg = () => {
-        return (prop.isLiked)? "/Upvote-Blue.png": "/Upvote-Black.png";
+    const isLiked = () => {
+        let likeData = JSON.parse(localStorage.getItem('like.data'));
+        if(likeData === null) {
+            return false;
+        }
+
+        let roomArr = likeData[prop.associated_room] || [];
+        let result = roomArr.indexOf(prop.question_id);
+        return (result !== -1);
     }
 
-    const likeColour = () => {
-        return (prop.isLiked)? "liked": "";
+    const [liked, setLiked] = useState(isLiked());
+    const [totalLikes, setTotalLikes] = useState(prop.total_likes);
+
+    const updateLocalStorage = () => {
+        let likeData = JSON.parse(localStorage.getItem('like.data') || '{}');
+        let roomArr = likeData[prop.associated_room] || [];
+        if(liked) {
+            let index = roomArr.indexOf(prop.question_id)
+            roomArr.splice(index, 1);
+        } else {
+            roomArr.push(prop.question_id);
+        }
+        likeData[prop.associated_room] = roomArr;
+        localStorage.setItem('like.data', JSON.stringify(likeData))
     }
+
+    const clickLike = async () => {
+        let likes = totalLikes + ((!liked)? 1: -1);
+        let result = await UpdateLikes(likes, prop.question_id);
+        if(result.status !== 200) {
+            console.log(result.error);
+            return;
+        }
+        setTotalLikes(likes);
+        setLiked(!liked);
+
+        updateLocalStorage();
+    }
+
+    // Update the total likes when the prop passed in is updated.
+    useEffect(() => {
+        setTotalLikes(prop.total_likes);
+        setLiked(isLiked());
+    }, [prop])
 
     return (
         <div className='question' >
@@ -18,8 +57,9 @@ export const Question = (prop) => {
                     <h3>{prop.questioner_name}</h3>
                 </div>
                 <div className='like'>
-                    <img src={upvoteImg()} alt="Upvote"/>
-                    <h3 className={likeColour()}>{prop.total_likes}</h3>
+                    <img src={(liked)? "/Upvote-Blue.png": "/Upvote-Black.png"} alt="Upvote"
+                        onClick={clickLike}/>
+                    <h3 className={(liked)? "liked": ""}>{totalLikes}</h3>
                 </div>
             </div>
             <p>{prop.question}</p>
