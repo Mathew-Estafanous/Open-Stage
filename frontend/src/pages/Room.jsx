@@ -22,12 +22,12 @@ export const Room = () => {
         questionResult.body
             .sort((a, b) => {
                 return (a.total_likes < b.total_likes)? 1: (a.total_likes > b.total_likes)? -1: 0;
-            }).map(q => q.isLiked = false);
+            });
 
         setQuestions(questionResult.body);
     }
 
-    // INITIAL setup of the room that gets room information such as code,
+    // Initial setup of the room that gets room information such as code,
     // and all the questions.
     useEffect( () => {
         async function callAPIs() {
