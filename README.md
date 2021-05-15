@@ -5,7 +5,7 @@
   <p align="center">
     A live Q&A platform that stimulates conversation, even from the quetest members.
     <br />
-    <a href="https://open-stage-platform.herokuapp.com/docs"><strong>Explore API Docs</strong></a>
+    <a href="https://open-stage-api.herokuapp.com/docs"><strong>Explore API Docs</strong></a>
     ·
     <a href="https://github.com/Mathew-Estafanous/Open-Stage/issues"><strong>Report An Issue</strong></a>
   </p>
@@ -39,8 +39,8 @@ Setting up the project in a local development environment should be simple and e
 steps of what you need to do, to get the project up and running.
 
 ### Prerequisites
-The following must be installed on your machine before running the project.
-* [Golang](https://golang.org/) - The API is built and run using the golang language.
+The following must be installed on your machine before running or contributing.
+* [Golang](https://golang.org/) - The API is built using Golang.
 * [Docker](https://www.docker.com/) - Docker is used to easily spin up needed services, like a local database.
 
 ### Running
@@ -53,7 +53,7 @@ All the required services should be up and running, including the API on ``:8080
 ### Contributing
 This project is still underdevelopment and continues to be improved upon on a regular basis. Contributions
 are always welcome whether they are issue reports or pull requests to include a feature. Testing is very important,
-which is why unit tests should be part of any new feature contribution.
+which is why unit tests should be part of any new feature.
 
 # Contact
 **Mathew Estafanous -** mathewestafanous13@gmail.com
