@@ -32,6 +32,7 @@ export const GetRoom = async (code) => {
             return response
         })
         .catch(err => {
+            console.log(err);
             response.error = 'We were unable to connect to our servers.';
             return response;
         })
