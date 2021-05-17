@@ -1,4 +1,6 @@
-const url = 'http://localhost:8080/v1';
+const url = (process.env.REACT_APP_ENV === 'production')?
+    'https://open-stage-api.herokuapp.com/v1'
+    :'http://localhost:8080/v1';
 
 const roomResponse = {
     body: {
@@ -28,5 +30,10 @@ export const GetRoom = async (code) => {
 
             response.body = {...data}
             return response
+        })
+        .catch(err => {
+            console.log(err);
+            response.error = 'We were unable to connect to our servers.';
+            return response;
         })
 }
