@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { GetRoom } from "../http/Rooms";
 import './RoomSelect.css';
+import {Oval} from "@agney/react-loading";
 
 
 function useQuery() {
@@ -10,12 +11,15 @@ function useQuery() {
 
 export const RoomSelect = () => {
     const [code, setCode] = useState("");
+    const [isLoading, setLoading] = useState(false);
 
     const query = useQuery();
     const history = useHistory();
 
     const joinRoom = async () => {
+        setLoading(true);
         let result = await GetRoom(code);
+        setLoading(false);
         if(result.error !== '') {
             history.push("/?error=" + result.error)
             return;
@@ -32,7 +36,6 @@ export const RoomSelect = () => {
 
             <img className='profile' src="/Profile.png" alt=""/>
         </header>
-
         <form className='roomCode' >
             <h1>Join Room</h1>
             <hr/>
@@ -44,9 +47,16 @@ export const RoomSelect = () => {
                      src="/Select-Arrow.png" alt=""
                      onClick={joinRoom} />
             </div>
+
+            {isLoading?
+                <div className='load'>
+                    <Oval className='loader' />
+                </div>: null
+            }
         </form>
 
-        {query.get("error")?
+
+        {query.get("error") && !isLoading?
             <div className='errContainer' >
                 <div className='error'>
                     <img src="/Warning.png" alt="Warning"/>
