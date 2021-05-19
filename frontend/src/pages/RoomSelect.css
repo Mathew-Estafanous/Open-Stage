@@ -12,14 +12,12 @@ header h1.title {
 
 header img.logo {
     max-width: 70px;
-    max-height: 70px;
 }
 
 header img.profile {
     margin-left: auto;
     margin-right: 1vw;
     max-width: 40px;
-    max-height: 40px;
 }
 
 /*
@@ -134,18 +132,16 @@ Styling for Error Message
 }
 
 @media screen and (max-width: 550px) {
-    .header h1.title {
-        font-size: 25px;
+    header h1.title {
+        font-size: 30px;
     }
 
-    .header img.logo {
-        max-width: 45px;
-        max-height: 45px;
+    header img.logo {
+        max-width: 60px;
     }
 
-    .header img.profile {
+    header img.profile {
         max-width: 35px;
-        max-height: 35px;
     }
 
     form.roomCode input {
@@ -167,34 +163,42 @@ Styling for Error Message
 }
 
 @media screen and (max-width: 380px) {
-    .header h1.title {
-        font-size: 15px;
+    header h1.title {
+        font-size: 25px;
     }
 
-    .header img.logo {
+    header img.logo {
         max-width: 45px;
-        max-height: 45px;
     }
 
-    .header img.profile {
-        max-width: 35px;
-        max-height: 35px;
+    header img.profile {
+        padding-right: 5px;
+        max-width: 30px;
+    }
+
+    form.roomCode hr {
+        width: 75px;
     }
 
     form.roomCode input {
-        width: 250px;
-        font-size: 15px;
+        width: 220px;
+        font-size: 14px;
     }
 
     form.roomCode h1 {
         font-size: 34px;
     }
 
+    form.roomCode div img.btn {
+        top: 14px;
+    }
+
     .error {
+        margin-top: 3vw;
         padding: 6px;
     }
 
     .error img {
-        max-width: 22px;
+        max-width: 20px;
     }
 }
