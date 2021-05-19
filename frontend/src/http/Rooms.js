@@ -1,10 +1,5 @@
-function test() {
-    let env = process.env.REACT_APP_ENV;
-    console.log(env);
-    return (env === 'production')? 'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
-}
-
-const url = test();
+const url = (process.env.REACT_APP_ENV === 'production')?
+    'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
 
 const roomResponse = {
     body: {

@@ -114,16 +114,7 @@ Styling for Error Message
     display: inline-block;
 }
 
-@media(max-width: 950px) {
-    .header h1.title {
-        font-size: 30px;
-    }
-
-    .header img.logo {
-        max-width: 55px;
-        max-height: 55px;
-    }
-
+@media screen and (max-width: 950px) {
     form.roomCode input {
         width: 300px;
         font-size: 17px;
@@ -142,9 +133,42 @@ Styling for Error Message
     }
 }
 
-@media(max-width: 550px) {
+@media screen and (max-width: 550px) {
     .header h1.title {
         font-size: 25px;
+    }
+
+    .header img.logo {
+        max-width: 45px;
+        max-height: 45px;
+    }
+
+    .header img.profile {
+        max-width: 35px;
+        max-height: 35px;
+    }
+
+    form.roomCode input {
+        width: 250px;
+        font-size: 15px;
+    }
+
+    form.roomCode h1 {
+        font-size: 34px;
+    }
+
+    .error {
+        padding: 6px;
+    }
+
+    .error img {
+        max-width: 22px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .header h1.title {
+        font-size: 15px;
     }
 
     .header img.logo {
