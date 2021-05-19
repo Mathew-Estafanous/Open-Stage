@@ -5,10 +5,13 @@ import { Question } from "../components/Question";
 import { GetRoom } from "../http/Rooms";
 import { GetAllQuestions } from "../http/Questions";
 import "./Room.css";
+import {Oval} from "@agney/react-loading";
 
 export const Room = () => {
     const [room, setRoom] = useState("");
     const [questions, setQuestions] = useState([])
+    const [isLoading, setLoading] = useState(true);
+
     const { code } = useParams();
     const history = useHistory();
 
@@ -29,18 +32,16 @@ export const Room = () => {
 
     // Initial setup of the room that gets room information such as code,
     // and all the questions.
-    useEffect( () => {
-        async function callAPIs() {
-            let roomResult = await GetRoom(code);
-            if(roomResult.error !== '') {
-                history.push("/?error=" + roomResult.error);
-                return;
-            }
-            setRoom(roomResult.body.room_code);
-
-            await updateAllQuestions();
+    useEffect( async () => {
+        let roomResult = await GetRoom(code);
+        if(roomResult.error !== '') {
+            history.push("/?error=" + roomResult.error);
+            return;
         }
-        callAPIs();
+        setRoom(roomResult.body.room_code);
+
+        await updateAllQuestions();
+        setLoading(false);
     }, [code, history])
 
     useEffect(() => {
@@ -62,6 +63,11 @@ export const Room = () => {
         </header>
 
         <AskQuestion code={room} />
+        {isLoading?
+            <div className='load'>
+                <Oval className='loader' />
+            </div>: null
+        }
         {questions.map(q => {
             return <Question key={q.question_id} {...q}/>;
         })}

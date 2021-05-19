@@ -112,6 +112,16 @@ Styling for Error Message
     display: inline-block;
 }
 
+.load {
+    margin-top: 1.5vw;
+    width: 100%;
+    text-align: center;
+}
+
+.loader {
+    width: 50px;
+}
+
 @media screen and (max-width: 950px) {
     form.roomCode input {
         width: 300px;
