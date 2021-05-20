@@ -29,7 +29,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	assert.JSONEq(t, string(roomJson), w.Body.String())
 
 	rs.On("FindRoom", "wrongCode").
-		Return(domain.Room{}, domain.NotFound(""))
+		Return(domain.Room{}, domain.ApiError{Msg: "not found", Typ: domain.NotFound})
 	req, err = http.NewRequest("GET", "/rooms/wrongCode", nil)
 	assert.NoError(t, err)
 
@@ -59,7 +59,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.JSONEq(t, string(j), w.Body.String())
 
 	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat"}
-	rs.On("CreateRoom", &duplicate).Return(domain.Conflict(""))
+	rs.On("CreateRoom", &duplicate).Return(domain.ApiError{Msg: "conflict", Typ: domain.Conflict})
 	j, err = json.Marshal(duplicate)
 	assert.NoError(t, err)
 
@@ -84,7 +84,7 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
-	rs.On("DeleteRoom", "wrongCode").Return(domain.NotFound(""))
+	rs.On("DeleteRoom", "wrongCode").Return(domain.ApiError{Msg: "not found", Typ: domain.NotFound})
 	w = httptest.NewRecorder()
 	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)

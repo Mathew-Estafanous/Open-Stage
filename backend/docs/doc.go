@@ -50,7 +50,7 @@ type roomResponse struct {
 // swagger:response errorResponse
 type errorResponse struct {
 	// in: body
-	Body domain.ResponseError
+	Body handler.ResponseError
 }
 
 // swagger:parameters updateLikes

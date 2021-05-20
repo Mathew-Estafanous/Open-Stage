@@ -38,7 +38,7 @@ func TestQuestionHandler_createQuestion(t *testing.T) {
 	j, err = json.Marshal(invalidQuestion)
 	assert.NoError(t, err)
 
-	qs.On("Create", &invalidQuestion).Return(domain.BadRequest(""))
+	qs.On("Create", &invalidQuestion).Return(domain.ApiError{Msg: "", Typ: domain.BadInput})
 
 	req, err = http.NewRequest("POST", "/questions", strings.NewReader(string(j)))
 	assert.NoError(t, err)

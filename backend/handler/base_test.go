@@ -14,13 +14,14 @@ func TestBaseHandler_error(t *testing.T) {
 	base := baseHandler{}
 
 	w := httptest.NewRecorder()
-	respErr := domain.NewResponseError("A Bad request", http.StatusBadRequest)
+	respErr := domain.ApiError{Msg: "Bad request", Typ: domain.BadInput}
 	base.error(w, respErr)
-	j, err := json.Marshal(respErr)
-	assert.NoError(t, err)
 
-	assert.EqualValues(t, w.Code, respErr.Sts)
-	assert.JSONEq(t, string(j), w.Body.String())
+	assert.EqualValues(t, w.Code, http.StatusBadRequest)
+
+	expectedResp, err := json.Marshal(newResponseError(respErr.Msg, http.StatusBadRequest))
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(expectedResp), w.Body.String())
 
 	w = httptest.NewRecorder()
 	regErr := errors.New("this ia standard regular error")

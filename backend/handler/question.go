@@ -161,7 +161,7 @@ func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) 
 
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		err = domain.BadRequest("Given question Id is not a valid int type.")
+		err = domain.ApiError{Msg: "Given question Id is not a valid int type.", Typ: domain.BadInput}
 		q.error(w, err)
 		return
 	}
