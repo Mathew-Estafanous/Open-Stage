@@ -63,21 +63,22 @@ func TestQuestionService_ChangeTotalLikes(t *testing.T) {
 	rService := new(mock.RoomService)
 	qs := NewQuestionService(qStore, rService)
 
-	qStore.On("UpdateLikeTotal", 12, 1).Return(nil)
-	qStore.On("GetById", 12).Return(domain.Question{}, nil)
-	err := qs.ChangeTotalLikes(12, 1)
+	qStore.On("UpdateLikeTotal", 12, 2).Return(nil)
+	qStore.On("GetById", 12).Return(domain.Question{TotalLikes: 1}, nil)
+	q, err := qs.ChangeTotalLikes(12, 1)
 	assert.NoError(t, err)
+	assert.EqualValues(t, 2, q.TotalLikes)
 
 	qStore.On("GetById", 20).Return(domain.Question{}, errQuestionNotFound)
-	err = qs.ChangeTotalLikes(20, 1)
+	_, err = qs.ChangeTotalLikes(20, 1)
 	assert.ErrorIs(t, err, errQuestionNotFound)
 
-	err = qs.ChangeTotalLikes(12, -1)
-	assert.ErrorIs(t, err, errTotalBelowZero)
+	_, err = qs.ChangeTotalLikes(12, -2)
+	assert.ErrorIs(t, err, errInvalidIncrement)
 
 	qStore.On("UpdateLikeTotal", 25, 1).Return(errors.New("some sql internal error"))
 	qStore.On("GetById", 25).Return(domain.Question{}, nil)
-	err = qs.ChangeTotalLikes(25, 1)
+	q, err = qs.ChangeTotalLikes(25, 1)
 	assert.ErrorIs(t, err, errInternalIssue)
 }
 

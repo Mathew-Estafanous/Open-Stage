@@ -106,22 +106,21 @@ definitions:
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
   updateLikes:
     properties:
+      like_increment:
+        description: Whether
+        example: -1
+        format: int64
+        type: integer
+        x-go-name: LikeIncrement
       question_id:
         description: The ID of the question
         example: 3452
         format: int64
         type: integer
         x-go-name: Id
-      total_likes:
-        description: New total likes for question
-        example: 2
-        format: int64
-        minimum: 0
-        type: integer
-        x-go-name: TotalLikes
     required:
     - question_id
-    - total_likes
+    - like_increment
     title: UpdateLike represents the question's new like total.
     type: object
     x-go-name: UpdateLike
@@ -165,7 +164,7 @@ paths:
       - Questions
     put:
       description: 'Updates the total # of likes for the question with the matching
-        question_id'
+        question_id.'
       operationId: updateLikes
       parameters:
       - in: body
@@ -174,7 +173,7 @@ paths:
           $ref: '#/definitions/updateLikes'
       responses:
         "200":
-          description: ' OK - Question''s like total has been updated.'
+          $ref: '#/responses/questionResponse'
         "400":
           $ref: '#/responses/errorResponse'
         "404":

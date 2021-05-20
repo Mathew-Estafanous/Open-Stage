@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
+	"github.com/Mathew-Estafanous/Open-Stage/middleware"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
-	"github.com/go-openapi/runtime/middleware"
-	"github.com/gorilla/handlers"
+	middle "github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"log"
@@ -80,22 +80,19 @@ func connectToDB() *sql.DB {
 }
 
 func configureDocsRoute(router *mux.Router) {
-	opts := middleware.RedocOpts{
+	opts := middle.RedocOpts{
 		SpecURL: "/docs/swagger.yaml",
 		Title:   "Open-Stage API Docs",
 	}
-	doc := middleware.Redoc(opts, nil)
+	doc := middle.Redoc(opts, nil)
 	router.Handle("/docs", doc)
 	router.Handle("/docs/swagger.yaml", http.FileServer(http.Dir("./")))
 }
 
 func configureServer(r http.Handler, port string) *http.Server {
-	headerOpts := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
-	originOpts := handlers.AllowedOrigins([]string{"*"})
-	methodOpts := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"})
 	return &http.Server{
 		Addr:         port,
-		Handler:      handlers.CORS(originOpts, methodOpts, headerOpts)(r),
+		Handler:      middleware.CORS()(r),
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}

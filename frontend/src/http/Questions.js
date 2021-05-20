@@ -1,7 +1,7 @@
 const url = (process.env.REACT_APP_ENV === 'production')?
     'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
 
-let questionsResponse = {
+let multipleQuestionResponse = {
     body: [
         {
             associated_room: '',
@@ -17,7 +17,7 @@ let questionsResponse = {
 export const GetAllQuestions = (code) => {
     let path = url + '/questions/' + code;
     console.log(path)
-    let response = {...questionsResponse}
+    let response = {...multipleQuestionResponse}
     return fetch(path)
         .then(resp => Promise.all([resp.ok, resp.json()]))
         .then(([ok, data]) => {
@@ -32,7 +32,7 @@ export const GetAllQuestions = (code) => {
     })
 }
 
-let postQuestionResponse = {
+let questionResponse = {
     body: {
         question_id: 0,
         associated_room: '',
@@ -40,7 +40,7 @@ let postQuestionResponse = {
         questioner_name: '',
         total_likes: 0
     },
-    err: ''
+    error: ''
 }
 
 export const PostQuestion = (roomCode, question, name) => {
@@ -53,7 +53,7 @@ export const PostQuestion = (roomCode, question, name) => {
         data.questioner_name = name;
     }
 
-    let response = {...postQuestionResponse}
+    let response = {...questionResponse}
     return fetch(path, {
             method: 'POST',
             headers: {
@@ -73,17 +73,14 @@ export const PostQuestion = (roomCode, question, name) => {
         })
 }
 
-export const UpdateLikes = (likes, id) => {
+export const UpdateLikes = (increment, id) => {
     let path = url + '/questions'
     let data = {
         question_id: id,
-        total_likes: likes
+        like_increment: increment
     }
 
-    let result = {
-        status: 200,
-        error: ''
-    };
+    let response = {...questionResponse}
     return fetch(path, {
             method: 'PUT',
             headers: {
@@ -91,12 +88,14 @@ export const UpdateLikes = (likes, id) => {
             },
             body: JSON.stringify(data)
         })
-        .then(resp => {
-            if(!resp.ok) {
-                let error = resp.json();
-                result.status = error.status;
-                result.error = error.message;
+        .then(resp => Promise.all([resp.ok, resp.json()]))
+        .then(([ok, data]) => {
+            if(!ok) {
+                response.error = data.message
+                return response
             }
-            return result;
+
+            response.body = data
+            return response
         })
 }

@@ -11,9 +11,9 @@ type QuestionService struct {
 	mock.Mock
 }
 
-func (m *QuestionService) ChangeTotalLikes(id int, total int) error {
+func (m *QuestionService) ChangeTotalLikes(id int, total int) (domain.Question, error) {
 	ret := m.Called(id, total)
-	return ret.Error(0)
+	return ret.Get(0).(domain.Question), ret.Error(1)
 }
 
 func (m *QuestionService) FindWithId(id int) (domain.Question, error) {
