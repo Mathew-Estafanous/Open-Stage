@@ -31,13 +31,13 @@ export const Question = (prop) => {
     }
 
     const clickLike = async () => {
-        let likes = totalLikes + ((!liked)? 1: -1);
-        let result = await UpdateLikes(likes, prop.question_id);
-        if(result.status !== 200) {
+        let increment = (!liked)? 1: -1;
+        let result = await UpdateLikes(increment, prop.question_id);
+        if(result.error !== '') {
             console.log(result.error);
             return;
         }
-        setTotalLikes(likes);
+        setTotalLikes(result.body.total_likes);
         setLiked(!liked);
 
         updateLocalStorage();
