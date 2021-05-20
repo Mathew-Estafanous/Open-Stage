@@ -19,9 +19,11 @@ func TestBaseHandler_error(t *testing.T) {
 
 	assert.EqualValues(t, w.Code, http.StatusBadRequest)
 
-	expectedResp, err := json.Marshal(newResponseError(respErr.Msg, http.StatusBadRequest))
+	var resp ResponseError
+	err := json.Unmarshal([]byte(w.Body.String()), &resp)
 	assert.NoError(t, err)
-	assert.JSONEq(t, string(expectedResp), w.Body.String())
+	assert.EqualValues(t, respErr.Msg, resp.Msg)
+	assert.EqualValues(t, http.StatusBadRequest, resp.Sts)
 
 	w = httptest.NewRecorder()
 	regErr := errors.New("this ia standard regular error")
