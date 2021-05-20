@@ -105,7 +105,7 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 // Updates the total # of likes for the question with the matching question_id.
 //
 // Responses:
-//  200: description: OK - Question's like total has been updated.
+//  200: questionResponse
 //  404: errorResponse
 //  400: errorResponse
 //  500: errorResponse

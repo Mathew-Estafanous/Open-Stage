@@ -13,7 +13,7 @@ type QuestionService struct {
 
 func (m *QuestionService) ChangeTotalLikes(id int, total int) (domain.Question, error) {
 	ret := m.Called(id, total)
-	return ret.Get(0).(domain.Question) , ret.Error(1)
+	return ret.Get(0).(domain.Question), ret.Error(1)
 }
 
 func (m *QuestionService) FindWithId(id int) (domain.Question, error) {
