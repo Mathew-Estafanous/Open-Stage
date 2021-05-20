@@ -67,8 +67,8 @@ func (r *roomService) generateValidCode() string {
 }
 
 var (
-	errHostNotAssigned = domain.BadRequest("A host has not be assigned to a room")
-	errDuplicateRoom   = domain.Conflict("Room could not be created since the room code is taken.")
-	errRoomNotFound    = domain.NotFound("Room was not found with given code")
-	errRoomNotDeleted  = domain.InternalServerError("There was an error while trying to delete the room.")
+	errHostNotAssigned = domain.ApiError{Msg: "A host has not be assigned to a room", Typ: domain.BadInput}
+	errDuplicateRoom   = domain.ApiError{Msg: "Room could not be created since the room code is taken.", Typ: domain.Conflict}
+	errRoomNotFound    = domain.ApiError{Msg: "Room was not found with given code", Typ: domain.NotFound}
+	errRoomNotDeleted  = domain.ApiError{Msg: "There was an error while trying to delete the room.", Typ: domain.Internal}
 )

@@ -86,10 +86,10 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
-	errInvalidIncrement     = domain.BadRequest("The provided like increment is not 1 or -1.")
-	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
-	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
-	errMissingQuestion      = domain.BadRequest("A question was not provided.")
-	errQuestionNotCreated   = domain.BadRequest("The question could not be created using the room code.")
-	errInternalIssue        = domain.InternalServerError("")
+	errInvalidIncrement     = domain.ApiError{Msg: "The provided like increment is not 1 or -1.", Typ: domain.BadInput}
+	errQuestionNotFound     = domain.ApiError{Msg: "A question with that id was not found.", Typ: domain.NotFound}
+	errQuestionMustHaveRoom = domain.ApiError{Msg: "Every question must be assigned a room.", Typ: domain.BadInput}
+	errMissingQuestion      = domain.ApiError{Msg: "A question was not provided.", Typ: domain.BadInput}
+	errQuestionNotCreated   = domain.ApiError{Msg: "The question could not be created using the room code.", Typ: domain.BadInput}
+	errInternalIssue        = domain.ApiError{Msg: "We encountered an internal error", Typ: domain.Internal}
 )
