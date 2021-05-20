@@ -18,12 +18,11 @@ type UpdateLike struct {
 	// example: 3452
 	Id int `json:"question_id"`
 
-	// New total likes for question
+	// Whether
 	//
 	// required: true
-	// min: 0
-	// example: 2
-	TotalLikes int `json:"total_likes"`
+	// example: -1
+	LikeIncrement int `json:"like_increment"`
 }
 
 // NewQuestion represents the request body of new questions.
@@ -103,7 +102,7 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 //
 // Update question's total number of likes.
 //
-// Updates the total # of likes for the question with the matching question_id
+// Updates the total # of likes for the question with the matching question_id.
 //
 // Responses:
 //  200: description: OK - Question's like total has been updated.
@@ -118,11 +117,12 @@ func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = q.qs.ChangeTotalLikes(body.Id, body.TotalLikes)
+	question, err := q.qs.ChangeTotalLikes(body.Id, body.LikeIncrement)
 	if err != nil {
 		q.error(w, err)
 		return
 	}
+	q.respond(w, http.StatusOK, question)
 }
 
 // swagger:route GET /questions/{roomCode} Questions roomCode

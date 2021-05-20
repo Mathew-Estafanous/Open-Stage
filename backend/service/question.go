@@ -34,21 +34,27 @@ func (q questionService) FindAllInRoom(code string) ([]domain.Question, error) {
 	return qs, nil
 }
 
-func (q questionService) ChangeTotalLikes(id int, total int) error {
-	_, err := q.FindWithId(id)
-	if err != nil {
-		return err
+func (q questionService) ChangeTotalLikes(id int, change int) (domain.Question, error) {
+	if change != -1 && change != 1 {
+		return domain.Question{}, errInvalidIncrement
 	}
 
-	if total < 0 {
-		return errTotalBelowZero
+	question, err := q.FindWithId(id)
+	if err != nil {
+		return domain.Question{}, err
 	}
 
-	err = q.qStore.UpdateLikeTotal(id, total)
-	if err != nil {
-		return errInternalIssue
+	newTotal := question.TotalLikes + change
+	if newTotal < 0 {
+		newTotal = 0
 	}
-	return nil
+
+	err = q.qStore.UpdateLikeTotal(id, newTotal)
+	if err != nil {
+		return domain.Question{}, errInternalIssue
+	}
+	question.TotalLikes = newTotal
+	return question, nil
 }
 
 func (q questionService) Create(question *domain.Question) error {
@@ -80,7 +86,7 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
-	errTotalBelowZero       = domain.BadRequest("The given total is below zero")
+	errInvalidIncrement     = domain.BadRequest("The provided like increment is not 1 or -1.")
 	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
 	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
 	errMissingQuestion      = domain.BadRequest("A question was not provided.")
