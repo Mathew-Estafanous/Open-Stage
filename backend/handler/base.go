@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"log"
 	"net/http"
@@ -17,36 +18,15 @@ type ResponseError struct {
 	TimeStamp time.Time `json:"timestamp"`
 }
 
-func newResponseError(msg string, sts int) ResponseError {
-	return ResponseError{
-		Msg:       msg,
-		Sts:       sts,
-		TimeStamp: time.Now(),
-	}
-}
-
 type baseHandler struct{}
 
 func (h baseHandler) error(w http.ResponseWriter, err error) {
 	log.Print(err)
-	errTypeToSts := map[domain.ErrType]int{
-		domain.Internal: http.StatusInternalServerError,
-		domain.NotFound: http.StatusNotFound,
-		domain.Conflict: http.StatusConflict,
-		domain.BadInput: http.StatusBadRequest,
-	}
 
-	var respErr ResponseError
-	apiErr, ok := err.(domain.ApiError)
-	if !ok {
-		respErr = newResponseError("We encountered an internal error", http.StatusInternalServerError)
-	} else {
-		respErr = newResponseError(apiErr.Msg, errTypeToSts[apiErr.Typ])
-	}
-
+	respError := errToHttpResp(err)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(respErr.Sts)
-	err = json.NewEncoder(w).Encode(respErr)
+	w.WriteHeader(respError.Sts)
+	err = json.NewEncoder(w).Encode(respError)
 	if err != nil {
 		log.Print(err)
 	}
@@ -64,5 +44,21 @@ func (h baseHandler) respond(w http.ResponseWriter, code int, src interface{}) {
 	_, err = w.Write(body)
 	if err != nil {
 		log.Println(err)
+	}
+}
+
+func errToHttpResp(err error) ResponseError {
+	errTypeToSts := map[domain.Code]int{
+		domain.Internal: http.StatusInternalServerError,
+		domain.NotFound: http.StatusNotFound,
+		domain.Conflict: http.StatusConflict,
+		domain.BadInput: http.StatusBadRequest,
+	}
+
+	var code domain.Code
+	if errors.As(err, &code) {
+		return ResponseError{Msg: err.Error(), Sts: errTypeToSts[code], TimeStamp: time.Now()}
+	} else {
+		return ResponseError{Msg: err.Error(), Sts: http.StatusInternalServerError, TimeStamp: time.Now()}
 	}
 }

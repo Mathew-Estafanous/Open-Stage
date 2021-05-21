@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/gorilla/mux"
@@ -38,7 +39,7 @@ func TestQuestionHandler_createQuestion(t *testing.T) {
 	j, err = json.Marshal(invalidQuestion)
 	assert.NoError(t, err)
 
-	qs.On("Create", &invalidQuestion).Return(domain.ApiError{Msg: "", Typ: domain.BadInput})
+	qs.On("Create", &invalidQuestion).Return(fmt.Errorf("%w: bad input", domain.BadInput))
 
 	req, err = http.NewRequest("POST", "/questions", strings.NewReader(string(j)))
 	assert.NoError(t, err)

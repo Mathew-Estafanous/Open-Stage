@@ -1,19 +1,23 @@
 package domain
 
-type ErrType int
+type Code int
 
 const (
-	BadInput ErrType = iota
+	Internal Code = iota
 	NotFound
 	Conflict
-	Internal
+	BadInput
 )
 
-type ApiError struct {
-	Msg string
-	Typ ErrType
-}
-
-func (e ApiError) Error() string {
-	return e.Msg
+func (c Code) Error() string {
+	switch c {
+	case BadInput:
+		return "Bad Input"
+	case NotFound:
+		return "Not Found"
+	case Conflict:
+		return "Conflict"
+	default:
+		return "Internal Error"
+	}
 }
