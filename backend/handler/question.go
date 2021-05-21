@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -161,7 +162,7 @@ func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) 
 
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
-		err = domain.BadRequest("Given question Id is not a valid int type.")
+		err = fmt.Errorf("%w: given question id is not a valid int type", domain.BadInput)
 		q.error(w, err)
 		return
 	}

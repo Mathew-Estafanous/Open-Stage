@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 )
 
@@ -86,10 +87,10 @@ func (q questionService) Delete(id int) error {
 }
 
 var (
-	errInvalidIncrement     = domain.BadRequest("The provided like increment is not 1 or -1.")
-	errQuestionNotFound     = domain.NotFound("A question with that id was not found.")
-	errQuestionMustHaveRoom = domain.BadRequest("Every question must be assigned a room.")
-	errMissingQuestion      = domain.BadRequest("A question was not provided.")
-	errQuestionNotCreated   = domain.BadRequest("The question could not be created using the room code.")
-	errInternalIssue        = domain.InternalServerError("")
+	errInvalidIncrement     = fmt.Errorf("%w: the provided like increment is not 1 or -1", domain.BadInput)
+	errQuestionNotFound     = fmt.Errorf("%w: a question with that id was not found", domain.NotFound)
+	errQuestionMustHaveRoom = fmt.Errorf("%w: every question must be assigned a room", domain.BadInput)
+	errMissingQuestion      = fmt.Errorf("%w: a question was not provided", domain.BadInput)
+	errQuestionNotCreated   = fmt.Errorf("%w: the question could not be created using the room code", domain.BadInput)
+	errInternalIssue        = fmt.Errorf("%w: we encountered an internal error", domain.Internal)
 )

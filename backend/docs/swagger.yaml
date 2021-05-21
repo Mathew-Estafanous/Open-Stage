@@ -19,7 +19,7 @@ definitions:
         type: string
         x-go-name: TimeStamp
     type: object
-    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
   newQuestion:
     properties:
       associated_room:

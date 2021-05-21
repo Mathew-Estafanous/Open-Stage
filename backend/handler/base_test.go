@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -14,13 +15,16 @@ func TestBaseHandler_error(t *testing.T) {
 	base := baseHandler{}
 
 	w := httptest.NewRecorder()
-	respErr := domain.NewResponseError("A Bad request", http.StatusBadRequest)
+	respErr := fmt.Errorf("%w: bad request", domain.BadInput)
 	base.error(w, respErr)
-	j, err := json.Marshal(respErr)
-	assert.NoError(t, err)
 
-	assert.EqualValues(t, w.Code, respErr.Sts)
-	assert.JSONEq(t, string(j), w.Body.String())
+	assert.EqualValues(t, w.Code, http.StatusBadRequest)
+
+	var resp ResponseError
+	err := json.Unmarshal([]byte(w.Body.String()), &resp)
+	assert.NoError(t, err)
+	assert.EqualValues(t, respErr.Error(), resp.Msg)
+	assert.EqualValues(t, http.StatusBadRequest, resp.Sts)
 
 	w = httptest.NewRecorder()
 	regErr := errors.New("this ia standard regular error")

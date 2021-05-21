@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"math/rand"
 	"time"
@@ -67,8 +68,8 @@ func (r *roomService) generateValidCode() string {
 }
 
 var (
-	errHostNotAssigned = domain.BadRequest("A host has not be assigned to a room")
-	errDuplicateRoom   = domain.Conflict("Room could not be created since the room code is taken.")
-	errRoomNotFound    = domain.NotFound("Room was not found with given code")
-	errRoomNotDeleted  = domain.InternalServerError("There was an error while trying to delete the room.")
+	errHostNotAssigned = fmt.Errorf("%w: a host has not be assigned to a room", domain.BadInput)
+	errDuplicateRoom   = fmt.Errorf("%w: room could not be created since the room code is taken", domain.Conflict)
+	errRoomNotFound    = fmt.Errorf("%w: room was not found with given code", domain.NotFound)
+	errRoomNotDeleted  = fmt.Errorf("%w: we encountered an issue when trying to delete your room", domain.Internal)
 )

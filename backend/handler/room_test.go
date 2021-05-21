@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/gorilla/mux"
@@ -29,7 +30,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	assert.JSONEq(t, string(roomJson), w.Body.String())
 
 	rs.On("FindRoom", "wrongCode").
-		Return(domain.Room{}, domain.NotFound(""))
+		Return(domain.Room{}, fmt.Errorf("%w: not found", domain.NotFound))
 	req, err = http.NewRequest("GET", "/rooms/wrongCode", nil)
 	assert.NoError(t, err)
 
@@ -59,7 +60,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.JSONEq(t, string(j), w.Body.String())
 
 	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat"}
-	rs.On("CreateRoom", &duplicate).Return(domain.Conflict(""))
+	rs.On("CreateRoom", &duplicate).Return(fmt.Errorf("%w: conflict", domain.Conflict))
 	j, err = json.Marshal(duplicate)
 	assert.NoError(t, err)
 
@@ -84,7 +85,7 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
-	rs.On("DeleteRoom", "wrongCode").Return(domain.NotFound(""))
+	rs.On("DeleteRoom", "wrongCode").Return(fmt.Errorf("%w: not found", domain.NotFound))
 	w = httptest.NewRecorder()
 	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)
