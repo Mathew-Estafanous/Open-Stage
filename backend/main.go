@@ -39,7 +39,7 @@ func main() {
 
 	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)
-	server := configureServer(router, port)
+	server := configureServer(middleware.CORS()(router), port)
 
 	go func() {
 		c := make(chan os.Signal)
@@ -92,7 +92,7 @@ func configureDocsRoute(router *mux.Router) {
 func configureServer(r http.Handler, port string) *http.Server {
 	return &http.Server{
 		Addr:         port,
-		Handler:      middleware.CORS()(r),
+		Handler:      middleware.EnforceSSL(r),
 		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 25 * time.Second,
 	}
