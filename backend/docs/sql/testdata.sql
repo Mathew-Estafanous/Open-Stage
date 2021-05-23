@@ -1,8 +1,10 @@
 -- Creating Accounts (Used Bcrypt hashing for passwords)
-INSERT INTO accounts (username, password, email)
-    VALUES ('MatMat', '$2y$10$PlK/Si1y4zwR/4lp9WqELubyLbHiIWm5Xj9Q6Jf9.GNkJg.gmBaVK', 'mathew@gmail.com');
-INSERT INTO accounts (username, password, email)
-    VALUES ('JarJarBinx', '$2y$10$5V80wTKIXcx31evy0bWnyOUADoeHdmGMooBMHUn7PFwQEcJEg5/n2', 'jaja@gmail.com');
+INSERT INTO accounts (name, username, password, email)
+    VALUES ('Mathew', 'MatMat',
+            '$2y$10$PlK/Si1y4zwR/4lp9WqELubyLbHiIWm5Xj9Q6Jf9.GNkJg.gmBaVK', 'mathew@gmail.com');
+INSERT INTO accounts (name, username, password, email)
+    VALUES ('Elijah', 'JarJarBinx',
+            '$2y$10$5V80wTKIXcx31evy0bWnyOUADoeHdmGMooBMHUn7PFwQEcJEg5/n2', 'jaja@gmail.com');
 
 -- Creating Rooms
 INSERT INTO rooms (host, room_code) VALUES ('Mathew', 'cppcGroup');
