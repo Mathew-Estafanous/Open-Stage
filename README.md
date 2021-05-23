@@ -20,8 +20,8 @@ questions as well. All done with the option of remaining anonymous to remain fre
 ### Project Structure
 The project is structured using **Domain Driven Design principles** with the goal of focusing on
 the actual business logic of the application while keeping the specific technology details decoupled.
-Business details can be found in the [domain](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/domain)
-and [service](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/service) packages while having external
+Business details can be found in the [domain](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/backend/domain)
+and [service](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/backend/service) packages while having external
 dependencies like the infrastructure and handlers outside the specific business model.
 
 ### Documentation
@@ -31,7 +31,7 @@ At the heart of the API documentations is the swagger yaml files. Majority of th
 [go-swagger](https://github.com/go-swagger/go-swagger) library, in which the majority of this documentation can be found
 in the [docs](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/docs) package.
 
-You can also find the application's database schema as both a [SQL file](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/backend/_sql)
+You can also find the application's database schema as both a [SQL file](https://github.com/Mathew-Estafanous/Open-Stage/tree/main/backend/docs/sql)
 or take a look at the [schema diagram](https://dbdiagram.io/d/606262f8ecb54e10c33dd900)
 
 # Getting Started

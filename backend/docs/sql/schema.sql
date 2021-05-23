@@ -5,10 +5,17 @@ CREATE TABLE IF NOT EXISTS "rooms" (
 
 CREATE TABLE IF NOT EXISTS "questions" (
      "question_id" SERIAL PRIMARY KEY,
-     "question" varchar(2000) NOT NULL,
-     "questioner_name" varchar(45) NOT NULL DEFAULT 'Anonymous',
-     "total_likes" int NOT NULL DEFAULT 0,
-     "fk_room_code" varchar(15) NOT NULL
+     "question" VARCHAR(2000) NOT NULL,
+     "questioner_name" VARCHAR(45) NOT NULL DEFAULT 'Anonymous',
+     "total_likes" INT NOT NULL DEFAULT 0,
+     "fk_room_code" VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "accounts" (
+    "id" SERIAL PRIMARY KEY,
+    "username" VARCHAR NOT NULL,
+    "password" VARCHAR NOT NULL,
+    "email" VARCHAR NOT NULL
 );
 
 DO $$
