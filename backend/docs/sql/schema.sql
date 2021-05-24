@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS "rooms" (
      "room_code" varchar(15) PRIMARY KEY,
-     "host" varchar(100) NOT NULL
+     "host" varchar(100) NOT NULL,
+     "fk_account_id" INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "questions" (
@@ -24,6 +25,11 @@ BEGIN
     IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = 'fk_room_code') THEN
         ALTER TABLE "questions" ADD FOREIGN KEY ("fk_room_code")
             REFERENCES "rooms" ("room_code") ON DELETE CASCADE;
+    END IF;
+
+    IF NOT EXISTS(SELECT 1 FROM pg_constraint WHERE conname = 'fk_account_id') THEN
+        ALTER TABLE "rooms" ADD FOREIGN KEY ("fk_account_id")
+            REFERENCES "accounts" ("id") ON DELETE CASCADE;
     END IF;
 END;
 $$;

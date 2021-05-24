@@ -7,8 +7,8 @@ INSERT INTO accounts (name, username, password, email)
             '$2y$10$5V80wTKIXcx31evy0bWnyOUADoeHdmGMooBMHUn7PFwQEcJEg5/n2', 'jaja@gmail.com');
 
 -- Creating Rooms
-INSERT INTO rooms (host, room_code) VALUES ('Mathew', 'cppcGroup');
-INSERT INTO rooms (host, room_code) VALUES ('Elijah', 'goto');
+INSERT INTO rooms (host, room_code, fk_account_id) VALUES ('Mathew', 'cppcGroup', 1);
+INSERT INTO rooms (host, room_code, fk_account_id) VALUES ('Elijah', 'goto', 2);
 
 -- Adding Questions to 'cppcGroup' room.
 INSERT INTO questions (question, fk_room_code) VALUES ('How is everything?', 'cppcGroup');
