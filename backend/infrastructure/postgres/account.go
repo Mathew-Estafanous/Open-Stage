@@ -19,7 +19,7 @@ func (p *postgresAccountStore) Create(acc *domain.Account) error {
 	r, err := p.db.Query("INSERT INTO accounts (name, username, password, email) VALUES ($1, $2, $3, $4) RETURNING id",
 		acc.Name, acc.Username, acc.Password, acc.Email)
 	if err != nil {
-		if err, ok := err.(*pq.Error); !ok {
+		if err, ok := err.(*pq.Error); ok {
 			if err.Code.Name() == "unique_violation" {
 				return fmt.Errorf("%w: duplicate username key value", domain.Conflict)
 			}
