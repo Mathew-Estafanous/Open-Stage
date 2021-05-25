@@ -5,6 +5,20 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+type AccountService struct {
+	mock.Mock
+}
+
+func (a *AccountService) Create(acc *domain.Account) error {
+	ret := a.Called(acc)
+	return ret.Error(0)
+}
+
+func (a *AccountService) Delete(id int) error {
+	ret := a.Called(id)
+	return ret.Error(0)
+}
+
 type AccountStore struct {
 	mock.Mock
 }
