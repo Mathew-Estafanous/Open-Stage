@@ -14,10 +14,10 @@ func TestAccountService_Create(t *testing.T) {
 	service := NewAccountService(aStore)
 
 	account := domain.Account{
-		Name: "Hello",
+		Name:     "Hello",
 		Username: "Mathew",
 		Password: "MatMat",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 
 	aStore.On("Create", mock2.MatchedBy(func(a *domain.Account) bool {
@@ -28,13 +28,23 @@ func TestAccountService_Create(t *testing.T) {
 	err := service.Create(&account)
 	assert.NoError(t, err)
 
-	invAccount := domain.Account {
-		Name: "Hello",
+	invAccount := domain.Account{
+		Name:     "Hello",
 		Username: "Mathew",
 		Password: "MatMat",
-		Email: "mathew@not-a-valid-address.com",
+		Email:    "mathew@not-a-valid-address.com",
 	}
 
 	err = service.Create(&invAccount)
 	assert.ErrorIs(t, err, domain.BadInput)
+}
+
+func TestAccountService_Delete(t *testing.T) {
+	aStore := new(mock.AccountStore)
+	service := NewAccountService(aStore)
+
+	aStore.On("Delete", 1).Return(nil)
+
+	err := service.Delete(1)
+	assert.NoError(t, err)
 }

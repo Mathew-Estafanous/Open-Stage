@@ -39,7 +39,11 @@ func (a *accountService) Create(acc *domain.Account) error {
 }
 
 func (a *accountService) Delete(id int) error {
-	panic("implement me")
+	err := a.store.Delete(id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func isEmailValid(e string) bool {
@@ -56,4 +60,3 @@ func isEmailValid(e string) bool {
 	}
 	return true
 }
-
