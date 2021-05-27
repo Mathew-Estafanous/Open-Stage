@@ -6,6 +6,7 @@ import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 type AccountResp struct {
@@ -53,7 +54,8 @@ func NewAccountHandler(aService domain.AccountService) *accountHandler {
 }
 
 func (a accountHandler) Route(r *mux.Router) {
-	r.HandleFunc("/accounts", a.createAccount).Methods("POST")
+	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
+	r.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
 }
 
 func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
@@ -84,4 +86,19 @@ func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 		Email: acc.Email,
 	}
 	a.respond(w, http.StatusCreated, resp)
+}
+
+func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
+	pathId := mux.Vars(r)["id"]
+	id, err := strconv.Atoi(pathId)
+	if err != nil {
+		a.error(w, fmt.Errorf("%w: given id is not a valid int", domain.BadInput))
+		return
+	}
+
+	err = a.as.Delete(id)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
 }

@@ -34,7 +34,7 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
-	req, err := http.NewRequest("POST", "/accounts", strings.NewReader(string(j)))
+	req, err := http.NewRequest("POST", "/accounts/signup", strings.NewReader(string(j)))
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
@@ -63,7 +63,31 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	j, err = json.Marshal(missingField)
 	assert.NoError(t, err)
 
-	req, err = http.NewRequest("POST", "/accounts", strings.NewReader(string(j)))
+	req, err = http.NewRequest("POST", "/accounts/signup", strings.NewReader(string(j)))
+	assert.NoError(t, err)
+
+	w = httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusBadRequest, w.Code)
+}
+
+func TestAccountHandler_deleteAccount(t *testing.T) {
+	as := new(mock.AccountService)
+
+	as.On("Delete", 5).Return(nil)
+
+	req, err := http.NewRequest("DELETE", "/accounts/5", nil)
+	assert.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	r := mux.NewRouter()
+	NewAccountHandler(as).Route(r)
+	r.ServeHTTP(w, req)
+	assert.EqualValues(t, http.StatusOK, w.Code)
+
+
+	req, err = http.NewRequest("DELETE", "/accounts/sfaf", nil)
 	assert.NoError(t, err)
 
 	w = httptest.NewRecorder()
