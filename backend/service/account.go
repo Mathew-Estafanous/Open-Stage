@@ -8,6 +8,7 @@ import (
 	"net"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type accountService struct {
@@ -53,7 +54,7 @@ func (a *accountService) Delete(id int) error {
 	return nil
 }
 
-func (a *accountService) Authenticate(acc *domain.Account) (string, error) {
+func (a *accountService) Authenticate(acc domain.Account) (string, error) {
 	found, err := a.store.GetByUsername(acc.Username)
 	if err != nil {
 		return "", err
@@ -64,10 +65,11 @@ func (a *accountService) Authenticate(acc *domain.Account) (string, error) {
 		return "", fmt.Errorf("%w: the password did not match", domain.BadInput)
 	}
 
+	exp := time.Now().Add(time.Minute * 15).Unix()
 	claim := AccountClaims{
 		found.Username,
 		jwt.StandardClaims{
-			ExpiresAt: 5000,
+			ExpiresAt: exp,
 			Issuer: "server",
 		},
 	}

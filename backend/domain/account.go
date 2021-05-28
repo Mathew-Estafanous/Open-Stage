@@ -16,6 +16,6 @@ type AccountStore interface {
 
 type AccountService interface {
 	Create(acc *Account) error
-	Authenticate(acc *Account) (string, error)
+	Authenticate(acc Account) (string, error)
 	Delete(id int) error
 }
