@@ -46,6 +46,13 @@ type roomResponse struct {
 	Body domain.Room
 }
 
+// User Account information
+// swagger:response accountResponse
+type accountResponse struct {
+	// in: body
+	Body handler.AccountResp
+}
+
 // An http error response.
 // swagger:response errorResponse
 type errorResponse struct {
@@ -71,6 +78,12 @@ type createRoomBody struct {
 	Body domain.Room
 }
 
+// swagger:parameters createAccount
+type createAcountBody struct {
+	// in: body
+	Body handler.CreateAccount
+}
+
 // swagger:parameters roomCode
 type roomCodePath struct {
 	// The room code that all questions will be retrieved from.
@@ -91,4 +104,11 @@ type questionIdPath struct {
 	// The question's ID
 	// in: path
 	ID string `json:"question_id"`
+}
+
+// swagger:parameters accountId
+type accountIdPath struct {
+	// The account ID
+	// in: path
+	ID string `json:"id"`
 }
