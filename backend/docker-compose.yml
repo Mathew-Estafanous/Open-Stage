@@ -31,6 +31,7 @@ services:
       DATABASE_URL: 'postgres://admin:qa-password@[address]:5432/qa_platform'
       PROFILE: 'ctr'
       CONTAINER_ADDRESS: db
+      SECRET_KEY: 'THIS_IS_A_SECRET'
     depends_on:
       db:
         condition: service_healthy

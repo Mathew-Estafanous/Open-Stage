@@ -6,13 +6,14 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"net"
+	"os"
 	"regexp"
 	"strings"
 	"time"
 )
 
 type accountService struct {
-	sign jwt.SigningMethod
+	key   string
 	store domain.AccountStore
 }
 
@@ -24,7 +25,7 @@ type AccountClaims struct {
 func NewAccountService(aStore domain.AccountStore) domain.AccountService {
 	return &accountService{
 		store: aStore,
-		sign: jwt.SigningMethodHS256,
+		key:   os.Getenv("SECRET_KEY"),
 	}
 }
 
@@ -57,12 +58,12 @@ func (a *accountService) Delete(id int) error {
 func (a *accountService) Authenticate(acc domain.Account) (string, error) {
 	found, err := a.store.GetByUsername(acc.Username)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(acc.Password))
 	if err != nil {
-		return "", fmt.Errorf("%w: the password did not match", domain.BadInput)
+		return "", fmt.Errorf("%w: the password did not match", domain.Unauthorized)
 	}
 
 	exp := time.Now().Add(time.Minute * 15).Unix()
@@ -70,13 +71,13 @@ func (a *accountService) Authenticate(acc domain.Account) (string, error) {
 		found.Username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
-			Issuer: "server",
+			Issuer:    "server",
 		},
 	}
-	token := jwt.NewWithClaims(a.sign, claim)
-	signedToken, err := token.SignedString([]byte("SECRETKEY"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	signedToken, err := token.SignedString([]byte(a.key))
 	if err != nil {
-		return "", fmt.Errorf("%w: encountered an eror while signing the token", err)
+		return "", fmt.Errorf("%w: encountered an eror while signing the token", domain.Unauthorized)
 	}
 	return signedToken, nil
 }

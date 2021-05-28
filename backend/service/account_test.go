@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	mock2 "github.com/stretchr/testify/mock"
 	"golang.org/x/crypto/bcrypt"
+	"os"
 	"testing"
 )
 
@@ -51,6 +52,9 @@ func TestAccountService_Delete(t *testing.T) {
 }
 
 func TestAccountService_Authenticate(t *testing.T) {
+	err := os.Setenv("SECRET_KEY", "SECRET")
+	assert.NoError(t, err)
+
 	aStore := new(mock.AccountStore)
 	service := NewAccountService(aStore)
 
@@ -69,7 +73,7 @@ func TestAccountService_Authenticate(t *testing.T) {
 	assert.NoError(t, err)
 
 	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("SECRETKEY"), nil
+		return []byte("SECRET"), nil
 	})
 	assert.NoError(t, err)
 	assert.EqualValues(t, true, token.Valid)

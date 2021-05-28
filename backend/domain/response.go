@@ -7,6 +7,7 @@ const (
 	NotFound
 	Conflict
 	BadInput
+	Unauthorized
 )
 
 func (c Code) Error() string {
@@ -17,6 +18,8 @@ func (c Code) Error() string {
 		return "Not Found"
 	case Conflict:
 		return "Conflict"
+	case Unauthorized:
+		return "Unauthorized"
 	default:
 		return "Internal Error"
 	}
