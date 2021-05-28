@@ -30,12 +30,17 @@ func main() {
 	qService := service.NewQuestionService(qStore, rService)
 	questionHandler := handler.NewQuestionHandler(qService)
 
+	aStore := postgres.NewAccountStore(db)
+	aService := service.NewAccountService(aStore)
+	accountHandler := handler.NewAccountHandler(aService)
+
 	router := mux.NewRouter()
 	configureDocsRoute(router)
 
 	apiRouter := router.PathPrefix("/v1").Subrouter()
 	roomHandler.Route(apiRouter)
 	questionHandler.Route(apiRouter)
+	accountHandler.Route(apiRouter)
 
 	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)

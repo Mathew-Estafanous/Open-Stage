@@ -92,7 +92,7 @@ func TestPostgresQuestionStore_Create(t *testing.T) {
 						VALUES ($1, $2, $3) 
 						RETURNING question_id`
 	mock.ExpectQuery(insertQuery).
-		WithArgs(&mQuestion.Question, &mQuestion.QuestionerName, &mQuestion.AssociatedRoom).
+		WithArgs(mQuestion.Question, mQuestion.QuestionerName, mQuestion.AssociatedRoom).
 		WillReturnRows(sqlmock.NewRows([]string{"question_id"}).AddRow(1))
 
 	qStore := NewQuestionStore(db)

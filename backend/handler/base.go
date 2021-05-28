@@ -58,7 +58,6 @@ func errToHttpResp(err error) ResponseError {
 	var code domain.Code
 	if errors.As(err, &code) {
 		return ResponseError{Msg: err.Error(), Sts: errTypeToSts[code], TimeStamp: time.Now()}
-	} else {
-		return ResponseError{Msg: err.Error(), Sts: http.StatusInternalServerError, TimeStamp: time.Now()}
 	}
+	return ResponseError{Msg: "we encountered an internal error", Sts: http.StatusInternalServerError, TimeStamp: time.Now()}
 }

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "questions" (
 CREATE TABLE IF NOT EXISTS "accounts" (
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR NOT NULL,
-    "username" VARCHAR NOT NULL,
+    "username" VARCHAR NOT NULL UNIQUE,
     "password" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL
 );

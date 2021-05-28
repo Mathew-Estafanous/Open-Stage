@@ -20,6 +20,44 @@ definitions:
         x-go-name: TimeStamp
     type: object
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+  accountResponse:
+    description: username, etc.
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      id:
+        format: int64
+        type: integer
+        x-go-name: Id
+      name:
+        type: string
+        x-go-name: Name
+      username:
+        type: string
+        x-go-name: Username
+    title: AccountResp represents a user's account information like name,
+    type: object
+    x-go-name: AccountResp
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+  createAccount:
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      name:
+        type: string
+        x-go-name: Name
+      password:
+        type: string
+        x-go-name: Password
+      username:
+        type: string
+        x-go-name: Username
+    title: CreateAccount are the fields that are used to signup a new user account.
+    type: object
+    x-go-name: CreateAccount
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
   newQuestion:
     properties:
       associated_room:
@@ -141,6 +179,49 @@ info:
   title: Documentation for Open-Stage API
   version: "1.0"
 paths:
+  /accounts:
+    post:
+      description: Will create a new account while also ensuring the validity of the
+        provided email.
+      operationId: createAccount
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/createAccount'
+      responses:
+        "201":
+          $ref: '#/responses/accountResponse'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "409":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Signup a new user account.
+      tags:
+      - Accounts
+  /accounts/{accountId}:
+    delete:
+      description: Will delete the user account with the correlating account 'id.'
+      operationId: accountId
+      parameters:
+      - description: The account ID
+        in: path
+        name: id
+        required: true
+        type: string
+        x-go-name: ID
+      responses:
+        "200":
+          description: ' OK - Question has been properly deleted.'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Delete an account by ID
+      tags:
+      - Accounts
   /questions:
     post:
       description: |-
@@ -289,6 +370,10 @@ paths:
 produces:
 - application/json
 responses:
+  accountResponse:
+    description: User Account information
+    schema:
+      $ref: '#/definitions/accountResponse'
   errorResponse:
     description: An http error response.
     schema:
