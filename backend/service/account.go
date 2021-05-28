@@ -3,21 +3,28 @@ package service
 import (
 	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"net"
 	"regexp"
 	"strings"
 )
 
-var emailRegex = regexp.MustCompile(
-	"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
-
 type accountService struct {
+	sign jwt.SigningMethod
 	store domain.AccountStore
 }
 
-func NewAccountService(store domain.AccountStore) domain.AccountService {
-	return &accountService{store}
+type AccountClaims struct {
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+func NewAccountService(aStore domain.AccountStore) domain.AccountService {
+	return &accountService{
+		store: aStore,
+		sign: jwt.SigningMethodHS256,
+	}
 }
 
 func (a *accountService) Create(acc *domain.Account) error {
@@ -45,6 +52,35 @@ func (a *accountService) Delete(id int) error {
 	}
 	return nil
 }
+
+func (a *accountService) Authenticate(acc *domain.Account) (string, error) {
+	found, err := a.store.GetByUsername(acc.Username)
+	if err != nil {
+		return "", err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(acc.Password))
+	if err != nil {
+		return "", fmt.Errorf("%w: the password did not match", domain.BadInput)
+	}
+
+	claim := AccountClaims{
+		found.Username,
+		jwt.StandardClaims{
+			ExpiresAt: 5000,
+			Issuer: "server",
+		},
+	}
+	token := jwt.NewWithClaims(a.sign, claim)
+	signedToken, err := token.SignedString([]byte("SECRETKEY"))
+	if err != nil {
+		return "", fmt.Errorf("%w: encountered an eror while signing the token", err)
+	}
+	return signedToken, nil
+}
+
+var emailRegex = regexp.MustCompile(
+	"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 func isEmailValid(e string) bool {
 	if len(e) < 3 && len(e) > 254 {
