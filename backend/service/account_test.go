@@ -69,14 +69,21 @@ func TestAccountService_Authenticate(t *testing.T) {
 		Username: "someUsername",
 		Password: "helloWorld",
 	}
-	jwtToken, err := service.Authenticate(auth)
+	authToken, err := service.Authenticate(auth)
 	assert.NoError(t, err)
 
-	token, err := jwt.Parse(jwtToken, func(token *jwt.Token) (interface{}, error) {
+	accessTkn, err := jwt.Parse(authToken.AccessToken, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
 	assert.NoError(t, err)
-	assert.EqualValues(t, true, token.Valid)
+
+	refreshTkn, err := jwt.Parse(authToken.RefreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte("SECRET"), nil
+	})
+	assert.NoError(t, err)
+
+	assert.EqualValues(t, true, accessTkn.Valid)
+	assert.EqualValues(t, true, refreshTkn.Valid)
 
 	auth.Username = "InvalidUsername"
 	aStore.On("GetByUsername", auth.Username).Return(domain.Account{}, domain.NotFound)

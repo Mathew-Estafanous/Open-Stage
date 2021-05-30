@@ -91,7 +91,7 @@ func configureDocsRoute(router *mux.Router) {
 	}
 	doc := middle.Redoc(opts, nil)
 	router.Handle("/docs", doc)
-	router.Handle("/docs/swagger.yaml", http.FileServer(http.Dir("./")))
+	router.Handle("/docs/swagger.yaml", http.FileServer(http.Dir("./backend")))
 }
 
 func configureServer(r http.Handler, port string) *http.Server {

@@ -38,11 +38,6 @@ type Login struct {
 	Password string `json:"password"`
 }
 
-type TokenResponse struct {
-	JWTToken string `json:"jwt_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
 func (l *Login) UnmarshalJSON(data []byte) error {
 	type login2 Login
 	if err := json.Unmarshal(data, (*login2)(l)); err != nil {
@@ -162,6 +157,17 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route POST /accounts/login Accounts loginAccount
+//
+// Login and authenticate account.
+//
+// Uses the provided credentials to authenticate and will return JWT tokens
+// if authentication is successful.
+//
+// Responses:
+//   200: authToken
+//   401: errorResponse
+//   500: errorResponse
 func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 	var body Login
 	err := json.NewDecoder(r.Body).Decode(&body)
@@ -175,14 +181,11 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 		Password: body.Password,
 	}
 
-	jwtToken, err := a.as.Authenticate(acc)
+	token, err := a.as.Authenticate(acc)
 	if err != nil {
 		a.error(w, err)
 		return
 	}
 
-	tokenResp := TokenResponse{
-		JWTToken: jwtToken,
-	}
-	a.respond(w, http.StatusOK, tokenResp)
+	a.respond(w, http.StatusOK, token)
 }

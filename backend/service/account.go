@@ -55,44 +55,52 @@ func (a *accountService) Delete(id int) error {
 	return nil
 }
 
-func (a *accountService) Authenticate(acc domain.Account) (domain.Token, error) {
+func (a *accountService) Authenticate(acc domain.Account) (domain.AuthToken, error) {
 	found, err := a.store.GetByUsername(acc.Username)
 	if err != nil {
-		return domain.Token{}, fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
+		return domain.AuthToken{}, fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(acc.Password))
 	if err != nil {
-		return domain.Token{}, fmt.Errorf("%w: the password did not match", domain.Unauthorized)
+		return domain.AuthToken{}, fmt.Errorf("%w: the password did not match", domain.Unauthorized)
 	}
 
+	tk, err := createToken(acc.Username, a.key)
+	if err != nil {
+		return domain.AuthToken{}, fmt.Errorf("%w: we were unable to issue a token", domain.Internal)
+	}
+	return tk, nil
+}
+
+func createToken(username, key string) (domain.AuthToken, error) {
 	exp := time.Now().Add(time.Minute * 15).Unix()
 	accessClaim := AccountClaims{
-		acc.Username,
+		username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
 			Issuer:    "server",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaim)
-	access, err := token.SignedString([]byte(a.key))
+	access, err := token.SignedString([]byte(key))
 	if err != nil {
-		return domain.Token{}, fmt.Errorf("%w: %v", domain.Internal, err.Error())
+		return domain.AuthToken{}, err
 	}
 
-	exp = time.Now().Add(time.Hour * 48).Unix()
+	exp = time.Now().Add(time.Hour * 168).Unix()
 	refreshClaim := jwt.MapClaims{
 		"exp": exp,
-		"username": acc.Username,
+		"username": username,
 	}
 
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
-	refresh, err := token.SignedString([]byte(a.key))
+	refresh, err := token.SignedString([]byte(key))
 	if err != nil {
-		return domain.Token{}, fmt.Errorf("%w: %v", domain.Internal, err.Error())
+		return domain.AuthToken{}, err
 	}
 
-	tk := domain.Token{
+	tk := domain.AuthToken{
 		AccessToken:  access,
 		RefreshToken: refresh,
 	}

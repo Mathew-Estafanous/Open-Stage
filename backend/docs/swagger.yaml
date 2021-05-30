@@ -40,6 +40,20 @@ definitions:
     type: object
     x-go-name: AccountResp
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+  authToken:
+    description: |-
+      AuthToken contains both the access and refresh tokens after
+      a user has successfully authenticated.
+    properties:
+      access_token:
+        type: string
+        x-go-name: AccessToken
+      refresh_token:
+        type: string
+        x-go-name: RefreshToken
+    type: object
+    x-go-name: AuthToken
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
   createAccount:
     properties:
       email:
@@ -57,6 +71,18 @@ definitions:
     title: CreateAccount are the fields that are used to signup a new user account.
     type: object
     x-go-name: CreateAccount
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+  loginAccount:
+    properties:
+      password:
+        type: string
+        x-go-name: Password
+      username:
+        type: string
+        x-go-name: Username
+    title: Login are the fields that are required to successfully log into an account.
+    type: object
+    x-go-name: Login
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
   newQuestion:
     properties:
@@ -222,6 +248,27 @@ paths:
       summary: Delete an account by ID
       tags:
       - Accounts
+  /accounts/login:
+    post:
+      description: |-
+        Uses the provided credentials to authenticate and will return JWT tokens
+        if authentication is successful.
+      operationId: loginAccount
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/loginAccount'
+      responses:
+        "200":
+          $ref: '#/responses/authToken'
+        "401":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Login and authenticate account.
+      tags:
+      - Accounts
   /questions:
     post:
       description: |-
@@ -374,6 +421,10 @@ responses:
     description: User Account information
     schema:
       $ref: '#/definitions/accountResponse'
+  authToken:
+    description: Access tokens from authentication
+    schema:
+      $ref: '#/definitions/authToken'
   errorResponse:
     description: An http error response.
     schema:
