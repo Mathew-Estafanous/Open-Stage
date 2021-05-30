@@ -53,6 +53,7 @@ func errToHttpResp(err error) ResponseError {
 		domain.NotFound: http.StatusNotFound,
 		domain.Conflict: http.StatusConflict,
 		domain.BadInput: http.StatusBadRequest,
+		domain.Unauthorized: http.StatusUnauthorized,
 	}
 
 	var code domain.Code

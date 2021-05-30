@@ -30,6 +30,29 @@ type CreateAccount struct {
 	Email    string `json:"email"`
 }
 
+// Login are the fields that are required to successfully log into an account.
+//
+// swagger:model loginAccount
+type Login struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func (l *Login) UnmarshalJSON(data []byte) error {
+	type login2 Login
+	if err := json.Unmarshal(data, (*login2)(l)); err != nil {
+		return err
+	}
+
+	if l.Username == "" {
+		return fmt.Errorf("%w: missing account 'username' field", domain.BadInput)
+	}
+	if l.Password == "" {
+		return fmt.Errorf("%w: missing account 'password' field", domain.BadInput)
+	}
+	return nil
+}
+
 // UnmarshalJSON will enforce all the required fields in the CreateAccount
 // struct and returns an error if a field is missing.
 func (c *CreateAccount) UnmarshalJSON(data []byte) error {
@@ -65,6 +88,7 @@ func NewAccountHandler(aService domain.AccountService) *accountHandler {
 func (a accountHandler) Route(r *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
 	r.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
+	r.HandleFunc("/accounts/login", a.login).Methods("POST")
 }
 
 // swagger:route POST /accounts Accounts createAccount
@@ -131,4 +155,37 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 		a.error(w, err)
 		return
 	}
+}
+
+// swagger:route POST /accounts/login Accounts loginAccount
+//
+// Login and authenticate account.
+//
+// Uses the provided credentials to authenticate and will return JWT tokens
+// if authentication is successful.
+//
+// Responses:
+//   200: authToken
+//   401: errorResponse
+//   500: errorResponse
+func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
+	var body Login
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	acc := domain.Account{
+		Username: body.Username,
+		Password: body.Password,
+	}
+
+	token, err := a.as.Authenticate(acc)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	a.respond(w, http.StatusOK, token)
 }

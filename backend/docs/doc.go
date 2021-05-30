@@ -53,6 +53,13 @@ type accountResponse struct {
 	Body handler.AccountResp
 }
 
+// Access tokens from authentication
+// swagger:response authToken
+type tokenResponse struct {
+	// in: body
+	Body domain.AuthToken
+}
+
 // An http error response.
 // swagger:response errorResponse
 type errorResponse struct {
@@ -70,6 +77,12 @@ type updateLikesBody struct {
 type createQuestionBody struct {
 	// in: body
 	Body handler.NewQuestion
+}
+
+// swagger:parameters loginAccount
+type loginBody struct {
+	// in: body
+	Body handler.Login
 }
 
 // swagger:parameters createRoom
