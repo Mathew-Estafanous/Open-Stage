@@ -19,9 +19,9 @@ func (a *AccountService) Delete(id int) error {
 	return ret.Error(0)
 }
 
-func (a *AccountService) Authenticate(acc domain.Account) (string, error) {
+func (a *AccountService) Authenticate(acc domain.Account) (domain.Token, error) {
 	ret := a.Called(acc)
-	return ret.String(0), ret.Error(1)
+	return ret.Get(0).(domain.Token), ret.Error(1)
 }
 
 type AccountStore struct {

@@ -40,6 +40,7 @@ type Login struct {
 
 type TokenResponse struct {
 	JWTToken string `json:"jwt_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func (l *Login) UnmarshalJSON(data []byte) error {
@@ -179,5 +180,9 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 		a.error(w, err)
 		return
 	}
-	w.Header().Set("Authorization", jwtToken)
+
+	tokenResp := TokenResponse{
+		JWTToken: jwtToken,
+	}
+	a.respond(w, http.StatusOK, tokenResp)
 }

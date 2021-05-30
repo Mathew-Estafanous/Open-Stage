@@ -55,31 +55,48 @@ func (a *accountService) Delete(id int) error {
 	return nil
 }
 
-func (a *accountService) Authenticate(acc domain.Account) (string, error) {
+func (a *accountService) Authenticate(acc domain.Account) (domain.Token, error) {
 	found, err := a.store.GetByUsername(acc.Username)
 	if err != nil {
-		return "", fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
+		return domain.Token{}, fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(found.Password), []byte(acc.Password))
 	if err != nil {
-		return "", fmt.Errorf("%w: the password did not match", domain.Unauthorized)
+		return domain.Token{}, fmt.Errorf("%w: the password did not match", domain.Unauthorized)
 	}
 
 	exp := time.Now().Add(time.Minute * 15).Unix()
-	claim := AccountClaims{
-		found.Username,
+	accessClaim := AccountClaims{
+		acc.Username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
 			Issuer:    "server",
 		},
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
-	signedToken, err := token.SignedString([]byte(a.key))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaim)
+	access, err := token.SignedString([]byte(a.key))
 	if err != nil {
-		return "", fmt.Errorf("%w: encountered an eror while signing the token", domain.Unauthorized)
+		return domain.Token{}, fmt.Errorf("%w: %v", domain.Internal, err.Error())
 	}
-	return signedToken, nil
+
+	exp = time.Now().Add(time.Hour * 48).Unix()
+	refreshClaim := jwt.MapClaims{
+		"exp": exp,
+		"username": acc.Username,
+	}
+
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
+	refresh, err := token.SignedString([]byte(a.key))
+	if err != nil {
+		return domain.Token{}, fmt.Errorf("%w: %v", domain.Internal, err.Error())
+	}
+
+	tk := domain.Token{
+		AccessToken:  access,
+		RefreshToken: refresh,
+	}
+	return tk, nil
 }
 
 var emailRegex = regexp.MustCompile(
