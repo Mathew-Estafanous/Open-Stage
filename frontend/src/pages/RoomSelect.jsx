@@ -57,12 +57,10 @@ export const RoomSelect = () => {
             }
 
             {query.get("error") && !isLoading?
-                <div className='errContainer' >
                     <div className='error'>
                         <img src="/Warning.png" alt="Warning"/>
                         <p>{query.get("error")}</p>
                     </div>
-                </div>
                 :null
             }
         </form>

@@ -37,7 +37,7 @@ div.question {
 
 .head .like img {
     padding-right: 8px;
-    max-width: 25px;
+    max-width: 29px;
 }
 
 .head .like img:hover {
@@ -82,7 +82,7 @@ div.question {
     }
 
     .head .like img {
-        max-width: 22px;
+        max-width: 25px;
     }
 
     .head.like h3 {

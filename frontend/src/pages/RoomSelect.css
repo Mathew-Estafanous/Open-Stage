@@ -105,14 +105,8 @@ form.roomCode div img.btn:hover {
 /*
 Styling for Error Message
  */
-
-.errContainer {
-    width: 100%;
-    text-align: center;
-    margin-top: 2vw;
-}
-
 .error {
+    margin-top: 2vw;
     display: inline-block;
     background-color: rgba(255, 0, 0, 0.2);
     padding: 10px;
