@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 html {
     font-family: 'Poppins', sans-serif;
     color: #eeeeee;
@@ -8,14 +14,14 @@ html {
 
 html body {
     background-color: #232931;
-    margin: 0 2vw;
-    padding: 0;
+    height: 100vh;
 }
 
 *:focus {
     outline: none;
 }
 
-header {
-    margin-top: 25px;
+#root {
+    height: 100vh;
+    margin: 0 2vw;
 }
