@@ -16,7 +16,8 @@ export const RoomSelect = () => {
     const query = useQuery();
     const history = useHistory();
 
-    const joinRoom = async () => {
+    const joinRoom = async (e) => {
+        e.preventDefault()
         setLoading(true);
         let result = await GetRoom(code);
         setLoading(false);
@@ -36,16 +37,17 @@ export const RoomSelect = () => {
 
             <img className='profile' src="/Profile.png" alt=""/>
         </header>
-        <form className='roomCode' >
+        <form className='roomCode' onSubmit={joinRoom} >
             <h1>Join Room</h1>
             <hr/>
-            <div>
+            <div className='selector'>
                 <img className='hashtag' src="/Hashtag-Symbol.png" alt="hashtag symbol"/>
                 <input maxLength={20} placeholder='Enter Room Code'
                        onChange={e => setCode(e.target.value)} />
-                <img className='btn'
-                     src="/Select-Arrow.png" alt=""
-                     onClick={joinRoom} />
+                <button type="submit">
+                    <img className='btn'
+                         src="/Select-Arrow.png" alt=""/>
+                </button>
             </div>
 
             {isLoading?
@@ -53,18 +55,19 @@ export const RoomSelect = () => {
                     <Oval className='loader' />
                 </div>: null
             }
+
+            {query.get("error") && !isLoading?
+                <div className='errContainer' >
+                    <div className='error'>
+                        <img src="/Warning.png" alt="Warning"/>
+                        <p>{query.get("error")}</p>
+                    </div>
+                </div>
+                :null
+            }
         </form>
 
 
-        {query.get("error") && !isLoading?
-            <div className='errContainer' >
-                <div className='error'>
-                    <img src="/Warning.png" alt="Warning"/>
-                    <p>{query.get("error")}</p>
-                </div>
-            </div>
-            :null
-        }
         </>
     )
 }

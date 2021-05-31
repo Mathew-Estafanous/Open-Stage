@@ -1,4 +1,5 @@
 header {
+    padding-top: 25px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -24,9 +25,13 @@ header img.profile {
 Styling for Room Form
 */
 form.roomCode {
-    margin-top: 20vh;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     width: 100%;
+    height: 70%;
 }
 
 form.roomCode h1 {
@@ -53,7 +58,7 @@ form.roomCode input {
 
     border-radius: 50px;
     width: 350px;
-    height: 40px;
+    height: 42px;
 }
 
 form.roomCode ::placeholder {
@@ -61,19 +66,35 @@ form.roomCode ::placeholder {
     font-weight: 600;
 }
 
-form.roomCode div img.hashtag {
+.selector {
+    display: flex;
     position: relative;
+}
+
+form.roomCode div img.hashtag {
+    position: absolute;
     opacity: 40%;
     top: 7px;
-    left: 35px;
+    left: 10px;
     max-width: 25px;
 }
 
-form.roomCode div img.btn {
-    position: relative;
-    top: 13px;
-    right: 42px;
+form.roomCode div button {
+    background: none;
+    border: none;
+    position: absolute;
+    top: 3px;
+    right: 39px;
     max-width: 37px;
+}
+
+form.roomCode div button:hover {
+    cursor: pointer;
+}
+
+form.roomCode div img.btn {
+    position: absolute;
+    max-width: 35px;
 }
 
 form.roomCode div img.btn:hover {
@@ -155,8 +176,7 @@ Styling for Error Message
     }
 
     form.roomCode input {
-        width: 250px;
-        font-size: 15px;
+        font-size: 14px;
     }
 
     form.roomCode h1 {
@@ -190,17 +210,12 @@ Styling for Error Message
         width: 75px;
     }
 
-    form.roomCode input {
-        width: 220px;
-        font-size: 14px;
-    }
-
     form.roomCode h1 {
         font-size: 34px;
     }
 
     form.roomCode div img.btn {
-        top: 14px;
+        top: 1px;
     }
 
     .error {

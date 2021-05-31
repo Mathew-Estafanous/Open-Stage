@@ -24,10 +24,6 @@ div.roomInfo .name {
     div.roomInfo .name {
         font-size: 20px;
     }
-
-    header {
-        margin-top: 20px;
-    }
 }
 
 @media (max-width: 550px) {
@@ -37,10 +33,6 @@ div.roomInfo .name {
 
     div.roomInfo .name {
         font-size: 15px;
-    }
-
-    header {
-        margin-top: 15px;
     }
 }
 
