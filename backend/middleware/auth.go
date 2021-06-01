@@ -31,6 +31,12 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
+		c := tk.Claims.(jwt.MapClaims)
+		if c["aud"] != "access" {
+			writeError(w, "Invalid access token")
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }

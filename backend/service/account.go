@@ -80,7 +80,7 @@ func createToken(username, id , key string) (domain.AuthToken, error) {
 		username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
-			Issuer:    "server",
+			Audience: "access",
 			Subject: id,
 		},
 	}
@@ -91,9 +91,12 @@ func createToken(username, id , key string) (domain.AuthToken, error) {
 	}
 
 	exp = time.Now().Add(time.Hour * 168).Unix()
-	refreshClaim := jwt.MapClaims{
-		"exp": exp,
-		"username": username,
+	refreshClaim := AccountClaims{
+		username,
+		jwt.StandardClaims{
+			ExpiresAt: exp,
+			Audience: "refresh",
+		},
 	}
 
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
