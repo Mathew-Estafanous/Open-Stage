@@ -73,7 +73,7 @@ form.roomCode ::placeholder {
 
 form.roomCode div img.hashtag {
     position: absolute;
-    opacity: 40%;
+    opacity: 0.4;
     top: 7px;
     left: 10px;
     max-width: 25px;
