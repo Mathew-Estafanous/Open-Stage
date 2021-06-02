@@ -41,7 +41,7 @@ export const RoomSelect = () => {
             <h1>Join Room</h1>
             <hr/>
             <div className='selector'>
-                <img className='hashtag' src="/Hashtag-Symbol.png" alt="hashtag symbol"/>
+                <img className='hashtag' src="/Hashtag.png" alt="hashtag symbol"/>
                 <input maxLength={20} placeholder='Enter Room Code'
                        onChange={e => setCode(e.target.value)} />
                 <button type="submit">
