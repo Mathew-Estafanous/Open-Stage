@@ -24,16 +24,24 @@ definitions:
     description: username, etc.
     properties:
       email:
+        description: Email associated with the account.
+        example: mathew@fake.com
         type: string
         x-go-name: Email
       id:
+        description: The account id.
+        example: 1234
         format: int64
         type: integer
         x-go-name: Id
       name:
+        description: Name of the account holder.
+        example: Mathew
         type: string
         x-go-name: Name
       username:
+        description: The account username.
+        example: MatMat2
         type: string
         x-go-name: Username
     title: AccountResp represents a user's account information like name,
@@ -57,17 +65,26 @@ definitions:
   createAccount:
     properties:
       email:
+        example: mathew@fake.com
         type: string
         x-go-name: Email
       name:
+        example: Mathew
         type: string
         x-go-name: Name
       password:
+        example: aSecretPassword
         type: string
         x-go-name: Password
       username:
+        example: MatMat
         type: string
         x-go-name: Username
+    required:
+    - name
+    - username
+    - password
+    - email
     title: CreateAccount are the fields that are used to signup a new user account.
     type: object
     x-go-name: CreateAccount
@@ -75,11 +92,18 @@ definitions:
   loginAccount:
     properties:
       password:
+        description: Password of the account.
+        example: aSecretPassword
         type: string
         x-go-name: Password
       username:
+        description: Username of the account wanted.
+        example: MatMat
         type: string
         x-go-name: Username
+    required:
+    - username
+    - password
     title: Login are the fields that are required to successfully log into an account.
     type: object
     x-go-name: Login
@@ -152,8 +176,14 @@ definitions:
       then contains questions that pertain to the room and whatever
       topic is in discussion.
     properties:
+      account_id:
+        description: The account that owns the room.
+        example: 3434
+        format: int64
+        type: integer
+        x-go-name: AccId
       host:
-        description: The host of the room.
+        description: The host of the room's name.
         example: Mathew
         type: string
         x-go-name: Host
@@ -164,6 +194,7 @@ definitions:
         x-go-name: RoomCode
     required:
     - host
+    - account_id
     title: Room models every group Q&A session/room.
     type: object
     x-go-name: Room
@@ -245,6 +276,8 @@ paths:
           $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
+      security:
+      - jwtAuth: []
       summary: Delete an account by ID
       tags:
       - Accounts
@@ -445,4 +478,11 @@ responses:
       $ref: '#/definitions/room'
 schemes:
 - https
+security:
+- jwtAuth: []
+securityDefinitions:
+  jwtAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

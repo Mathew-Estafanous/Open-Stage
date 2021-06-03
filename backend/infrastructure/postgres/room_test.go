@@ -14,13 +14,13 @@ func TestPostgresRoomStore_GetByRoomCode(t *testing.T) {
 	}
 
 	mockRoom := domain.Room{
-		RoomCode: "wantedCode", Host: "Mathew",
+		RoomCode: "wantedCode", Host: "Mathew", AccId: 1,
 	}
 
-	row := sqlmock.NewRows([]string{"host", "room_code"}).
-		AddRow(mockRoom.Host, mockRoom.RoomCode)
+	row := sqlmock.NewRows([]string{"host", "room_code", "fk_account_id"}).
+		AddRow(mockRoom.Host, mockRoom.RoomCode, mockRoom.AccId)
 
-	query := "SELECT host, room_code FROM rooms WHERE room_code = ?"
+	query := "SELECT host, room_code, fk_account_id FROM rooms WHERE room_code = ?"
 	mock.ExpectQuery(query).WithArgs("wantedCode").WillReturnRows(row)
 
 	m := NewRoomStore(db)
@@ -39,10 +39,11 @@ func TestPostgresRoomStore_Create(t *testing.T) {
 	room := &domain.Room{
 		RoomCode: "jrhigh",
 		Host:     "Mathew",
+		AccId: 1,
 	}
 
 	insertQuery := "INSERT INTO rooms"
-	mock.ExpectExec(insertQuery).WithArgs(room.Host, room.RoomCode).
+	mock.ExpectExec(insertQuery).WithArgs(room.Host, room.RoomCode, room.AccId).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	m := NewRoomStore(db)

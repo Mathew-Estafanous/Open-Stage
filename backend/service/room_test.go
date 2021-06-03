@@ -33,19 +33,23 @@ func TestRoomService_CreateRoom(t *testing.T) {
 	store := new(mock.RoomStore)
 	rs := NewRoomService(store)
 
-	roomCreating := domain.Room{RoomCode: "room1", Host: "Mat"}
+	roomCreating := domain.Room{RoomCode: "room1", Host: "Mat", AccId: 1}
 	store.On("Create", &roomCreating).Return(nil)
 	err := rs.CreateRoom(&roomCreating)
 
 	assert.NoError(t, err)
 	store.AssertExpectations(t)
 
-	wrongRoom := domain.Room{RoomCode: "duplicateCode", Host: "Ja"}
+	wrongRoom := domain.Room{RoomCode: "duplicateCode", Host: "Ja", AccId: 1}
 	store.On("Create", &wrongRoom).Return(errDuplicateRoom)
 	err = rs.CreateRoom(&wrongRoom)
 
 	assert.ErrorIs(t, err, errDuplicateRoom)
 	store.AssertExpectations(t)
+
+	missingIdRoom := domain.Room{RoomCode: "room1", Host: "Mat"}
+	err = rs.CreateRoom(&missingIdRoom)
+	assert.ErrorIs(t, err, errMissingId)
 
 	err = rs.CreateRoom(&domain.Room{})
 	assert.ErrorIs(t, err, errHostNotAssigned)

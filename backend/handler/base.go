@@ -49,10 +49,10 @@ func (h baseHandler) respond(w http.ResponseWriter, code int, src interface{}) {
 
 func errToHttpResp(err error) ResponseError {
 	errTypeToSts := map[domain.Code]int{
-		domain.Internal: http.StatusInternalServerError,
-		domain.NotFound: http.StatusNotFound,
-		domain.Conflict: http.StatusConflict,
-		domain.BadInput: http.StatusBadRequest,
+		domain.Internal:     http.StatusInternalServerError,
+		domain.NotFound:     http.StatusNotFound,
+		domain.Conflict:     http.StatusConflict,
+		domain.BadInput:     http.StatusBadRequest,
 		domain.Unauthorized: http.StatusUnauthorized,
 	}
 

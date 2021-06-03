@@ -22,6 +22,10 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 		return errHostNotAssigned
 	}
 
+	if room.AccId == 0 {
+		return errMissingId
+	}
+
 	if room.RoomCode == "" {
 		room.RoomCode = r.generateValidCode()
 	}
@@ -72,4 +76,5 @@ var (
 	errDuplicateRoom   = fmt.Errorf("%w: room could not be created since the room code is taken", domain.Conflict)
 	errRoomNotFound    = fmt.Errorf("%w: room was not found with given code", domain.NotFound)
 	errRoomNotDeleted  = fmt.Errorf("%w: we encountered an issue when trying to delete your room", domain.Internal)
+	errMissingId       = fmt.Errorf("%w: missing the account id for the room", domain.BadInput)
 )

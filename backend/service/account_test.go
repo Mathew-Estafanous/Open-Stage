@@ -58,18 +58,18 @@ func TestAccountService_Authenticate(t *testing.T) {
 	aStore := new(mock.AccountStore)
 	service := NewAccountService(aStore)
 
-	acc := domain.Account{
+	respAcc := domain.Account{
 		Username: "someUsername",
 		// This is a hashed password 'helloWorld' using bcrypt.
 		Password: "$2y$12$UvUX39hRbeEGVCgEZmX3NO/5No10LEFe7ZsARJ5iK/55oSOUs7Bha",
 	}
-	aStore.On("GetByUsername", acc.Username).Return(acc, nil)
+	aStore.On("GetByUsername", respAcc.Username).Return(respAcc, nil)
 
-	auth := domain.Account{
+	acc := domain.Account{
 		Username: "someUsername",
 		Password: "helloWorld",
 	}
-	authToken, err := service.Authenticate(auth)
+	authToken, err := service.Authenticate(acc)
 	assert.NoError(t, err)
 
 	accessTkn, err := jwt.Parse(authToken.AccessToken, func(token *jwt.Token) (interface{}, error) {
@@ -85,8 +85,8 @@ func TestAccountService_Authenticate(t *testing.T) {
 	assert.EqualValues(t, true, accessTkn.Valid)
 	assert.EqualValues(t, true, refreshTkn.Valid)
 
-	auth.Username = "InvalidUsername"
-	aStore.On("GetByUsername", auth.Username).Return(domain.Account{}, domain.NotFound)
-	_, err = service.Authenticate(auth)
+	acc.Username = "InvalidUsername"
+	aStore.On("GetByUsername", acc.Username).Return(domain.Account{}, domain.NotFound)
+	_, err = service.Authenticate(acc)
 	assert.Error(t, err)
 }

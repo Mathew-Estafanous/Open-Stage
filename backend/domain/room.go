@@ -13,11 +13,17 @@ type Room struct {
 	// example: gopherCon
 	RoomCode string `json:"room_code"`
 
-	// The host of the room.
+	// The host of the room's name.
 	//
 	// required: true
 	// example: Mathew
 	Host string `json:"host"`
+
+	// The account that owns the room.
+	//
+	// required: true
+	// example: 3434
+	AccId int `json:"account_id"`
 }
 
 // RoomStore is an interface that describes the given contract
