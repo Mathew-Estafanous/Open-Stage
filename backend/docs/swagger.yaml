@@ -276,6 +276,8 @@ paths:
           $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
+      security:
+      - jwtAuth: []
       summary: Delete an account by ID
       tags:
       - Accounts
@@ -476,4 +478,11 @@ responses:
       $ref: '#/definitions/room'
 schemes:
 - https
+security:
+- jwtAuth: []
+securityDefinitions:
+  jwtAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

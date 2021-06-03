@@ -11,6 +11,15 @@
 // License: MIT https://opensource.org/licenses/MIT
 // Contact: Mathew Estafanous<mathewestafanous13@gmail.com> https://mathewestafanous.com/
 //
+// Security:
+// - jwtAuth:
+//
+// SecurityDefinitions:
+// jwtAuth:
+//   type: apiKey
+//   name: Authorization
+//   in: header
+//
 // Consumes:
 // - application/json
 //
