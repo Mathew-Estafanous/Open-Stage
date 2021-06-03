@@ -16,18 +16,18 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	as := new(mock.AccountService)
 
 	account := domain.Account{
-		Name: "Mathew",
+		Name:     "Mathew",
 		Username: "MatMat",
 		Password: "ThisIsAPassword",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 	as.On("Create", &account).Return(nil)
 
 	createAcc := CreateAccount{
-		Name: "Mathew",
+		Name:     "Mathew",
 		Username: "MatMat",
 		Password: "ThisIsAPassword",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 
 	j, err := json.Marshal(createAcc)
@@ -42,10 +42,10 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	resp := AccountResp{
-		Id: 0,
-		Name: "Mathew",
+		Id:       0,
+		Name:     "Mathew",
 		Username: "MatMat",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 	j, err = json.Marshal(resp)
 	assert.NoError(t, err)
@@ -53,12 +53,11 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	assert.EqualValues(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, string(j), w.Body.String())
 
-
 	missingField := CreateAccount{
 		// Missing the 'name' field
 		Username: "MatMat",
 		Password: "ThisIsAPassword",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 	j, err = json.Marshal(missingField)
 	assert.NoError(t, err)
@@ -85,7 +84,6 @@ func TestAccountHandler_deleteAccount(t *testing.T) {
 	NewAccountHandler(as).Route(r)
 	r.ServeHTTP(w, req)
 	assert.EqualValues(t, http.StatusOK, w.Code)
-
 
 	req, err = http.NewRequest("DELETE", "/accounts/sfaf", nil)
 	assert.NoError(t, err)

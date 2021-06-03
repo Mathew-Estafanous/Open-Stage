@@ -14,27 +14,62 @@ import (
 //
 // swagger:model accountResponse
 type AccountResp struct {
-	Id       int    `json:"id"`
-	Name     string `json:"name"`
+	// The account id.
+	//
+	// example: 1234
+	Id int `json:"id"`
+
+	// Name of the account holder.
+	//
+	// example: Mathew
+	Name string `json:"name"`
+
+	// The account username.
+	//
+	// example: MatMat2
 	Username string `json:"username"`
-	Email    string `json:"email"`
+
+	// Email associated with the account.
+	//
+	// example: mathew@fake.com
+	Email string `json:"email"`
 }
 
 // CreateAccount are the fields that are used to signup a new user account.
 //
 // swagger:model createAccount
 type CreateAccount struct {
-	Name     string `json:"name"`
+	// required: true
+	// example: Mathew
+	Name string `json:"name"`
+
+	// required: true
+	// example: MatMat
 	Username string `json:"username"`
+
+	// required: true
+	// example: aSecretPassword
 	Password string `json:"password"`
-	Email    string `json:"email"`
+
+	// required: true
+	// example: mathew@fake.com
+	Email string `json:"email"`
 }
 
 // Login are the fields that are required to successfully log into an account.
 //
 // swagger:model loginAccount
 type Login struct {
+	// Username of the account wanted.
+	//
+	// required: true
+	// example: MatMat
 	Username string `json:"username"`
+
+	// Password of the account.
+	//
+	// required: true
+	// example: aSecretPassword
 	Password string `json:"password"`
 }
 
@@ -124,10 +159,10 @@ func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := AccountResp{
-		Id: acc.Id,
-		Name: acc.Name,
+		Id:       acc.Id,
+		Name:     acc.Name,
 		Username: acc.Username,
-		Email: acc.Email,
+		Email:    acc.Email,
 	}
 	a.respond(w, http.StatusCreated, resp)
 }
