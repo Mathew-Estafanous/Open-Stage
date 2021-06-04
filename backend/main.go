@@ -23,7 +23,9 @@ func main() {
 	db := connectToDB()
 
 	rStore := postgres.NewRoomStore(db)
-	rService := service.NewRoomService(rStore)
+	authService := service.NewAuthService(rStore)
+
+	rService := service.NewRoomService(rStore, authService)
 	roomHandler := handler.NewRoomHandler(rService)
 
 	qStore := postgres.NewQuestionStore(db)
@@ -38,7 +40,10 @@ func main() {
 	configureDocsRoute(router)
 
 	apiRouter := router.PathPrefix("/v1").Subrouter()
-	roomHandler.Route(apiRouter)
+	securedRouter := apiRouter.PathPrefix("/").Subrouter()
+	securedRouter.Use(middleware.Auth)
+
+	roomHandler.Route(apiRouter, securedRouter)
 	questionHandler.Route(apiRouter)
 	accountHandler.Route(apiRouter)
 

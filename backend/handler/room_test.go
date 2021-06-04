@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -21,7 +22,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/rooms/jrHigh", nil)
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	NewRoomHandler(rs).Route(r, r)
 	r.ServeHTTP(w, req)
 
 	roomJson, err := json.Marshal(room)
@@ -53,7 +54,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	NewRoomHandler(rs).Route(r, r)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusCreated, w.Code)
@@ -73,24 +74,35 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 
 func TestRoomHandler_DeleteRoom(t *testing.T) {
 	rs := new(mock.RoomService)
-	rs.On("DeleteRoom", "validCode").Return(nil)
+	rs.On("DeleteRoom", "validCode", 1).Return(nil)
 
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "/rooms/validCode", strings.NewReader(""))
 	assert.NoError(t, err)
+	req.Header.Set("Account", strconv.Itoa(1))
 
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	secured := r.PathPrefix("/").Subrouter()
+	secured.Use(mockAuthMiddleware)
+	NewRoomHandler(rs).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
-	rs.On("DeleteRoom", "wrongCode").Return(fmt.Errorf("%w: not found", domain.NotFound))
+	rs.On("DeleteRoom", "wrongCode", 1).Return(fmt.Errorf("%w: not found", domain.NotFound))
 	w = httptest.NewRecorder()
 	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)
+	req.Header.Set("Account", strconv.Itoa(1))
 
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
+}
+
+func mockAuthMiddleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Header.Set("Account", strconv.Itoa(1))
+		h.ServeHTTP(w, r)
+	})
 }

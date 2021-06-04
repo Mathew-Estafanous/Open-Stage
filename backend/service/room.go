@@ -8,11 +8,13 @@ import (
 )
 
 type roomService struct {
+	auth   domain.AuthService
 	rStore domain.RoomStore
 }
 
-func NewRoomService(rs domain.RoomStore) domain.RoomService {
+func NewRoomService(rs domain.RoomStore, as domain.AuthService) domain.RoomService {
 	return &roomService{
+		auth:   as,
 		rStore: rs,
 	}
 }
@@ -45,8 +47,17 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 	return room, nil
 }
 
-func (r *roomService) DeleteRoom(code string) error {
-	err := r.rStore.Delete(code)
+func (r *roomService) DeleteRoom(code string, accId int) error {
+	doesOwn, err := r.auth.OwnsRoom(code, accId)
+	if err != nil {
+		return err
+	}
+
+	if !doesOwn {
+		return errDoesNotOwn
+	}
+
+	err = r.rStore.Delete(code)
 	if err != nil {
 		return errRoomNotDeleted
 	}
@@ -77,4 +88,5 @@ var (
 	errRoomNotFound    = fmt.Errorf("%w: room was not found with given code", domain.NotFound)
 	errRoomNotDeleted  = fmt.Errorf("%w: we encountered an issue when trying to delete your room", domain.Internal)
 	errMissingId       = fmt.Errorf("%w: missing the account id for the room", domain.BadInput)
+	errDoesNotOwn      = fmt.Errorf("%w: account does not own room", domain.Forbidden)
 )

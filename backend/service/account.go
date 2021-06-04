@@ -67,21 +67,21 @@ func (a *accountService) Authenticate(acc domain.Account) (domain.AuthToken, err
 		return domain.AuthToken{}, fmt.Errorf("%w: the password did not match", domain.Unauthorized)
 	}
 
-	tk, err := createToken(acc.Username, strconv.Itoa(acc.Id), a.key)
+	tk, err := createToken(found.Username, strconv.Itoa(found.Id), a.key)
 	if err != nil {
 		return domain.AuthToken{}, fmt.Errorf("%w: we were unable to issue a token", domain.Internal)
 	}
 	return tk, nil
 }
 
-func createToken(username, id , key string) (domain.AuthToken, error) {
+func createToken(username, id, key string) (domain.AuthToken, error) {
 	exp := time.Now().Add(time.Minute * 15).Unix()
 	accessClaim := AccountClaims{
 		username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
-			Audience: "access",
-			Subject: id,
+			Audience:  "access",
+			Subject:   id,
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaim)
@@ -95,7 +95,8 @@ func createToken(username, id , key string) (domain.AuthToken, error) {
 		username,
 		jwt.StandardClaims{
 			ExpiresAt: exp,
-			Audience: "refresh",
+			Audience:  "refresh",
+			Subject:   id,
 		},
 	}
 

@@ -35,7 +35,7 @@ type RoomStore interface {
 }
 
 type RoomService interface {
-	DeleteRoom(code string) error
+	DeleteRoom(code string, accId int) error
 	CreateRoom(room *Room) error
 	FindRoom(roomCode string) (Room, error)
 }

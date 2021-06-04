@@ -37,7 +37,7 @@ func (p *postgresRoomStore) Create(room *domain.Room) error {
 }
 
 func (p *postgresRoomStore) Delete(roomCode string) error {
-	r, err := p.db.Exec("DELETE FROM rooms WHERE room_code = $3", roomCode)
+	r, err := p.db.Exec("DELETE FROM rooms WHERE room_code = $1", roomCode)
 	if err != nil {
 		return err
 	}

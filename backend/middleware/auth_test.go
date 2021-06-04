@@ -15,8 +15,9 @@ func TestAuth(t *testing.T) {
 	assert.NoError(t, err)
 
 	tkn := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Audience: "access",
+		Audience:  "access",
 		ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
+		Subject: "1",
 	})
 	accessTkn, err := tkn.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
@@ -29,21 +30,20 @@ func TestAuth(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.NoError(t, err)
-	req.Header.Set("Authorization", "Bearer " + accessTkn)
+	req.Header.Set("Authorization", "Bearer "+accessTkn)
 
 	auth.ServeHTTP(w, req)
 	assert.EqualValues(t, true, passedAuth)
 
-
 	tkn = jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Audience: "refresh",
+		Audience:  "refresh",
 		ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 	})
 	refreshTkn, err := tkn.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
 
 	passedAuth = false
-	req.Header.Set("Authorization", "Bearer " + refreshTkn)
+	req.Header.Set("Authorization", "Bearer "+refreshTkn)
 
 	auth.ServeHTTP(w, req)
 	assert.EqualValues(t, false, passedAuth)

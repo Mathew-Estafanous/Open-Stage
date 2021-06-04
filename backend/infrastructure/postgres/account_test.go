@@ -14,10 +14,10 @@ func TestPostgresAccountStore_Create(t *testing.T) {
 	}
 
 	acc := &domain.Account{
-		Name: "Mathew",
+		Name:     "Mathew",
 		Username: "MatMat277",
 		Password: "ThisIsAHashedPassword",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 
 	insertQuery := `INSERT INTO accounts (name, username, password, email)
@@ -54,11 +54,11 @@ func TestPostgresAccountStore_GetByUsername(t *testing.T) {
 	}
 
 	account := domain.Account{
-		Id: 1,
-		Name: "Mathew",
+		Id:       1,
+		Name:     "Mathew",
 		Username: "MatMat277",
 		Password: "ThisIsAHashedPassword",
-		Email: "mathew@gmail.com",
+		Email:    "mathew@gmail.com",
 	}
 
 	row := sqlmock.NewRows([]string{"id", "name", "username", "password", "email"}).
