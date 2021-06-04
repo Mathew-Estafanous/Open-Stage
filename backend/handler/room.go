@@ -19,8 +19,8 @@ func NewRoomHandler(roomService domain.RoomService) *roomHandler {
 
 func (r roomHandler) Route(ro, secured *mux.Router) {
 	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
-	ro.HandleFunc("/rooms", r.createRoom).Methods("POST")
 
+	secured.HandleFunc("/rooms", r.createRoom).Methods("POST")
 	secured.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
 }
 
@@ -50,9 +50,11 @@ func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 //
 // Create a new room.
 //
-// Startup a new room with an assigned host. However, the room code is
+// Startup a new room with an assigned host. The room code is
 // not required and if left empty will be randomly generated. If a code
 // is already in use by another room, a 409 Conflict will occur.
+//
+// NOTE: This endpoint is secured, so providing the account id is not required.
 //
 // Responses:
 //  201: roomResponse
@@ -67,6 +69,8 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 		return
 	}
 
+	accId, err := strconv.Atoi(re.Header.Get("Account"))
+	room.AccId = accId
 	err = r.rs.CreateRoom(&room)
 	if err != nil {
 		r.error(w, err)

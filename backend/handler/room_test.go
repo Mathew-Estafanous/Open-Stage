@@ -43,7 +43,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 
 func TestRoomHandler_CreateRoom(t *testing.T) {
 	rs := new(mock.RoomService)
-	room := domain.Room{RoomCode: "jrHigh", Host: "Mat"}
+	room := domain.Room{RoomCode: "jrHigh", Host: "Mat", AccId: 1}
 	rs.On("CreateRoom", &room).Return(nil)
 
 	j, err := json.Marshal(room)
@@ -54,13 +54,15 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r, r)
+	secured := r.PathPrefix("/").Subrouter()
+	secured.Use(mockAuthMiddleware)
+	NewRoomHandler(rs).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusCreated, w.Code)
 	assert.JSONEq(t, string(j), w.Body.String())
 
-	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat"}
+	duplicate := domain.Room{RoomCode: "duplicateCode", Host: "Mat", AccId: 1}
 	rs.On("CreateRoom", &duplicate).Return(fmt.Errorf("%w: conflict", domain.Conflict))
 	j, err = json.Marshal(duplicate)
 	assert.NoError(t, err)
