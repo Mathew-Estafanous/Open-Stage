@@ -22,7 +22,7 @@ func TestRoomHandler_GetRoom(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/rooms/jrHigh", nil)
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	NewRoomHandler(rs).Route(r, r)
 	r.ServeHTTP(w, req)
 
 	roomJson, err := json.Marshal(room)
@@ -54,7 +54,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	NewRoomHandler(rs).Route(r, r)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusCreated, w.Code)
@@ -82,8 +82,9 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	req.Header.Set("Account", strconv.Itoa(1))
 
 	r := mux.NewRouter()
-	rHandler := NewRoomHandler(rs)
-	r.HandleFunc("/rooms/{code}", rHandler.deleteRoom).Methods("DELETE")
+	secured := r.PathPrefix("/").Subrouter()
+	secured.Use(mockAuthMiddleware)
+	NewRoomHandler(rs).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
@@ -97,4 +98,11 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
+}
+
+func mockAuthMiddleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r.Header.Set("Account", strconv.Itoa(1))
+		h.ServeHTTP(w, r)
+	})
 }

@@ -40,7 +40,10 @@ func main() {
 	configureDocsRoute(router)
 
 	apiRouter := router.PathPrefix("/v1").Subrouter()
-	roomHandler.Route(apiRouter)
+	securedRouter := apiRouter.PathPrefix("/").Subrouter()
+	securedRouter.Use(middleware.Auth)
+
+	roomHandler.Route(apiRouter, securedRouter)
 	questionHandler.Route(apiRouter)
 	accountHandler.Route(apiRouter)
 

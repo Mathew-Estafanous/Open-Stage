@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
-	"github.com/Mathew-Estafanous/Open-Stage/middleware"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -18,12 +17,10 @@ func NewRoomHandler(roomService domain.RoomService) *roomHandler {
 	return &roomHandler{rs: roomService}
 }
 
-func (r roomHandler) Route(ro *mux.Router) {
+func (r roomHandler) Route(ro, secured *mux.Router) {
 	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
 	ro.HandleFunc("/rooms", r.createRoom).Methods("POST")
 
-	secured := ro.PathPrefix("/").Subrouter()
-	secured.Use(middleware.Auth)
 	secured.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
 }
 
