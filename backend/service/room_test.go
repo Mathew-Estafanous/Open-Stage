@@ -10,7 +10,8 @@ import (
 
 func TestRoomService_FindRoom(t *testing.T) {
 	store := new(mock.RoomStore)
-	rs := NewRoomService(store)
+	auth := new(mock.AuthService)
+	rs := NewRoomService(store, auth)
 
 	expectedRoom := domain.Room{
 		RoomCode: "room1", Host: "Mathew",
@@ -31,7 +32,8 @@ func TestRoomService_FindRoom(t *testing.T) {
 
 func TestRoomService_CreateRoom(t *testing.T) {
 	store := new(mock.RoomStore)
-	rs := NewRoomService(store)
+	auth := new(mock.AuthService)
+	rs := NewRoomService(store, auth)
 
 	roomCreating := domain.Room{RoomCode: "room1", Host: "Mat", AccId: 1}
 	store.On("Create", &roomCreating).Return(nil)
@@ -57,14 +59,16 @@ func TestRoomService_CreateRoom(t *testing.T) {
 
 func TestRoomService_DeleteRoom(t *testing.T) {
 	store := new(mock.RoomStore)
-	rs := NewRoomService(store)
+	auth := new(mock.AuthService)
+	rs := NewRoomService(store, auth)
 
-	validCode := "roomCode"
-	store.On("Delete", validCode).Return(nil)
-	err := rs.DeleteRoom(validCode)
+	store.On("Delete", "roomCode").Return(nil)
+	auth.On("OwnsRoom", "roomCode", 1).Return(true, nil)
+	err := rs.DeleteRoom("roomCode", 1)
 	assert.NoError(t, err)
 
+	auth.On("OwnsRoom", "wrongCode", 1).Return(true, nil)
 	store.On("Delete", "wrongCode").Return(errors.New("nothing deleted"))
-	err = rs.DeleteRoom("wrongCode")
+	err = rs.DeleteRoom("wrongCode", 1)
 	assert.Error(t, err)
 }

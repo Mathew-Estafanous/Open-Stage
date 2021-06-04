@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -73,22 +74,25 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 
 func TestRoomHandler_DeleteRoom(t *testing.T) {
 	rs := new(mock.RoomService)
-	rs.On("DeleteRoom", "validCode").Return(nil)
+	rs.On("DeleteRoom", "validCode", 1).Return(nil)
 
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "/rooms/validCode", strings.NewReader(""))
 	assert.NoError(t, err)
+	req.Header.Set("Account", strconv.Itoa(1))
 
 	r := mux.NewRouter()
-	NewRoomHandler(rs).Route(r)
+	rHandler := NewRoomHandler(rs)
+	r.HandleFunc("/rooms/{code}", rHandler.deleteRoom).Methods("DELETE")
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 
-	rs.On("DeleteRoom", "wrongCode").Return(fmt.Errorf("%w: not found", domain.NotFound))
+	rs.On("DeleteRoom", "wrongCode", 1).Return(fmt.Errorf("%w: not found", domain.NotFound))
 	w = httptest.NewRecorder()
 	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)
+	req.Header.Set("Account", strconv.Itoa(1))
 
 	r.ServeHTTP(w, req)
 

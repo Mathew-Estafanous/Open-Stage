@@ -20,4 +20,3 @@ func (a authService) OwnsRoom(code string, accId int) (bool, error) {
 
 	return room.AccId == accId, nil
 }
-

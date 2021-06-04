@@ -39,7 +39,7 @@ func TestPostgresRoomStore_Create(t *testing.T) {
 	room := &domain.Room{
 		RoomCode: "jrhigh",
 		Host:     "Mathew",
-		AccId: 1,
+		AccId:    1,
 	}
 
 	insertQuery := "INSERT INTO rooms"

@@ -42,4 +42,3 @@ func (a *AccountStore) Delete(id int) error {
 	ret := a.Called(id)
 	return ret.Error(0)
 }
-

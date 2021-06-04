@@ -8,13 +8,13 @@ import (
 )
 
 type roomService struct {
-	auth domain.AuthService
+	auth   domain.AuthService
 	rStore domain.RoomStore
 }
 
 func NewRoomService(rs domain.RoomStore, as domain.AuthService) domain.RoomService {
 	return &roomService{
-		auth: as,
+		auth:   as,
 		rStore: rs,
 	}
 }
