@@ -67,7 +67,7 @@ func (a *accountService) Authenticate(acc domain.Account) (domain.AuthToken, err
 		return domain.AuthToken{}, fmt.Errorf("%w: the password did not match", domain.Unauthorized)
 	}
 
-	tk, err := createToken(acc.Username, strconv.Itoa(acc.Id), a.key)
+	tk, err := createToken(found.Username, strconv.Itoa(found.Id), a.key)
 	if err != nil {
 		return domain.AuthToken{}, fmt.Errorf("%w: we were unable to issue a token", domain.Internal)
 	}
@@ -96,6 +96,7 @@ func createToken(username, id , key string) (domain.AuthToken, error) {
 		jwt.StandardClaims{
 			ExpiresAt: exp,
 			Audience: "refresh",
+			Subject: id,
 		},
 	}
 

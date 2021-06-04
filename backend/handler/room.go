@@ -3,8 +3,10 @@ package handler
 import (
 	"encoding/json"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/middleware"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 type roomHandler struct {
@@ -18,8 +20,11 @@ func NewRoomHandler(roomService domain.RoomService) *roomHandler {
 
 func (r roomHandler) Route(ro *mux.Router) {
 	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
-	ro.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
 	ro.HandleFunc("/rooms", r.createRoom).Methods("POST")
+
+	secured := ro.PathPrefix("/").Subrouter()
+	secured.Use(middleware.Auth)
+	secured.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
 }
 
 // swagger:route GET /rooms/{code} Rooms getCode
@@ -84,7 +89,13 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	code := mux.Vars(re)["code"]
 
-	err := r.rs.DeleteRoom(code)
+	accId, err := strconv.Atoi(re.Header.Get("Account"))
+	if err != nil {
+		r.error(w, err)
+		return
+	}
+
+	err = r.rs.DeleteRoom(code, accId)
 	if err != nil {
 		r.error(w, err)
 	}

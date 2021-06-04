@@ -54,6 +54,7 @@ func errToHttpResp(err error) ResponseError {
 		domain.Conflict:     http.StatusConflict,
 		domain.BadInput:     http.StatusBadRequest,
 		domain.Unauthorized: http.StatusUnauthorized,
+		domain.Forbidden:    http.StatusForbidden,
 	}
 
 	var code domain.Code

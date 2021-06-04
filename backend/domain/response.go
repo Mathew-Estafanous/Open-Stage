@@ -8,6 +8,7 @@ const (
 	Conflict
 	BadInput
 	Unauthorized
+	Forbidden
 )
 
 func (c Code) Error() string {
@@ -20,6 +21,8 @@ func (c Code) Error() string {
 		return "Conflict"
 	case Unauthorized:
 		return "Unauthorized"
+	case Forbidden:
+		return "Forbidden"
 	default:
 		return "Internal Error"
 	}

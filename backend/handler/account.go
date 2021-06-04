@@ -126,7 +126,7 @@ func (a accountHandler) Route(r *mux.Router) {
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
 }
 
-// swagger:route POST /accounts Accounts createAccount
+// swagger:route POST /accounts/signup Accounts createAccount
 //
 // Signup a new user account.
 //

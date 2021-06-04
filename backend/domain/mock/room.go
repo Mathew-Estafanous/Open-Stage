@@ -20,8 +20,8 @@ func (m *RoomService) FindRoom(roomCode string) (domain.Room, error) {
 	return ret.Get(0).(domain.Room), ret.Error(1)
 }
 
-func (m *RoomService) DeleteRoom(code string) error {
-	ret := m.Called(code)
+func (m *RoomService) DeleteRoom(code string, accId int) error {
+	ret := m.Called(code, accId)
 	return ret.Error(0)
 }
 

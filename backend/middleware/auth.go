@@ -37,6 +37,13 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
+		accId, ok := c["sub"].(string)
+		if !ok {
+			writeError(w, "Unable to identify the account holder")
+			return
+		}
+
+		r.Header.Set("Account", accId)
 		next.ServeHTTP(w, r)
 	})
 }

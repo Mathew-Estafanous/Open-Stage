@@ -22,8 +22,11 @@ import (
 func main() {
 	db := connectToDB()
 
+
 	rStore := postgres.NewRoomStore(db)
-	rService := service.NewRoomService(rStore)
+	authService := service.NewAuthService(rStore)
+
+	rService := service.NewRoomService(rStore, authService)
 	roomHandler := handler.NewRoomHandler(rService)
 
 	qStore := postgres.NewQuestionStore(db)
