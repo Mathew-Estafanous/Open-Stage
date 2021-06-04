@@ -21,7 +21,6 @@ type Room struct {
 
 	// The account that owns the room.
 	//
-	// required: true
 	// example: 3434
 	AccId int `json:"account_id"`
 }

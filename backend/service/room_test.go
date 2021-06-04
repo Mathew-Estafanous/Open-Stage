@@ -49,10 +49,6 @@ func TestRoomService_CreateRoom(t *testing.T) {
 	assert.ErrorIs(t, err, errDuplicateRoom)
 	store.AssertExpectations(t)
 
-	missingIdRoom := domain.Room{RoomCode: "room1", Host: "Mat"}
-	err = rs.CreateRoom(&missingIdRoom)
-	assert.ErrorIs(t, err, errMissingId)
-
 	err = rs.CreateRoom(&domain.Room{})
 	assert.ErrorIs(t, err, errHostNotAssigned)
 }
