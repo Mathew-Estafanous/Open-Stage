@@ -5,7 +5,7 @@ import { Question } from "../components/Question";
 import { GetRoom } from "../http/Rooms";
 import { GetAllQuestions } from "../http/Questions";
 import "./Room.css";
-import {Oval} from "@agney/react-loading";
+import { Oval } from "@agney/react-loading";
 
 export const Room = () => {
     const [room, setRoom] = useState("");
@@ -62,7 +62,7 @@ export const Room = () => {
             </div>
         </header>
 
-        <AskQuestion code={room} />
+        <AskQuestion code={room} onPost={updateAllQuestions} />
         {isLoading?
             <div className='load'>
                 <Oval className='loader' />

@@ -2,12 +2,22 @@ import React, {useState} from "react";
 import "./AskQuestion.css"
 import { PostQuestion } from "../http/Questions";
 
-export const AskQuestion = ({code}) => {
+export const AskQuestion = ({code, onPost}) => {
     const [question, setQuestion] = useState('');
     const [name, setName] = useState('');
 
-    const postQuestion = async () => {
-        await PostQuestion(code, question, name);
+    const postQuestion = async (e) => {
+        e.preventDefault()
+        if(question.length === 0) {
+            console.log("questions should not be empty")
+            return
+        }
+        let result = await PostQuestion(code, question, name);
+        if(result.error) {
+            console.log(result.error)
+            return
+        }
+        onPost()
     }
 
     return (
@@ -19,7 +29,7 @@ export const AskQuestion = ({code}) => {
                     <img src="/User.png" alt="User" />
                     <input maxLength={20} placeholder='Name (Optional)'
                            value={name} onChange={e => setName(e.target.value)} />
-                    <button>Post</button>
+                    <button type='submit'>Post</button>
                 </div>
             </form>
         </div>
