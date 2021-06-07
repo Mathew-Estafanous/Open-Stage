@@ -5,9 +5,9 @@
   <p align="center">
     A live Q&A platform that stimulates conversation, even from the quetest members.
     <br />
-    <a href="https://open-stage-api.herokuapp.com/docs"><strong>Explore API Docs</strong></a>
+    <a href="https://open-stage-web.herokuapp.com/"><strong>Try It Out</strong></a>
     ·
-    <a href="https://github.com/Mathew-Estafanous/Open-Stage/issues"><strong>Report An Issue</strong></a>
+    <a href="https://open-stage-api.herokuapp.com/docs"><strong>Explore API Docs</strong></a>
   </p>
 </p>
 
