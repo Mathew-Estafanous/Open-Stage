@@ -251,6 +251,8 @@ paths:
           description: ' OK - Question has been properly deleted.'
         "400":
           $ref: '#/responses/errorResponse'
+        "403":
+          $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
       summary: Delete an account by ID
@@ -421,6 +423,8 @@ paths:
       responses:
         "200":
           description: ' OK'
+        "403":
+          $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
       summary: Delete a room by code.

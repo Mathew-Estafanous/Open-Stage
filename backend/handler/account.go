@@ -177,6 +177,7 @@ func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 // Responses:
 //   200: description: OK - Question has been properly deleted.
 //   400: errorResponse
+//   403: errorResponse
 //   500: errorResponse
 func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 	pathId := mux.Vars(r)["id"]

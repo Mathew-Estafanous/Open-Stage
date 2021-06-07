@@ -86,6 +86,7 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 //
 // Responses:
 //  200: description: OK
+//  403: errorResponse
 //  500: errorResponse
 func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	code := mux.Vars(re)["code"]
