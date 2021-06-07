@@ -194,7 +194,6 @@ definitions:
         x-go-name: RoomCode
     required:
     - host
-    - account_id
     title: Room models every group Q&A session/room.
     type: object
     x-go-name: Room
@@ -236,28 +235,6 @@ info:
   title: Documentation for Open-Stage API
   version: "1.0"
 paths:
-  /accounts:
-    post:
-      description: Will create a new account while also ensuring the validity of the
-        provided email.
-      operationId: createAccount
-      parameters:
-      - in: body
-        name: Body
-        schema:
-          $ref: '#/definitions/createAccount'
-      responses:
-        "201":
-          $ref: '#/responses/accountResponse'
-        "400":
-          $ref: '#/responses/errorResponse'
-        "409":
-          $ref: '#/responses/errorResponse'
-        "500":
-          $ref: '#/responses/errorResponse'
-      summary: Signup a new user account.
-      tags:
-      - Accounts
   /accounts/{accountId}:
     delete:
       description: Will delete the user account with the correlating account 'id.'
@@ -274,10 +251,10 @@ paths:
           description: ' OK - Question has been properly deleted.'
         "400":
           $ref: '#/responses/errorResponse'
+        "403":
+          $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
-      security:
-      - jwtAuth: []
       summary: Delete an account by ID
       tags:
       - Accounts
@@ -300,6 +277,28 @@ paths:
         "500":
           $ref: '#/responses/errorResponse'
       summary: Login and authenticate account.
+      tags:
+      - Accounts
+  /accounts/signup:
+    post:
+      description: Will create a new account while also ensuring the validity of the
+        provided email.
+      operationId: createAccount
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/createAccount'
+      responses:
+        "201":
+          $ref: '#/responses/accountResponse'
+        "400":
+          $ref: '#/responses/errorResponse'
+        "409":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Signup a new user account.
       tags:
       - Accounts
   /questions:
@@ -388,9 +387,11 @@ paths:
   /rooms:
     post:
       description: |-
-        Startup a new room with an assigned host. However, the room code is
+        Startup a new room with an assigned host. The room code is
         not required and if left empty will be randomly generated. If a code
         is already in use by another room, a 409 Conflict will occur.
+
+        NOTE: This endpoint is secured, so providing the account id is not required.
       operationId: createRoom
       parameters:
       - in: body
@@ -422,6 +423,8 @@ paths:
       responses:
         "200":
           description: ' OK'
+        "403":
+          $ref: '#/responses/errorResponse'
         "500":
           $ref: '#/responses/errorResponse'
       summary: Delete a room by code.
