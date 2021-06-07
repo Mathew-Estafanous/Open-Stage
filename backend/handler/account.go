@@ -120,10 +120,11 @@ func NewAccountHandler(aService domain.AccountService) *accountHandler {
 	return &accountHandler{as: aService}
 }
 
-func (a accountHandler) Route(r *mux.Router) {
+func (a accountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
-	r.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
+
+	secured.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
 }
 
 // swagger:route POST /accounts/signup Accounts createAccount
@@ -185,7 +186,12 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.as.Delete(id)
+	accId, err := strconv.Atoi(r.Header.Get("Account"))
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+	err = a.as.Delete(id, accId)
 	if err != nil {
 		a.error(w, err)
 		return

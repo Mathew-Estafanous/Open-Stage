@@ -14,8 +14,8 @@ func (a *AccountService) Create(acc *domain.Account) error {
 	return ret.Error(0)
 }
 
-func (a *AccountService) Delete(id int) error {
-	ret := a.Called(id)
+func (a *AccountService) Delete(id, accId int) error {
+	ret := a.Called(id, accId)
 	return ret.Error(0)
 }
 

@@ -54,8 +54,7 @@ func TestRoomHandler_CreateRoom(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
-	secured := r.PathPrefix("/").Subrouter()
-	secured.Use(mockAuthMiddleware)
+	secured := mock.SecureRouter(r, 1)
 	NewRoomHandler(rs).Route(r, secured)
 	r.ServeHTTP(w, req)
 
@@ -84,8 +83,7 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	req.Header.Set("Account", strconv.Itoa(1))
 
 	r := mux.NewRouter()
-	secured := r.PathPrefix("/").Subrouter()
-	secured.Use(mockAuthMiddleware)
+	secured := mock.SecureRouter(r, 1)
 	NewRoomHandler(rs).Route(r, secured)
 	r.ServeHTTP(w, req)
 
@@ -100,11 +98,4 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
-}
-
-func mockAuthMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.Header.Set("Account", strconv.Itoa(1))
-		h.ServeHTTP(w, r)
-	})
 }

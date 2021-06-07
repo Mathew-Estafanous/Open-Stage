@@ -38,7 +38,8 @@ func TestAccountHandler_createAccount(t *testing.T) {
 	assert.NoError(t, err)
 
 	r := mux.NewRouter()
-	NewAccountHandler(as).Route(r)
+	secured := mock.SecureRouter(r, 1)
+	NewAccountHandler(as).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	resp := AccountResp{
@@ -74,14 +75,16 @@ func TestAccountHandler_createAccount(t *testing.T) {
 func TestAccountHandler_deleteAccount(t *testing.T) {
 	as := new(mock.AccountService)
 
-	as.On("Delete", 5).Return(nil)
+	as.On("Delete", 5, 5).Return(nil)
 
 	req, err := http.NewRequest("DELETE", "/accounts/5", nil)
 	assert.NoError(t, err)
 
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
-	NewAccountHandler(as).Route(r)
+	secured := mock.SecureRouter(r, 5)
+	NewAccountHandler(as).Route(r, secured)
+
 	r.ServeHTTP(w, req)
 	assert.EqualValues(t, http.StatusOK, w.Code)
 

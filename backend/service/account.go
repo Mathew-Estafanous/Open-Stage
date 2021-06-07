@@ -48,7 +48,10 @@ func (a *accountService) Create(acc *domain.Account) error {
 	return nil
 }
 
-func (a *accountService) Delete(id int) error {
+func (a *accountService) Delete(id, accId int) error {
+	if accId != id {
+		return fmt.Errorf("%w: account id did not match the account to delete", domain.Forbidden)
+	}
 	err := a.store.Delete(id)
 	if err != nil {
 		return err

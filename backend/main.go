@@ -44,8 +44,8 @@ func main() {
 	securedRouter.Use(middleware.Auth)
 
 	roomHandler.Route(apiRouter, securedRouter)
+	accountHandler.Route(apiRouter, securedRouter)
 	questionHandler.Route(apiRouter)
-	accountHandler.Route(apiRouter)
 
 	port := portByProfile()
 	log.Printf("Open-Stage starting on port %v", port)

@@ -47,8 +47,11 @@ func TestAccountService_Delete(t *testing.T) {
 
 	aStore.On("Delete", 1).Return(nil)
 
-	err := service.Delete(1)
+	err := service.Delete(1, 1)
 	assert.NoError(t, err)
+
+	err = service.Delete(1, 0)
+	assert.ErrorIs(t, err, domain.Forbidden)
 }
 
 func TestAccountService_Authenticate(t *testing.T) {
