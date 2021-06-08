@@ -14,6 +14,7 @@ import (
 
 func TestAccountHandler_createAccount(t *testing.T) {
 	as := new(mock.AccountService)
+	auth := new(mock.AuthService)
 
 	account := domain.Account{
 		Name:     "Mathew",
@@ -39,7 +40,7 @@ func TestAccountHandler_createAccount(t *testing.T) {
 
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 1)
-	NewAccountHandler(as).Route(r, secured)
+	NewAccountHandler(as, auth).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	resp := AccountResp{
@@ -74,6 +75,7 @@ func TestAccountHandler_createAccount(t *testing.T) {
 
 func TestAccountHandler_deleteAccount(t *testing.T) {
 	as := new(mock.AccountService)
+	auth := new(mock.AuthService)
 
 	as.On("Delete", 5, 5).Return(nil)
 
@@ -83,7 +85,7 @@ func TestAccountHandler_deleteAccount(t *testing.T) {
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 5)
-	NewAccountHandler(as).Route(r, secured)
+	NewAccountHandler(as, auth).Route(r, secured)
 
 	r.ServeHTTP(w, req)
 	assert.EqualValues(t, http.StatusOK, w.Code)
@@ -95,4 +97,41 @@ func TestAccountHandler_deleteAccount(t *testing.T) {
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusBadRequest, w.Code)
+}
+
+func TestAccountHandler_login(t *testing.T) {
+	as := new(mock.AccountService)
+	auth := new(mock.AuthService)
+
+
+	login := Login{
+		Username: "Mathew",
+		Password: "SecretPassword",
+	}
+
+	tks := domain.AuthToken{
+		AccessToken: "AN-ACCESS-TOKEN",
+		RefreshToken: "A-REFRESH-TOKEN",
+	}
+
+	auth.On("Authenticate", login.Username, login.Password).Return(tks, nil)
+
+	j, err := json.Marshal(login)
+	assert.NoError(t, err)
+
+	req, err := http.NewRequest("POST", "/accounts/login", strings.NewReader(string(j)))
+	assert.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	r := mux.NewRouter()
+	secured := mock.SecureRouter(r, 5)
+	NewAccountHandler(as, auth).Route(r, secured)
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusOK, w.Code)
+
+	j, err = json.Marshal(tks)
+	assert.NoError(t, err)
+
+	assert.JSONEq(t, string(j), w.Body.String())
 }

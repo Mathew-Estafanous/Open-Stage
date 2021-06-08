@@ -114,10 +114,14 @@ func (c *CreateAccount) UnmarshalJSON(data []byte) error {
 type accountHandler struct {
 	baseHandler
 	as domain.AccountService
+	auth domain.AuthService
 }
 
-func NewAccountHandler(aService domain.AccountService) *accountHandler {
-	return &accountHandler{as: aService}
+func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *accountHandler {
+	return &accountHandler{
+		as: aService,
+		auth: authService,
+	}
 }
 
 func (a accountHandler) Route(r, secured *mux.Router) {
@@ -218,12 +222,7 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acc := domain.Account{
-		Username: body.Username,
-		Password: body.Password,
-	}
-
-	token, err := a.as.Authenticate(acc)
+	token, err := a.auth.Authenticate(body.Username, body.Password)
 	if err != nil {
 		a.error(w, err)
 		return

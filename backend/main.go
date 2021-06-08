@@ -32,7 +32,8 @@ func main() {
 
 	aStore := postgres.NewAccountStore(db)
 	aService := service.NewAccountService(aStore)
-	accountHandler := handler.NewAccountHandler(aService)
+	authService := service.NewAuthService(aStore)
+	accountHandler := handler.NewAccountHandler(aService, authService)
 
 	router := mux.NewRouter()
 	configureDocsRoute(router)
