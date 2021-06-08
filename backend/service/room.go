@@ -8,13 +8,11 @@ import (
 )
 
 type roomService struct {
-	auth   domain.AuthService
 	rStore domain.RoomStore
 }
 
-func NewRoomService(rs domain.RoomStore, as domain.AuthService) domain.RoomService {
+func NewRoomService(rs domain.RoomStore) domain.RoomService {
 	return &roomService{
-		auth:   as,
 		rStore: rs,
 	}
 }
@@ -44,12 +42,12 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 }
 
 func (r *roomService) DeleteRoom(code string, accId int) error {
-	doesOwn, err := r.auth.OwnsRoom(code, accId)
+	room, err := r.FindRoom(code)
 	if err != nil {
 		return err
 	}
 
-	if !doesOwn {
+	if room.AccId != accId {
 		return errDoesNotOwn
 	}
 
