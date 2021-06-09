@@ -48,6 +48,18 @@ func (a *accountService) Delete(id, accId int) error {
 	return nil
 }
 
+func (a *accountService) FindByUsername(username string, accId int) (domain.Account, error) {
+	acc, err := a.store.GetByUsername(username)
+	if err != nil {
+		return domain.Account{}, err
+	}
+
+	if acc.Id != accId {
+		return domain.Account{}, fmt.Errorf("%w: account cannot be accessed with provided credentials", domain.Forbidden)
+	}
+	return acc, nil
+}
+
 var emailRegex = regexp.MustCompile(
 	"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 

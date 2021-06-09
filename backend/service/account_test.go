@@ -51,3 +51,29 @@ func TestAccountService_Delete(t *testing.T) {
 	err = service.Delete(1, 0)
 	assert.ErrorIs(t, err, domain.Forbidden)
 }
+
+func TestAccountService_FindByUsername(t *testing.T) {
+	aStore := new(mock.AccountStore)
+	service := NewAccountService(aStore)
+
+	acc := domain.Account{
+		Id: 10,
+		Username: "TheUsername",
+		Name: "Jackson",
+		Password: "A-PASSWORD",
+		Email: "jackson@fake.com",
+	}
+	aStore.On("GetByUsername", acc.Username).Return(acc, nil)
+
+	account, err := service.FindByUsername(acc.Username, acc.Id)
+	assert.NoError(t, err)
+	assert.EqualValues(t, acc, account)
+
+	aStore.On("GetByUsername", "invalidUsername").Return(domain.Account{}, domain.NotFound)
+
+	_, err = service.FindByUsername("invalidUsername", acc.Id)
+	assert.ErrorIs(t, err, domain.NotFound)
+
+	_, err = service.FindByUsername(acc.Username, 1)
+	assert.ErrorIs(t, err, domain.Forbidden)
+}

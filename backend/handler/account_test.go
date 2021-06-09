@@ -99,6 +99,37 @@ func TestAccountHandler_deleteAccount(t *testing.T) {
 	assert.EqualValues(t, http.StatusBadRequest, w.Code)
 }
 
+func TestAccountHandler_findWithUsername(t *testing.T) {
+	as := new(mock.AccountService)
+	auth := new(mock.AuthService)
+
+	acc := domain.Account{
+		Id: 5,
+		Username: "TheUsername",
+		Password: "SecretPassword",
+		Name: "Mathew",
+		Email: "mathew@fake.com",
+	}
+
+	j, err := json.Marshal(accountToResp(acc))
+	assert.NoError(t, err)
+
+	as.On("FindByUsername", "ThUsername", 5).Return(acc, nil)
+
+	req, err := http.NewRequest("GET", "/accounts/TheUsername", nil)
+	assert.NoError(t, err)
+
+	w := httptest.NewRecorder()
+	r := mux.NewRouter()
+	secured := mock.SecureRouter(r, 5)
+	NewAccountHandler(as, auth).Route(r, secured)
+	r.ServeHTTP(w, req)
+
+
+	assert.EqualValues(t, http.StatusOK, w.Code)
+	assert.JSONEq(t, string(j), w.Body.String())
+}
+
 func TestAccountHandler_login(t *testing.T) {
 	as := new(mock.AccountService)
 	auth := new(mock.AuthService)
