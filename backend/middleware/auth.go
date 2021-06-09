@@ -26,11 +26,6 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		if !tk.Valid {
-			writeError(w, "Invalid access token.")
-			return
-		}
-
 		c := tk.Claims.(jwt.MapClaims)
 		if c["aud"] != "access" {
 			writeError(w, "Invalid access token")

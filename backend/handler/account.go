@@ -56,6 +56,29 @@ type CreateAccount struct {
 	Email string `json:"email"`
 }
 
+// UnmarshalJSON will enforce all the required fields in the CreateAccount
+// struct and returns an error if a field is missing.
+func (c *CreateAccount) UnmarshalJSON(data []byte) error {
+	type create2 CreateAccount
+	if err := json.Unmarshal(data, (*create2)(c)); err != nil {
+		return err
+	}
+
+	if c.Name == "" {
+		return fmt.Errorf("%w: missing account 'name' field", domain.BadInput)
+	}
+	if c.Email == "" {
+		return fmt.Errorf("%w: missing account 'email' field", domain.BadInput)
+	}
+	if c.Username == "" {
+		return fmt.Errorf("%w: missing account 'username' field", domain.BadInput)
+	}
+	if c.Password == "" {
+		return fmt.Errorf("%w: missing account 'password' field", domain.BadInput)
+	}
+	return nil
+}
+
 // Login are the fields that are required to successfully log into an account.
 //
 // swagger:model loginAccount
@@ -88,38 +111,15 @@ func (l *Login) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON will enforce all the required fields in the CreateAccount
-// struct and returns an error if a field is missing.
-func (c *CreateAccount) UnmarshalJSON(data []byte) error {
-	type create2 CreateAccount
-	if err := json.Unmarshal(data, (*create2)(c)); err != nil {
-		return err
-	}
-
-	if c.Name == "" {
-		return fmt.Errorf("%w: missing account 'name' field", domain.BadInput)
-	}
-	if c.Email == "" {
-		return fmt.Errorf("%w: missing account 'email' field", domain.BadInput)
-	}
-	if c.Username == "" {
-		return fmt.Errorf("%w: missing account 'username' field", domain.BadInput)
-	}
-	if c.Password == "" {
-		return fmt.Errorf("%w: missing account 'password' field", domain.BadInput)
-	}
-	return nil
-}
-
 type accountHandler struct {
 	baseHandler
-	as domain.AccountService
+	as   domain.AccountService
 	auth domain.AuthService
 }
 
 func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *accountHandler {
 	return &accountHandler{
-		as: aService,
+		as:   aService,
 		auth: authService,
 	}
 }

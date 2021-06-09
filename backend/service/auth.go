@@ -12,7 +12,7 @@ import (
 
 type authService struct {
 	store domain.AccountStore
-	key string
+	key   string
 }
 
 func NewAuthService(acc domain.AccountStore) domain.AuthService {
@@ -38,6 +38,23 @@ func (a authService) Authenticate(username, password string) (domain.AuthToken, 
 		return domain.AuthToken{}, fmt.Errorf("%w: we were unable to issue a token", domain.Internal)
 	}
 	return tk, nil
+}
+
+func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	tkn, err := jwt.Parse(refreshTkn, func(token *jwt.Token) (interface{}, error) {
+		return []byte(a.key), nil
+	})
+	if err != nil {
+		return domain.AuthToken{}, fmt.Errorf("%w: invalid refresh token", domain.Unauthorized)
+	}
+
+	c := tkn.Claims.(jwt.MapClaims)
+	if c["aud"] != "refresh" {
+		return domain.AuthToken{}, fmt.Errorf("%w: invalid refresh token", domain.Unauthorized)
+	}
+	id := c["sub"].(string)
+	username := c["username"].(string)
+	return createToken(username, id, a.key)
 }
 
 type AccountClaims struct {

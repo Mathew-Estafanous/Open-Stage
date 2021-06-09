@@ -28,3 +28,7 @@ func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
 	return secured
 }
 
+func (a *AuthService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	ret := a.Called(refreshTkn)
+	return ret.Get(0).(domain.AuthToken), ret.Error(1)
+}

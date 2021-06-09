@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestAuthService_Authenticate(t *testing.T) {
@@ -28,21 +29,60 @@ func TestAuthService_Authenticate(t *testing.T) {
 	authToken, err := auth.Authenticate(username, password)
 	assert.NoError(t, err)
 
-	accessTkn, err := jwt.Parse(authToken.AccessToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("SECRET"), nil
-	})
-	assert.NoError(t, err)
-
-	refreshTkn, err := jwt.Parse(authToken.RefreshToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte("SECRET"), nil
-	})
-	assert.NoError(t, err)
-
-	assert.EqualValues(t, true, accessTkn.Valid)
-	assert.EqualValues(t, true, refreshTkn.Valid)
+	validateAuthTkn(authToken, t)
 
 	username = "InvalidUsername"
 	aStore.On("GetByUsername", username).Return(domain.Account{}, domain.NotFound)
 	_, err = auth.Authenticate(username, password)
 	assert.Error(t, err)
+}
+
+func TestAuthService_Refresh(t *testing.T) {
+	err := os.Setenv("SECRET_KEY", "SECRET")
+	assert.NoError(t, err)
+
+	aStore := new(mock.AccountStore)
+	auth := NewAuthService(aStore)
+
+	exp := time.Now().Add(time.Hour * 168).Unix()
+	refreshClaim := AccountClaims{
+		"USERNAME",
+		jwt.StandardClaims{
+			ExpiresAt: exp,
+			Audience:  "refresh",
+			Subject:   "2",
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
+	refreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	assert.NoError(t, err)
+
+	authTkn, err := auth.Refresh(refreshTkn)
+	assert.NoError(t, err)
+	validateAuthTkn(authTkn, t)
+
+	exp = time.Date(2000, 1, 1, 1, 0, 0, 0, time.UTC).Unix()
+	refreshClaim.ExpiresAt = exp
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
+	expiredRefreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	assert.NoError(t, err)
+
+	_, err = auth.Refresh(expiredRefreshTkn)
+	assert.ErrorIs(t, err, domain.Unauthorized)
+}
+
+func validateAuthTkn(authToken domain.AuthToken, t *testing.T) {
+	accessTkn, err := jwt.Parse(authToken.AccessToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	assert.NoError(t, err)
+
+	refreshTkn, err := jwt.Parse(authToken.RefreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	assert.NoError(t, err)
+
+	assert.EqualValues(t, true, accessTkn.Valid)
+	assert.EqualValues(t, true, refreshTkn.Valid)
 }

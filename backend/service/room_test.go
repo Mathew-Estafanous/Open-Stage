@@ -57,8 +57,8 @@ func TestRoomService_DeleteRoom(t *testing.T) {
 
 	room := domain.Room{
 		RoomCode: "validCode",
-		Host: "Mat",
-		AccId: 1,
+		Host:     "Mat",
+		AccId:    1,
 	}
 
 	store.On("Delete", "validCode").Return(nil)

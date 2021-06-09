@@ -11,4 +11,5 @@ type AuthToken struct {
 
 type AuthService interface {
 	Authenticate(username, password string) (AuthToken, error)
+	Refresh(refreshTkn string) (AuthToken, error)
 }

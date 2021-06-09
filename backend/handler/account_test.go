@@ -103,14 +103,13 @@ func TestAccountHandler_login(t *testing.T) {
 	as := new(mock.AccountService)
 	auth := new(mock.AuthService)
 
-
 	login := Login{
 		Username: "Mathew",
 		Password: "SecretPassword",
 	}
 
 	tks := domain.AuthToken{
-		AccessToken: "AN-ACCESS-TOKEN",
+		AccessToken:  "AN-ACCESS-TOKEN",
 		RefreshToken: "A-REFRESH-TOKEN",
 	}
 

@@ -17,7 +17,7 @@ func TestAuth(t *testing.T) {
 	tkn := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		Audience:  "access",
 		ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
-		Subject: "1",
+		Subject:   "1",
 	})
 	accessTkn, err := tkn.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
