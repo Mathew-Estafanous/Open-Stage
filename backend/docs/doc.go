@@ -62,7 +62,7 @@ type accountResponse struct {
 	Body handler.AccountResp
 }
 
-// Access tokens from authentication
+// Both access and refresh tokens.
 // swagger:response authToken
 type tokenResponse struct {
 	// in: body
@@ -92,6 +92,12 @@ type createQuestionBody struct {
 type loginBody struct {
 	// in: body
 	Body handler.Login
+}
+
+// swagger:parameters refresh
+type refreshBody struct {
+	// in: body
+	Body handler.Refresh
 }
 
 // swagger:parameters createRoom

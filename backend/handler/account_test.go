@@ -134,3 +134,33 @@ func TestAccountHandler_login(t *testing.T) {
 
 	assert.JSONEq(t, string(j), w.Body.String())
 }
+
+func TestAccountHandler_refresh(t *testing.T) {
+	as := new(mock.AccountService)
+	auth := new(mock.AuthService)
+
+	refresh := Refresh{
+		Tkn: "A-REFRESH-TOKEN",
+	}
+
+	authTks := domain.AuthToken{
+		AccessToken:  "AN-ACCESS-TOKEN",
+		RefreshToken: "A-REFRESH-TOKEN",
+	}
+	auth.On("Refresh", refresh.Tkn).Return(authTks, nil)
+
+	j, err := json.Marshal(refresh)
+	assert.NoError(t, err)
+
+	req, err := http.NewRequest("POST", "/accounts/refresh", strings.NewReader(string(j)))
+	w := httptest.NewRecorder()
+	r := mux.NewRouter()
+	secured := mock.SecureRouter(r, 5)
+	NewAccountHandler(as, auth).Route(r, secured)
+	r.ServeHTTP(w, req)
+
+	assert.EqualValues(t, http.StatusOK, w.Code)
+	j, err = json.Marshal(authTks)
+	assert.NoError(t, err)
+	assert.JSONEq(t, string(j), w.Body.String())
+}

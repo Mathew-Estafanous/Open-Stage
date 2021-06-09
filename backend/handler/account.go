@@ -111,6 +111,14 @@ func (l *Login) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Refresh contains the provided refresh token that is used to retrieve a new
+// access token.
+//
+// swagger:model refresh
+type Refresh struct {
+	Tkn string `json:"refresh_token"`
+}
+
 type accountHandler struct {
 	baseHandler
 	as   domain.AccountService
@@ -127,6 +135,7 @@ func NewAccountHandler(aService domain.AccountService, authService domain.AuthSe
 func (a accountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
+	r.HandleFunc("/accounts/refresh", a.refresh).Methods("POST")
 
 	secured.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
 }
@@ -223,6 +232,35 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	token, err := a.auth.Authenticate(body.Username, body.Password)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	a.respond(w, http.StatusOK, token)
+}
+
+// swagger:route POST /accounts/refresh Accounts refresh
+//
+// Refresh current access token.
+//
+// Use your provided refresh token to get another access token. Remember that refresh
+// tokens also expire and must be used within their expiration time. If the refresh
+// token is expired, you must authenticate again.
+//
+// Responses:
+//  200: authToken
+//  401: errorResponse
+//  500: errorResponse
+func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
+	var body Refresh
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	token, err := a.auth.Refresh(body.Tkn)
 	if err != nil {
 		a.error(w, err)
 		return
