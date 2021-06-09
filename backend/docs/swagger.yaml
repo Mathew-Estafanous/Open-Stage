@@ -269,6 +269,29 @@ paths:
       summary: Delete an account by ID
       tags:
       - Accounts
+  /accounts/{username}:
+    get:
+      description: Retrieve relevant account information by providing the username.
+      operationId: accountUsername
+      parameters:
+      - description: The account username
+        in: path
+        name: username
+        required: true
+        type: string
+        x-go-name: Username
+      responses:
+        "200":
+          $ref: '#/responses/accountResponse'
+        "403":
+          $ref: '#/responses/errorResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Get account information by username.
+      tags:
+      - Accounts
   /accounts/login:
     post:
       description: |-

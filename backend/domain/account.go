@@ -17,4 +17,5 @@ type AccountStore interface {
 type AccountService interface {
 	Create(acc *Account) error
 	Delete(id, accId int) error
+	FindByUsername(username string, accId int) (Account, error)
 }

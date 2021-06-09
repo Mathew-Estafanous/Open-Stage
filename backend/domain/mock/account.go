@@ -19,6 +19,11 @@ func (a *AccountService) Delete(id, accId int) error {
 	return ret.Error(0)
 }
 
+func (a *AccountService) FindByUsername(username string, accId int) (domain.Account, error) {
+	ret := a.Called(username, accId)
+	return ret.Get(0).(domain.Account), ret.Error(1)
+}
+
 type AccountStore struct {
 	mock.Mock
 }

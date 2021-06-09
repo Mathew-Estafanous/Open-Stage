@@ -138,6 +138,7 @@ func (a accountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/refresh", a.refresh).Methods("POST")
 
 	secured.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
+	secured.HandleFunc("/accounts/{username}", a.findWithUsername).Methods("GET")
 }
 
 // swagger:route POST /accounts/signup Accounts createAccount
@@ -172,13 +173,7 @@ func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := AccountResp{
-		Id:       acc.Id,
-		Name:     acc.Name,
-		Username: acc.Username,
-		Email:    acc.Email,
-	}
-	a.respond(w, http.StatusCreated, resp)
+	a.respond(w, http.StatusCreated, accountToResp(acc))
 }
 
 // swagger:route DELETE /accounts/{accountId} Accounts accountId
@@ -210,6 +205,34 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 		a.error(w, err)
 		return
 	}
+}
+
+// swagger:route GET /accounts/{username} Accounts accountUsername
+//
+// Get account information by username.
+//
+// Retrieve relevant account information by providing the username.
+//
+// Responses:
+//  200: accountResponse
+//  403: errorResponse
+//  404: errorResponse
+//  500: errorResponse
+func (a accountHandler) findWithUsername(w http.ResponseWriter, r *http.Request) {
+	username := mux.Vars(r)["username"]
+	accId, err := strconv.Atoi(r.Header.Get("Account"))
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	acc, err := a.as.FindByUsername(username, accId)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	a.respond(w, http.StatusOK, accountToResp(acc))
 }
 
 // swagger:route POST /accounts/login Accounts loginAccount
@@ -267,4 +290,14 @@ func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a.respond(w, http.StatusOK, token)
+}
+
+
+func accountToResp(acc domain.Account) AccountResp {
+	return AccountResp{
+		Id:       acc.Id,
+		Name:     acc.Name,
+		Username: acc.Username,
+		Email:    acc.Email,
+	}
 }
