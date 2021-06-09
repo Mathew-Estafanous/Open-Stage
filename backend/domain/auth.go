@@ -10,5 +10,6 @@ type AuthToken struct {
 }
 
 type AuthService interface {
-	OwnsRoom(code string, accId int) (bool, error)
+	Authenticate(username, password string) (AuthToken, error)
+	Refresh(refreshTkn string) (AuthToken, error)
 }

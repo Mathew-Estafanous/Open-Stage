@@ -3,28 +3,86 @@ package service
 import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
+	"time"
 )
 
-func TestAuthService_OwnsRoom(t *testing.T) {
-	rStore := new(mock.RoomStore)
-	auth := NewAuthService(rStore)
-	rStore.On("GetByRoomCode", "validRoom").Return(domain.Room{
-		RoomCode: "validRoom",
-		AccId: 1,
-	}, nil)
-
-	doesOwn, err := auth.OwnsRoom("validRoom", 1)
+func TestAuthService_Authenticate(t *testing.T) {
+	err := os.Setenv("SECRET_KEY", "SECRET")
 	assert.NoError(t, err)
-	assert.EqualValues(t, true, doesOwn)
 
-	rStore.On("GetByRoomCode", "notOwnedRoom").Return(domain.Room{
-		RoomCode: "notOwnedRoom",
-		AccId: 2,
-	}, nil)
+	aStore := new(mock.AccountStore)
+	auth := NewAuthService(aStore)
 
-	doesOwn, err = auth.OwnsRoom("notOwnedRoom", 1)
+	respAcc := domain.Account{
+		Username: "someUsername",
+		// This is a hashed password 'helloWorld' using bcrypt.
+		Password: "$2y$12$UvUX39hRbeEGVCgEZmX3NO/5No10LEFe7ZsARJ5iK/55oSOUs7Bha",
+	}
+	aStore.On("GetByUsername", respAcc.Username).Return(respAcc, nil)
+
+	username := "someUsername"
+	password := "helloWorld"
+	authToken, err := auth.Authenticate(username, password)
 	assert.NoError(t, err)
-	assert.EqualValues(t, false, doesOwn)
+
+	validateAuthTkn(authToken, t)
+
+	username = "InvalidUsername"
+	aStore.On("GetByUsername", username).Return(domain.Account{}, domain.NotFound)
+	_, err = auth.Authenticate(username, password)
+	assert.Error(t, err)
+}
+
+func TestAuthService_Refresh(t *testing.T) {
+	err := os.Setenv("SECRET_KEY", "SECRET")
+	assert.NoError(t, err)
+
+	aStore := new(mock.AccountStore)
+	auth := NewAuthService(aStore)
+
+	exp := time.Now().Add(time.Hour * 168).Unix()
+	refreshClaim := AccountClaims{
+		"USERNAME",
+		jwt.StandardClaims{
+			ExpiresAt: exp,
+			Audience:  "refresh",
+			Subject:   "2",
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
+	refreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	assert.NoError(t, err)
+
+	authTkn, err := auth.Refresh(refreshTkn)
+	assert.NoError(t, err)
+	validateAuthTkn(authTkn, t)
+
+	exp = time.Date(2000, 1, 1, 1, 0, 0, 0, time.UTC).Unix()
+	refreshClaim.ExpiresAt = exp
+	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
+	expiredRefreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	assert.NoError(t, err)
+
+	_, err = auth.Refresh(expiredRefreshTkn)
+	assert.ErrorIs(t, err, domain.Unauthorized)
+}
+
+func validateAuthTkn(authToken domain.AuthToken, t *testing.T) {
+	accessTkn, err := jwt.Parse(authToken.AccessToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	assert.NoError(t, err)
+
+	refreshTkn, err := jwt.Parse(authToken.RefreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	assert.NoError(t, err)
+
+	assert.EqualValues(t, true, accessTkn.Valid)
+	assert.EqualValues(t, true, refreshTkn.Valid)
 }

@@ -170,6 +170,17 @@ definitions:
     type: object
     x-go-name: Question
     x-go-package: github.com/Mathew-Estafanous/Open-Stage/domain
+  refresh:
+    description: |-
+      Refresh contains the provided refresh token that is used to retrieve a new
+      access token.
+    properties:
+      refresh_token:
+        type: string
+        x-go-name: Tkn
+    type: object
+    x-go-name: Refresh
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
   room:
     description: |-
       Every room contains one main host and a unique room code which
@@ -277,6 +288,28 @@ paths:
         "500":
           $ref: '#/responses/errorResponse'
       summary: Login and authenticate account.
+      tags:
+      - Accounts
+  /accounts/refresh:
+    post:
+      description: |-
+        Use your provided refresh token to get another access token. Remember that refresh
+        tokens also expire and must be used within their expiration time. If the refresh
+        token is expired, you must authenticate again.
+      operationId: refresh
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/refresh'
+      responses:
+        "200":
+          $ref: '#/responses/authToken'
+        "401":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Refresh current access token.
       tags:
       - Accounts
   /accounts/signup:
@@ -458,7 +491,7 @@ responses:
     schema:
       $ref: '#/definitions/accountResponse'
   authToken:
-    description: Access tokens from authentication
+    description: Both access and refresh tokens.
     schema:
       $ref: '#/definitions/authToken'
   errorResponse:

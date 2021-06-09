@@ -56,6 +56,29 @@ type CreateAccount struct {
 	Email string `json:"email"`
 }
 
+// UnmarshalJSON will enforce all the required fields in the CreateAccount
+// struct and returns an error if a field is missing.
+func (c *CreateAccount) UnmarshalJSON(data []byte) error {
+	type create2 CreateAccount
+	if err := json.Unmarshal(data, (*create2)(c)); err != nil {
+		return err
+	}
+
+	if c.Name == "" {
+		return fmt.Errorf("%w: missing account 'name' field", domain.BadInput)
+	}
+	if c.Email == "" {
+		return fmt.Errorf("%w: missing account 'email' field", domain.BadInput)
+	}
+	if c.Username == "" {
+		return fmt.Errorf("%w: missing account 'username' field", domain.BadInput)
+	}
+	if c.Password == "" {
+		return fmt.Errorf("%w: missing account 'password' field", domain.BadInput)
+	}
+	return nil
+}
+
 // Login are the fields that are required to successfully log into an account.
 //
 // swagger:model loginAccount
@@ -88,41 +111,31 @@ func (l *Login) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON will enforce all the required fields in the CreateAccount
-// struct and returns an error if a field is missing.
-func (c *CreateAccount) UnmarshalJSON(data []byte) error {
-	type create2 CreateAccount
-	if err := json.Unmarshal(data, (*create2)(c)); err != nil {
-		return err
-	}
-
-	if c.Name == "" {
-		return fmt.Errorf("%w: missing account 'name' field", domain.BadInput)
-	}
-	if c.Email == "" {
-		return fmt.Errorf("%w: missing account 'email' field", domain.BadInput)
-	}
-	if c.Username == "" {
-		return fmt.Errorf("%w: missing account 'username' field", domain.BadInput)
-	}
-	if c.Password == "" {
-		return fmt.Errorf("%w: missing account 'password' field", domain.BadInput)
-	}
-	return nil
+// Refresh contains the provided refresh token that is used to retrieve a new
+// access token.
+//
+// swagger:model refresh
+type Refresh struct {
+	Tkn string `json:"refresh_token"`
 }
 
 type accountHandler struct {
 	baseHandler
-	as domain.AccountService
+	as   domain.AccountService
+	auth domain.AuthService
 }
 
-func NewAccountHandler(aService domain.AccountService) *accountHandler {
-	return &accountHandler{as: aService}
+func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *accountHandler {
+	return &accountHandler{
+		as:   aService,
+		auth: authService,
+	}
 }
 
 func (a accountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
+	r.HandleFunc("/accounts/refresh", a.refresh).Methods("POST")
 
 	secured.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
 }
@@ -218,12 +231,36 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	acc := domain.Account{
-		Username: body.Username,
-		Password: body.Password,
+	token, err := a.auth.Authenticate(body.Username, body.Password)
+	if err != nil {
+		a.error(w, err)
+		return
 	}
 
-	token, err := a.as.Authenticate(acc)
+	a.respond(w, http.StatusOK, token)
+}
+
+// swagger:route POST /accounts/refresh Accounts refresh
+//
+// Refresh current access token.
+//
+// Use your provided refresh token to get another access token. Remember that refresh
+// tokens also expire and must be used within their expiration time. If the refresh
+// token is expired, you must authenticate again.
+//
+// Responses:
+//  200: authToken
+//  401: errorResponse
+//  500: errorResponse
+func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
+	var body Refresh
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	token, err := a.auth.Refresh(body.Tkn)
 	if err != nil {
 		a.error(w, err)
 		return

@@ -23,9 +23,7 @@ func main() {
 	db := connectToDB()
 
 	rStore := postgres.NewRoomStore(db)
-	authService := service.NewAuthService(rStore)
-
-	rService := service.NewRoomService(rStore, authService)
+	rService := service.NewRoomService(rStore)
 	roomHandler := handler.NewRoomHandler(rService)
 
 	qStore := postgres.NewQuestionStore(db)
@@ -34,7 +32,8 @@ func main() {
 
 	aStore := postgres.NewAccountStore(db)
 	aService := service.NewAccountService(aStore)
-	accountHandler := handler.NewAccountHandler(aService)
+	authService := service.NewAuthService(aStore)
+	accountHandler := handler.NewAccountHandler(aService, authService)
 
 	router := mux.NewRouter()
 	configureDocsRoute(router)

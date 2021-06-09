@@ -1,6 +1,7 @@
 package mock
 
 import (
+	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/mock"
 	"net/http"
@@ -11,9 +12,9 @@ type AuthService struct {
 	mock.Mock
 }
 
-func (a *AuthService) OwnsRoom(code string, accId int) (bool, error) {
-	ret := a.Called(code, accId)
-	return ret.Get(0).(bool), ret.Error(1)
+func (a *AuthService) Authenticate(username, password string) (domain.AuthToken, error) {
+	ret := a.Called(username, password)
+	return ret.Get(0).(domain.AuthToken), ret.Error(1)
 }
 
 func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
@@ -27,3 +28,7 @@ func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
 	return secured
 }
 
+func (a *AuthService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	ret := a.Called(refreshTkn)
+	return ret.Get(0).(domain.AuthToken), ret.Error(1)
+}
