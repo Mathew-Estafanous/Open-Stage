@@ -114,7 +114,7 @@ func TestAccountHandler_findWithUsername(t *testing.T) {
 	j, err := json.Marshal(accountToResp(acc))
 	assert.NoError(t, err)
 
-	as.On("FindByUsername", "ThUsername", 5).Return(acc, nil)
+	as.On("FindByUsername", "TheUsername", 5).Return(acc, nil)
 
 	req, err := http.NewRequest("GET", "/accounts/TheUsername", nil)
 	assert.NoError(t, err)
