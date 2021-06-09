@@ -140,3 +140,10 @@ type accountIdPath struct {
 	// in: path
 	ID string `json:"id"`
 }
+
+// swagger:parameters accountUsername
+type usernamePath struct {
+	// The account username
+	// in: path
+	Username string `json:"username"`
+}
