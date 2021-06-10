@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { GetRoom } from "../http/Rooms";
 import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
+import {useAuth} from "../context/AuthContext";
 
 
 function useQuery() {
@@ -15,6 +16,7 @@ export const RoomSelect = () => {
 
     const query = useQuery();
     const history = useHistory();
+    const {account} = useAuth()
 
     const joinRoom = async (e) => {
         e.preventDefault()
@@ -29,13 +31,21 @@ export const RoomSelect = () => {
         history.push("/room/" + code);
     }
 
+    const clickedProfile = (e) => {
+        if (!account) {
+            history.push("/login")
+        } else {
+            history.push("/account")
+        }
+    }
+
     return (
         <>
         <header>
             <img className='logo' src='/Logo.png' alt="Logo"/>
             <h1 className='title'>Open Stage</h1>
 
-            <img className='profile' src="/Profile.png" alt=""/>
+            <img className='profile' src="/Profile.png" alt="profile" onClick={clickedProfile}/>
         </header>
         <form className='roomCode' onSubmit={joinRoom} >
             <h1>Join Room</h1>
