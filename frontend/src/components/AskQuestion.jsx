@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "./AskQuestion.css"
+import "./css/AskQuestion.css"
 import { PostQuestion } from "../http/Questions";
 
 export const AskQuestion = ({code, onPost}) => {

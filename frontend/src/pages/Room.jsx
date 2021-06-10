@@ -4,7 +4,7 @@ import { AskQuestion } from "../components/AskQuestion";
 import { Question } from "../components/Question";
 import { GetRoom } from "../http/Rooms";
 import { GetAllQuestions } from "../http/Questions";
-import "./Room.css";
+import "./css/Room.css";
 import { Oval } from "@agney/react-loading";
 
 export const Room = () => {

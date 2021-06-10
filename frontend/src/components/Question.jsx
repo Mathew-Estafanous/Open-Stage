@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import "./Question.css"
+import "./css/Question.css"
 import {UpdateLikes} from "../http/Questions";
 
 export const Question = (prop) => {
