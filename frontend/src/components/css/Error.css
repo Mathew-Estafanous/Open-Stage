@@ -1,0 +1,53 @@
+.error {
+    margin-top: 2vw;
+    margin-bottom: 10px;
+    display: inline-block;
+    background-color: rgba(255, 0, 0, 0.16);
+    padding: 10px;
+
+    border-radius: 15px;
+    border-style: solid;
+    border-color: #bb0000;
+}
+
+.error img {
+    vertical-align: middle;
+    max-width: 30px;
+}
+.error p {
+    font-weight: 300;
+    font-size: 15px;
+    margin: 0 0 0 10px;
+    display: inline-block;
+}
+
+@media screen and (max-width: 950px) {
+    .error img {
+        max-width: 25px;
+    }
+
+    .error p {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .error {
+        padding: 6px;
+    }
+
+    .error img {
+        max-width: 22px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    .error {
+        margin-top: 3vw;
+        padding: 6px;
+    }
+
+    .error img {
+        max-width: 20px;
+    }
+}

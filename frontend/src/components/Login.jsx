@@ -27,7 +27,7 @@ export const Login = () => {
                 </div>
                 <div className='login-form-field'>
                     <label htmlFor='password'>Password</label>
-                    <input type='text'
+                    <input type='password'
                            value={password}
                            onChange={e => setPassword(e.target.value)}
                            maxLength={30}

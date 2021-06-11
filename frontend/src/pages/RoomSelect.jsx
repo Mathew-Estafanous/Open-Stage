@@ -4,6 +4,7 @@ import { GetRoom } from "../http/Rooms";
 import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
 import {useAuth} from "../context/AuthContext";
+import {Error} from "../components/Error";
 
 
 function useQuery() {
@@ -67,10 +68,7 @@ export const RoomSelect = () => {
             }
 
             {query.get("error") && !isLoading?
-                    <div className='error'>
-                        <img src="/Warning.png" alt="Warning"/>
-                        <p>{query.get("error")}</p>
-                    </div>
+                <Error msg={query.get("error")}/>
                 :null
             }
         </form>
