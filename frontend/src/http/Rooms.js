@@ -1,4 +1,4 @@
-const url = (process.env.REACT_APP_ENV === 'production')?
+export const url = (process.env.REACT_APP_ENV === 'production')?
     'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
 
 const roomResponse = {

@@ -1,5 +1,6 @@
-.logo {
+.login-logo {
     width: 75px;
+    cursor: pointer;
 }
 
 .login-section {

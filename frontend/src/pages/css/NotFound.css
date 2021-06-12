@@ -1,3 +1,7 @@
+div.notFound .logo {
+    cursor: pointer;
+}
+
 div.notFound {
     margin-top: 10vw;
     align-content: center;

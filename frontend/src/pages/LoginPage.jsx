@@ -1,19 +1,17 @@
 import {Login} from "../components/Login";
 import "./css/LoginPage.css"
-import React, {useState} from "react";
-import {Error} from "../components/Error";
+import React from "react";
+import {useHistory} from "react-router-dom";
 
 export const LoginPage = () => {
-    const [error, setError] = useState(false);
+    const history = useHistory()
     return (
         <>
             <header>
-                <img className='logo' src='./Logo.png' alt='Logo'/>
+                <img className='login-logo' src='./Logo.png' alt='Logo'
+                     onClick={() => history.push('/')} />
             </header>
             <section className='login-section'>
-                {error?
-                    <Error msg={"Invalid username or password!"}/>: null
-                }
                 <Login />
             </section>
         </>

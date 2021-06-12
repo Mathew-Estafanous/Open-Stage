@@ -23,7 +23,6 @@ const App = () => {
                 <Route path="/room/:code" component={Room} />
                 <Route exact path="/404" component={NotFound} />
                 {account? <Authenticated />: <Unauthenticated />}
-                <Redirect to="/404" />
             </Switch>
         </Router>
         </>

@@ -1,18 +1,36 @@
 import {useState} from "react";
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
+import {LoginAccount} from "../http/Accounts";
+import {Error} from "./Error";
+import {useAuth} from "../context/AuthContext";
 import "./css/Login.css"
 
 export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(false);
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log("SUBMITTED!")
+    const { setAccount } = useAuth();
+    const history = useHistory();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        let result = await LoginAccount(username, password);
+        if (result.error.status !== 200) {
+            setError(true);
+            return;
+        }
+
+        setAccount(result.body);
+        history.push('/account');
     }
 
     return (
         <form className='login-form' onSubmit={handleSubmit}>
+            {error?
+                <Error msg={"Invalid username or password!"}/>: null
+            }
+
             <div className='login-form-wrapper'>
                 <div className='login-form-header'>
                     <h2>LOGIN</h2>

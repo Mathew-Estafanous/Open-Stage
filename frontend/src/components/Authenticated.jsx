@@ -1,4 +1,5 @@
 import {
+    Redirect,
     Route,
 } from "react-router-dom";
 import React from "react";
@@ -8,6 +9,7 @@ export const Authenticated = () => {
     return (
         <>
             <Route path="/account" component={Account} />
+            <Redirect to="/404" />
         </>
     )
 }

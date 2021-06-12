@@ -11,8 +11,9 @@ import {LoginPage} from "../pages/LoginPage";
 export const Unauthenticated = () => {
     return (
         <>
-            <Route path="/login" component={LoginPage} />
-            <Route path="/signup" component={Signup} />
+            <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/signup" component={Signup} />
+            <Redirect to="/404" />
         </>
     )
 }
