@@ -3,10 +3,8 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect
 } from "react-router-dom";
 import { RoomSelect } from './pages/RoomSelect'
-import { NotFound } from "./pages/NotFound";
 import { Room } from "./pages/Room";
 import {useAuth} from "./context/AuthContext";
 import {Unauthenticated} from "./components/Unauthenticated";
@@ -21,7 +19,6 @@ const App = () => {
             <Switch>
                 <Route exact path="/" component={RoomSelect} />
                 <Route path="/room/:code" component={Room} />
-                <Route exact path="/404" component={NotFound} />
                 {account? <Authenticated />: <Unauthenticated />}
             </Switch>
         </Router>

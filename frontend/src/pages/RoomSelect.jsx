@@ -34,9 +34,9 @@ export const RoomSelect = () => {
 
     const clickedProfile = (e) => {
         if (!account) {
-            history.push("/login")
+            history.push("/login");
         } else {
-            history.push("/account")
+            history.push("/account");
         }
     }
 
