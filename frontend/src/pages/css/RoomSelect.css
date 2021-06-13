@@ -57,6 +57,7 @@ form.roomCode input {
     color: #232931;
 
     border-radius: 50px;
+    border-style: none;
     width: 350px;
     height: 42px;
 }
@@ -95,10 +96,13 @@ form.roomCode div button:hover {
 form.roomCode div img.btn {
     position: absolute;
     max-width: 35px;
+    transform: rotate(90deg);
+    transition: transform 0.3s ease-in-out;
 }
 
 form.roomCode div img.btn:hover {
     cursor: pointer;
+    transform: rotate(0deg);
 }
 
 

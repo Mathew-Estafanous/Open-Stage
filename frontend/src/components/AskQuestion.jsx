@@ -21,7 +21,7 @@ export const AskQuestion = ({code, onPost}) => {
     }
 
     return (
-        <div className='askdiv'>
+        <div className='ask-div'>
             <form className='askform' onSubmit={postQuestion}>
                 <textarea rows='2' placeholder='Write your question here...'
                           value={question} onChange={e => setQuestion(e.target.value)} />

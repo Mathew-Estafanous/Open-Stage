@@ -1,10 +1,10 @@
-div.askdiv {
+.ask-div {
     margin-top: 5vw;
     display: block;
     text-align: center;
 }
 
-form.askform {
+.askform {
     display: inline-block;
     width: 650px;
     padding: 15px 25px;
@@ -54,6 +54,11 @@ form.askform img {
     font-weight: 600;
     color: #eeeeee;
     background-color: #219897;
+    transition: transform 0.3s ease-in-out;
+}
+
+.askform button:hover {
+    transform: scale(1.075);
 }
 
 @media (max-width: 950px) {
@@ -83,7 +88,7 @@ form.askform img {
 }
 
 @media (max-width: 400px) {
-    div.askdiv {
+    div.ask-div {
         margin-top: 50px;
     }
 
