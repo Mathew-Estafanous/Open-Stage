@@ -3,7 +3,7 @@ import {Link, useHistory} from "react-router-dom";
 import {LoginAccount} from "../http/Accounts";
 import {Error} from "./Error";
 import {useAuth} from "../context/AuthContext";
-import "./css/Login.css"
+import "./css/AuthForm.css";
 
 export const Login = () => {
     const [username, setUsername] = useState('');
@@ -26,16 +26,16 @@ export const Login = () => {
     }
 
     return (
-        <form className='login-form' onSubmit={handleSubmit}>
+        <form className='auth-form' onSubmit={handleSubmit}>
             {error?
                 <Error msg={"Invalid username or password!"}/>: null
             }
 
-            <div className='login-form-wrapper'>
-                <div className='login-form-header'>
+            <div className='auth-form-wrapper'>
+                <div className='auth-form-header'>
                     <h2>LOGIN</h2>
                 </div>
-                <div className='login-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor='username'>Username</label>
                     <input type='text'
                            value={username}
@@ -43,7 +43,7 @@ export const Login = () => {
                            maxLength={30}
                            required />
                 </div>
-                <div className='login-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor='password'>Password</label>
                     <input type='password'
                            value={password}
@@ -51,8 +51,8 @@ export const Login = () => {
                            maxLength={30}
                            required />
                 </div>
-                <button className='login-form-btn' type='submit'>Login</button>
-                <hr className='login-form-divider'/>
+                <button className='auth-form-btn' type='submit'>Login</button>
+                <hr className='auth-form-divider'/>
                 <p className='have-an-account'>Don't have an account? <Link to="/signup">Signup!</Link></p>
             </div>
         </form>

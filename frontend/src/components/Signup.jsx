@@ -1,8 +1,7 @@
-import "./css/Signup.css"
 import {useState} from "react";
 import {Error} from "./Error";
 import {Link} from "react-router-dom";
-
+import "./css/AuthForm.css";
 export const Signup = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -17,16 +16,16 @@ export const Signup = () => {
     }
 
     return (
-        <form className='signup-form' onSubmit={submitSignup} >
+        <form className='auth-form' onSubmit={submitSignup} >
             {error?
                 <Error msg='There was an error while signing up.'/>: null
             }
 
-            <div className='signup-form-wrapper'>
-                <div className='signup-form-header'>
+            <div className='auth-form-wrapper'>
+                <div className='auth-form-header'>
                     <h2>Create An Account</h2>
                 </div>
-                <div className='signup-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor="username">Username</label>
                     <input type="text"
                             value={username}
@@ -34,21 +33,21 @@ export const Signup = () => {
                             maxLength={25}
                             required />
                 </div>
-                <div className='signup-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor="name">Name</label>
                     <input type="text"
                            value={name}
                            onChange={e => setName(e.target.value)}
                            required />
                 </div>
-                <div className='signup-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor="email">Email</label>
                     <input type="text"
                            value={email}
                            onChange={e => setEmail(e.target.value)}
                            required />
                 </div>
-                <div className='signup-form-field'>
+                <div className='auth-form-field'>
                     <label htmlFor="password">Password</label>
                     <input type="password"
                            value={password}
@@ -56,8 +55,9 @@ export const Signup = () => {
                            minLength={8}
                            required />
                 </div>
-                <button className='signup-form-btn' type='submit'>Create Account</button>
-                <Link to="/signup">Login to your account.</Link>
+                <hr className='auth-form-divider' />
+                <button className='auth-form-btn' type='submit'>Create Account</button>
+                <p className='have-an-account'>Have an account? <Link to="/signup">Login!</Link></p>
             </div>
         </form>
     )

@@ -1,11 +1,11 @@
-.login-form {
+.auth-form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.login-form-wrapper {
+.auth-form-wrapper {
     display: flex;
     flex-direction: column;
     padding: 25px 20px;
@@ -13,24 +13,24 @@
     background-color: #393E46;
 }
 
-.login-form-header {
+.auth-form-header {
     text-align: center;
     background-color: #219897;
     border-radius: 5px;
     margin-bottom: 15px;
 }
 
-.login-form-field {
+.auth-form-field {
     margin-bottom: 5px;
     display: flex;
     flex-direction: column;
 }
 
-.login-form-field label {
+.auth-form-field label {
     color: #219897;
 }
 
-.login-form-field input {
+.auth-form-field input {
     font-weight: 300;
     font-size: 15px;
     padding: 5px 5px;
@@ -40,7 +40,7 @@
     border-style: none;
 }
 
-.login-form-btn {
+.auth-form-btn {
     margin: 5px 35px;
     height: 30px;
 
@@ -53,11 +53,11 @@
     transition: background-color 0.2s ease-in;
 }
 
-.login-form-btn:hover {
+.auth-form-btn:hover {
     background-color: #176d6c;
 }
 
-.login-form-divider {
+.auth-form-divider {
     margin: 10px 80px;
     border-style: none;
     height: 3px;
@@ -66,8 +66,7 @@
 }
 
 .have-an-account {
-    font-size: 15px;
-    font-weight: 300;
+    text-align: center;
 }
 
 .have-an-account a {

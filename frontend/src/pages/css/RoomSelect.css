@@ -19,6 +19,11 @@ header img.profile {
     margin-left: auto;
     margin-right: 1vw;
     max-width: 40px;
+    transition: transform 0.3s ease-in-out;
+}
+
+header img.profile:hover {
+    transform: scale(1.15);
 }
 
 /*
