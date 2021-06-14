@@ -1,9 +1,8 @@
-import {Login} from "../components/Login";
-import "./css/AuthPage.css"
-import React from "react";
 import {useHistory} from "react-router-dom";
+import {Signup} from "../components/Signup";
+import './css/AuthPage.css';
 
-export const LoginPage = () => {
+export const SignupPage = () => {
     const history = useHistory()
     return (
         <>
@@ -12,7 +11,7 @@ export const LoginPage = () => {
                      onClick={() => history.push('/')} />
             </header>
             <section className='auth-section'>
-                <Login />
+                <Signup />
             </section>
         </>
     )

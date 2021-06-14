@@ -1,9 +1,14 @@
-.login-logo {
-    width: 75px;
+.auth-logo {
+    width: 65px;
+    transition: transform 0.25s ease-in;
     cursor: pointer;
 }
 
-.login-section {
+.auth-logo:hover {
+    transform: scale(1.1);
+}
+
+.auth-section {
     height: 75%;
     display: flex;
     flex-direction: column;
