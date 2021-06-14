@@ -8,7 +8,7 @@ export const LoginPage = () => {
     return (
         <>
             <header>
-                <img className='auth-logo' src='./Logo.png' alt='Logo'
+                <img className='logo' src='./Logo.png' alt='Logo'
                      onClick={() => history.push('/')} />
             </header>
             <section className='auth-section'>

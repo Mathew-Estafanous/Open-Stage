@@ -1,10 +1,10 @@
-.auth-logo {
+.logo {
     width: 65px;
-    transition: transform 0.25s ease-in;
+    transition: transform 0.2s ease-in;
     cursor: pointer;
 }
 
-.auth-logo:hover {
+.logo:hover {
     transform: scale(1.1);
 }
 
