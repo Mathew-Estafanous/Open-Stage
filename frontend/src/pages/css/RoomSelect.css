@@ -55,7 +55,7 @@ form.roomCode hr {
     margin-bottom: 3vh;
 }
 
-form.roomCode input {
+.form-input {
     font-size: 18px;
     font-weight: 600;
     padding-left: 40px;
@@ -65,11 +65,23 @@ form.roomCode input {
     border-style: none;
     width: 350px;
     height: 42px;
+
+    transition: all 0.2s ease-in-out;
+}
+
+.form-input:hover {
+    background-color: #219897;
+    color: #eeeeee;
+}
+
+.form-input:hover::placeholder {
+    color: #eeeeee;
 }
 
 form.roomCode ::placeholder {
     font-size: 18px;
     font-weight: 600;
+    transition: all 0.3s ease-in-out;
 }
 
 .selector {
@@ -77,7 +89,7 @@ form.roomCode ::placeholder {
     position: relative;
 }
 
-form.roomCode div img.hashtag {
+.selector img.hashtag {
     position: absolute;
     opacity: 0.4;
     top: 7px;
@@ -85,8 +97,7 @@ form.roomCode div img.hashtag {
     max-width: 25px;
 }
 
-form.roomCode div button {
-    background: none;
+.selector button {
     border: none;
     position: absolute;
     top: 3px;
@@ -94,18 +105,14 @@ form.roomCode div button {
     max-width: 37px;
 }
 
-form.roomCode div button:hover {
-    cursor: pointer;
-}
-
-form.roomCode div img.btn {
+.selector img.btn {
     position: absolute;
     max-width: 35px;
     transform: rotate(90deg);
-    transition: transform 0.3s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 }
 
-form.roomCode div img.btn:hover {
+.selector img.btn:hover {
     cursor: pointer;
     transform: rotate(0deg);
 }

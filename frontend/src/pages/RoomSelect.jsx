@@ -32,7 +32,7 @@ export const RoomSelect = () => {
         history.push("/room/" + code);
     }
 
-    const clickedProfile = (e) => {
+    const clickedProfile = () => {
         if (!account) {
             history.push("/login");
         } else {
@@ -53,9 +53,9 @@ export const RoomSelect = () => {
             <hr/>
             <div className='selector'>
                 <img className='hashtag' src="/Hashtag.png" alt="hashtag symbol"/>
-                <input maxLength={20} placeholder='Enter Room Code'
+                <input className='form-input' maxLength={20} placeholder='Enter Room Code'
                        onChange={e => setCode(e.target.value)} />
-                <button type="submit">
+                <button className='form-btn' type="submit">
                     <img className='btn'
                          src="/Select-Arrow.png" alt=""/>
                 </button>
