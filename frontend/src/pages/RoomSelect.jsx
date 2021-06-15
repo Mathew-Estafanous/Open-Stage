@@ -5,6 +5,7 @@ import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
 import {useAuth} from "../context/AuthContext";
 import {Error} from "../components/Error";
+import {ProfileIcon} from "../components/ProfileIcon";
 
 
 function useQuery() {
@@ -32,21 +33,13 @@ export const RoomSelect = () => {
         history.push("/room/" + code);
     }
 
-    const clickedProfile = () => {
-        if (!account) {
-            history.push("/login");
-        } else {
-            history.push("/account");
-        }
-    }
-
     return (
         <>
         <header>
             <img className='logo' src='/Logo.png' alt="Logo"/>
             <h1 className='title'>Open Stage</h1>
 
-            <img className='profile' src="/Profile.png" alt="profile" onClick={clickedProfile}/>
+            <ProfileIcon />
         </header>
         <form className='roomCode' onSubmit={joinRoom} >
             <h1>Join Room</h1>

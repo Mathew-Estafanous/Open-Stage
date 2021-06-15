@@ -38,7 +38,7 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		r.Header.Set("Account", accId)
+		r.Header.Set("AccountPage", accId)
 		next.ServeHTTP(w, r)
 	})
 }

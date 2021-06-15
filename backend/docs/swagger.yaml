@@ -530,7 +530,7 @@ produces:
 - application/json
 responses:
   accountResponse:
-    description: User Account information
+    description: User AccountPage information
     schema:
       $ref: '#/definitions/accountResponse'
   authToken:

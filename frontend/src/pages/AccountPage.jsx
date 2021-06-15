@@ -1,7 +1,7 @@
 import {useHistory} from "react-router-dom";
-import './css/Account.css';
+import './css/AccountPage.css';
 
-export const Account = () => {
+export const AccountPage = () => {
     const history = useHistory();
     return (
         <>

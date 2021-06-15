@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useState} from "react";
+import jwtDecode from "jwt-decode";
 
 const AuthContext = createContext();
 
@@ -6,6 +7,8 @@ export const AuthProvider = (props) => {
     const [account, setAcc] = useState(localStorage.getItem('account.data'))
 
     const setAccount = (accountInfo) => {
+        let body = jwtDecode(accountInfo.access_token);
+        accountInfo.username = body.username;
         localStorage.setItem('account.data', JSON.stringify(accountInfo))
         setAcc(accountInfo)
     }
