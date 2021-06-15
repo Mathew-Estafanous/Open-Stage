@@ -1,15 +1,57 @@
 import {useHistory} from "react-router-dom";
 import './css/AccountPage.css';
+import {ProfileIcon} from "../components/ProfileIcon";
+import {useAuth} from "../context/AuthContext";
+import {useEffect, useState} from "react";
+import {GetAccountInfo} from "../http/Accounts";
 
 export const AccountPage = () => {
+    const [username, setUsername] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+
+    const {account} = useAuth();
     const history = useHistory();
+
+    useEffect(async () => {
+        let result = await GetAccountInfo(account.username, account.access_token);
+        if(result.error.status !== 200) {
+            history.push('/?error=' + result.error.message);
+            return;
+        }
+
+        setUsername(result.body.username);
+        setName(result.body.name);
+        setEmail(result.body.email);
+    }, [history])
     return (
         <>
         <header>
             <img className='logo' src='./Logo.png' alt='Logo'
                  onClick={() => history.push('/')} />
+
+            <ProfileIcon />
         </header>
-        <h1>IM THE ACCOUNT PAGE</h1>
+        <div className='account-wrapper'>
+            <div className='account-info'>
+                <h3 className='account-info-title'>Account Information</h3>
+                <div className='account-info-field'>
+                    <p className='account-info-name'>Username: </p>
+                    <p className='account-info-result'>{username}</p>
+                </div>
+                <div className='account-info-field'>
+                    <p className='account-info-name'>Name: </p>
+                    <p className='account-info-result'>{name}</p>
+                </div>
+                <div className='account-info-field'>
+                    <p className='account-info-name'>Email: </p>
+                    <p className='account-info-result'>{email}</p>
+                </div>
+            </div>
+            <div className='account-rooms'>
+                <h3>Your Rooms</h3>
+            </div>
+        </div>
         </>
     )
 }

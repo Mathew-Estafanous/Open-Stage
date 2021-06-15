@@ -1,5 +1,30 @@
 import {url} from "./Rooms";
 
+let accountResponse = {
+    body: {
+        id: 0,
+        email: '',
+        name: '',
+        username: '',
+    },
+    error: {
+        message: '',
+        status: 200,
+    }
+}
+
+export const GetAccountInfo = (username, token) => {
+    let path = url + '/accounts/' + username;
+    let response = {...accountResponse}
+    let request = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+    }
+    return makeFetchRequest(response, request, path)
+}
+
 let loginResponse = {
     body: {
         access_token: '',
@@ -19,7 +44,14 @@ export const LoginAccount = (username, pass) => {
     }
 
     let response = {...loginResponse}
-    return makeFetchRequest(response, data, path)
+    let request = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+    return makeFetchRequest(response, request, path)
 }
 
 let signupResponse = {
@@ -46,17 +78,18 @@ export const CreateAccount = (username, password, name, email) => {
     }
 
     let response = { ...signupResponse}
-    return makeFetchRequest(response, data, path)
-}
-
-const makeFetchRequest = (response, data, path) => {
-    return fetch(path, {
+    let request = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    })
+    }
+    return makeFetchRequest(response, request, path)
+}
+
+const makeFetchRequest = (response, request, path) => {
+    return fetch(path, request)
         .then(resp => Promise.all([resp.ok, resp.json()]))
         .then(([ok, data]) => {
             if (!ok) {

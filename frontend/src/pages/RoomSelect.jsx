@@ -18,7 +18,6 @@ export const RoomSelect = () => {
 
     const query = useQuery();
     const history = useHistory();
-    const {account} = useAuth()
 
     const joinRoom = async (e) => {
         e.preventDefault()

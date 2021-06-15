@@ -1,0 +1,41 @@
+.account-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60%;
+}
+
+.account-info {
+    border-radius: 15px;
+    background-color: #393E46;
+    margin-right: 5px;
+    padding: 25px 20px;
+}
+
+.account-info-title {
+    background-color: #219897;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px;
+    margin-bottom: 10px;
+}
+
+.account-info-field {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.account-info-name {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.account-info-result {
+    font-weight: 300;
+}
+
+.account-rooms {
+    padding: 5px;
+    background-color: #393E46;
+    margin-left: 5px;
+}
