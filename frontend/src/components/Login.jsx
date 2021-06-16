@@ -35,7 +35,7 @@ export const Login = () => {
                 <div className='auth-form-header'>
                     <h2>LOGIN</h2>
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor='username'>Username</label>
                     <input type='text'
                            value={username}
@@ -43,7 +43,7 @@ export const Login = () => {
                            maxLength={30}
                            required />
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor='password'>Password</label>
                     <input type='password'
                            value={password}

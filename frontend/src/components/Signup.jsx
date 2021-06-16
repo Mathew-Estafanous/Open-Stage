@@ -40,7 +40,7 @@ export const Signup = () => {
                 <div className='auth-form-header'>
                     <h2>Create An Account</h2>
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor="username">Username</label>
                     <input type="text"
                             value={username}
@@ -48,21 +48,21 @@ export const Signup = () => {
                             maxLength={25}
                             required />
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor="name">Name</label>
                     <input type="text"
                            value={name}
                            onChange={e => setName(e.target.value)}
                            required />
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor="email">Email</label>
                     <input type="text"
                            value={email}
                            onChange={e => setEmail(e.target.value)}
                            required />
                 </div>
-                <div className='auth-form-field'>
+                <div className='form-field'>
                     <label htmlFor="password">Password</label>
                     <input type="text"
                            value={password}

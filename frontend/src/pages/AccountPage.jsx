@@ -5,11 +5,13 @@ import {useEffect, useState} from "react";
 import {GetAccountInfo} from "../http/Accounts";
 import {RoomClip} from "../components/RoomClip";
 import './css/AccountPage.css';
+import {CreateRoom} from "../components/CreateRoom";
 
 export const AccountPage = () => {
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [isOpen, setOpen] = useState(false);
 
     const {account} = useAuth();
     const history = useHistory();
@@ -39,21 +41,14 @@ export const AccountPage = () => {
         },
         {
             host: 'Mathew',
-            room_code: 'goto',
+            room_code: 'gto',
         },
         {
             host: 'Elijah',
-            room_code: 'GOlMkh6uME',
+            room_code: 'GOlMfsakh6uME',
         },
-        {
-            host: 'Mathew',
-            room_code: 'goto',
-        },
-        {
-            host: 'Elijah',
-            room_code: 'GOlMkh6uME',
-        }
     ]
+
     return (
         <>
         <header>
@@ -62,7 +57,7 @@ export const AccountPage = () => {
 
             <ProfileIcon />
         </header>
-        <div className='account-wrapper'>
+            <div className='account-wrapper'>
             <div className='account-info'>
                 <h3 className='account-info-title'>Account Information</h3>
                 <div className='account-info-field'>
@@ -86,7 +81,9 @@ export const AccountPage = () => {
                     })}
                 </div>
                 <hr className='account-rooms-hr' />
-                <img className='account-rooms-create' src="/Create.png" alt="Create" />
+                <img className='account-rooms-create' src="/Create.png"
+                     alt="Create" onClick={() => setOpen(true)} />
+                <CreateRoom trigger={isOpen} close={() => setOpen(false)} />
             </div>
         </div>
         </>

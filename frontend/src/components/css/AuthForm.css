@@ -20,17 +20,17 @@
     margin-bottom: 15px;
 }
 
-.auth-form-field {
+.form-field {
     margin-bottom: 5px;
     display: flex;
     flex-direction: column;
 }
 
-.auth-form-field label {
+.form-field label {
     color: #219897;
 }
 
-.auth-form-field input {
+.form-field input {
     font-weight: 300;
     font-size: 15px;
     padding: 5px 5px;
