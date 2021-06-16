@@ -38,4 +38,5 @@ type RoomService interface {
 	DeleteRoom(code string, accId int) error
 	CreateRoom(room *Room) error
 	FindRoom(roomCode string) (Room, error)
+	AllRoomsWithId(accId int) ([]Room, error)
 }

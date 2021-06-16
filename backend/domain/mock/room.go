@@ -25,6 +25,11 @@ func (m *RoomService) DeleteRoom(code string, accId int) error {
 	return ret.Error(0)
 }
 
+func (m *RoomService) AllRoomsWithId(accId int) ([]domain.Room, error) {
+	ret := m.Called(accId)
+	return ret.Get(0).([]domain.Room), ret.Error(1)
+}
+
 // RoomStore is a mock struct that is used in unit tests.
 type RoomStore struct {
 	mock.Mock
