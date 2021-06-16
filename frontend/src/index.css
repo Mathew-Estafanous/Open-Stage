@@ -25,3 +25,5 @@ html body {
     height: 100vh;
     margin: 0 2vw;
 }
+
+input, select { font-size: 100%; }

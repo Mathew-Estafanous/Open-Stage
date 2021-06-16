@@ -9,11 +9,11 @@ const roomResponse = {
     error: ''
 }
 
-export const GetRoom = async (code) => {
+export const GetRoom = (code) => {
     let path = url + '/rooms/' + code
     let response = {...roomResponse}
 
-    return await fetch(path)
+    return fetch(path)
         .then(res => Promise.all([res.ok , res.json()]))
         .then(([ok, data]) => {
             if(!ok) {
@@ -32,7 +32,32 @@ export const GetRoom = async (code) => {
         })
         .catch(err => {
             console.log(err);
-            response.error = 'We were unable to connect to our servers.';
+            response.error = 'We encountered an error with our servers.';
             return response;
+        })
+}
+
+const errorResponse = {
+    message: '',
+    status: 200
+}
+
+export const DeleteRoom = (code, token) => {
+    let path = url + '/rooms/' + code;
+    let request = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+    }
+    let response = {...errorResponse}
+    return fetch(path, request)
+        .then(res => Promise.all([res.ok , res.json()]))
+        .then(([ok, data]) => {
+            if(!ok) {
+                response = {...data}
+            }
+            return response
         })
 }

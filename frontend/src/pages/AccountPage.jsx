@@ -1,9 +1,10 @@
 import {useHistory} from "react-router-dom";
-import './css/AccountPage.css';
 import {ProfileIcon} from "../components/ProfileIcon";
 import {useAuth} from "../context/AuthContext";
 import {useEffect, useState} from "react";
 import {GetAccountInfo} from "../http/Accounts";
+import {RoomClip} from "../components/RoomClip";
+import './css/AccountPage.css';
 
 export const AccountPage = () => {
     const [username, setUsername] = useState('');
@@ -26,6 +27,33 @@ export const AccountPage = () => {
             setEmail(res.body.email);
         })
     }, [account])
+
+    let tempRoomInfo = [
+        {
+            host: 'Mathew',
+            room_code: 'goto',
+        },
+        {
+            host: 'Elijah',
+            room_code: 'GOlMkh6uME',
+        },
+        {
+            host: 'Mathew',
+            room_code: 'goto',
+        },
+        {
+            host: 'Elijah',
+            room_code: 'GOlMkh6uME',
+        },
+        {
+            host: 'Mathew',
+            room_code: 'goto',
+        },
+        {
+            host: 'Elijah',
+            room_code: 'GOlMkh6uME',
+        }
+    ]
     return (
         <>
         <header>
@@ -51,7 +79,14 @@ export const AccountPage = () => {
                 </div>
             </div>
             <div className='account-rooms'>
-                <h3>Your Rooms</h3>
+                <h3 className='account-rooms-title'>Your Rooms</h3>
+                <div className='account-room-list'>
+                    {tempRoomInfo.map(r => {
+                        return <RoomClip key={r.room_code} {...r} />;
+                    })}
+                </div>
+                <hr className='account-rooms-hr' />
+                <img className='account-rooms-create' src="/Create.png" alt="Create" />
             </div>
         </div>
         </>

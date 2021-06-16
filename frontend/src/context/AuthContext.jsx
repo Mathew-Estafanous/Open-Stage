@@ -9,6 +9,8 @@ export const AuthProvider = (props) => {
         return JSON.parse(localStorage.getItem('account.data'));
     })
 
+    // Wrapper for the setAcc state hook. This wrapper will update the local storage
+    // prior to calling the setAcc hook.
     const setAccount = (accountInfo) => {
         let body = jwtDecode(accountInfo.access_token);
         accountInfo.username = body.username;
@@ -24,7 +26,6 @@ export const AuthProvider = (props) => {
         let difference = (body.exp * 1000) - now;
 
         difference -= 5000; // Call refresh 5 seconds before expiration.
-        console.log(difference);
         setTimeout(refreshToken, difference);
     }, [account])
 
