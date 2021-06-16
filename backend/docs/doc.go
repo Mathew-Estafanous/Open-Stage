@@ -62,13 +62,6 @@ type accountResponse struct {
 	Body handler.AccountResp
 }
 
-// List of Q&A rooms.
-// swagger:response multiRoomResponse
-type multiRoomResponse struct {
-	// in: body
-	Body []domain.Room
-}
-
 // Both access and refresh tokens.
 // swagger:response authToken
 type tokenResponse struct {
@@ -153,11 +146,4 @@ type usernamePath struct {
 	// The account username
 	// in: path
 	Username string `json:"username"`
-}
-
-// swagger:parameters authHeader
-type authHeader struct {
-	// in: header
-	// example: Bearer [your-token]
-	Header string `json:"Authorization"`
 }

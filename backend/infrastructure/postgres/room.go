@@ -47,22 +47,3 @@ func (p *postgresRoomStore) Delete(roomCode string) error {
 	}
 	return nil
 }
-
-func (p *postgresRoomStore) FindAllRooms(accId int) ([]domain.Room, error) {
-	rows, err := p.db.Query("SELECT host, room_code, fk_account_id FROM rooms WHERE fk_account_id = $1", accId)
-	if err != nil {
-		return nil, err
-	}
-
-	var rooms []domain.Room
-	for rows.Next() {
-		var r domain.Room
-		err = rows.Scan(&r.Host, &r.RoomCode, &r.AccId)
-		if err != nil {
-			return nil, err
-		}
-		rooms = append(rooms, r)
-	}
-	return rooms, nil
-}
-

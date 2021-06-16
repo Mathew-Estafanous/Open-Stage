@@ -21,7 +21,6 @@ func (r roomHandler) Route(ro, secured *mux.Router) {
 	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
 
 	secured.HandleFunc("/rooms", r.createRoom).Methods("POST")
-	secured.HandleFunc("/rooms/all", r.getAllRooms).Methods("GET")
 	secured.HandleFunc("/rooms/{code}", r.deleteRoom).Methods("DELETE")
 }
 
@@ -102,29 +101,4 @@ func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	if err != nil {
 		r.error(w, err)
 	}
-}
-
-// swagger:route GET /rooms/all Rooms authHeader
-//
-// Get all rooms associated with account.
-//
-// Finds all the rooms that are owned by the account. The associated account will be
-// dependant on the access token identifier, since this route is secured.
-//
-// Responses:
-//  200: multiRoomResponse
-//  500: errorResponse
-func (r roomHandler) getAllRooms(w http.ResponseWriter, re *http.Request) {
-	accId, err := strconv.Atoi(re.Header.Get("Account"))
-	if err != nil {
-		r.error(w, err)
-		return
-	}
-
-	rooms, err := r.rs.AllRoomsWithId(accId)
-	if err != nil {
-		r.error(w, err)
-		return
-	}
-	r.respond(w, http.StatusOK, rooms)
 }

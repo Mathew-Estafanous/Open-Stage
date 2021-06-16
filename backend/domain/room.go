@@ -31,12 +31,10 @@ type RoomStore interface {
 	Delete(roomCode string) error
 	GetByRoomCode(code string) (Room, error)
 	Create(room *Room) error
-	FindAllRooms(accId int) ([]Room, error)
 }
 
 type RoomService interface {
 	DeleteRoom(code string, accId int) error
 	CreateRoom(room *Room) error
 	FindRoom(roomCode string) (Room, error)
-	AllRoomsWithId(accId int) ([]Room, error)
 }

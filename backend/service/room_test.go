@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/stretchr/testify/assert"
@@ -73,32 +72,4 @@ func TestRoomService_DeleteRoom(t *testing.T) {
 
 	err = rs.DeleteRoom("validCode", 3)
 	assert.ErrorIs(t, err, domain.Forbidden)
-}
-
-func TestRoomService_AllRoomsWithId(t *testing.T) {
-	store := new(mock.RoomStore)
-	rs := NewRoomService(store)
-
-	result := []domain.Room {
-		{
-			Host: "Mat",
-			RoomCode: "ACode",
-			AccId: 1,
-		},
-		{
-			Host: "Mat",
-			RoomCode: "AnotherCode",
-			AccId: 1,
-		},
-	}
-	store.On("FindAllRooms", 1).Return(result, nil)
-
-	rooms, err := rs.AllRoomsWithId(1)
-	assert.NoError(t, err)
-	assert.EqualValues(t, result, rooms)
-
-	store.On("FindAllRooms", 2).
-		Return([]domain.Room{}, fmt.Errorf("%w: connection error", domain.Internal))
-	_, err = rs.AllRoomsWithId(2)
-	assert.Error(t, err)
 }

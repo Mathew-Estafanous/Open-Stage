@@ -11,7 +11,7 @@ type roomService struct {
 	rStore domain.RoomStore
 }
 
-func NewRoomService(rs domain.RoomStore) *roomService {
+func NewRoomService(rs domain.RoomStore) domain.RoomService {
 	return &roomService{
 		rStore: rs,
 	}
@@ -56,14 +56,6 @@ func (r *roomService) DeleteRoom(code string, accId int) error {
 		return errRoomNotDeleted
 	}
 	return nil
-}
-
-func (r *roomService) AllRoomsWithId(accId int) ([]domain.Room, error) {
-	rooms, err := r.rStore.FindAllRooms(accId)
-	if err != nil {
-		return nil, err
-	}
-	return rooms, nil
 }
 
 func (r *roomService) generateValidCode() string {

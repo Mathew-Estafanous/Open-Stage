@@ -99,37 +99,3 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 
 	assert.EqualValues(t, http.StatusNotFound, w.Code)
 }
-
-func TestRoomHandler_GetAllRooms(t *testing.T) {
-	rs := new(mock.RoomService)
-
-	result := []domain.Room {
-		{
-			Host: "Mat",
-			RoomCode: "ARoomCode",
-			AccId: 1,
-		},
-		{
-			Host: "Mat",
-			RoomCode: "AnotherRoom",
-			AccId: 1,
-		},
-	}
-	rs.On("AllRoomsWithId", 1).Return(result, nil)
-
-	w := httptest.NewRecorder()
-	req, err := http.NewRequest("GET", "/rooms/all", nil)
-	assert.NoError(t, err)
-	req.Header.Set("Account", strconv.Itoa(1))
-
-	r := mux.NewRouter()
-	secured := mock.SecureRouter(r, 1)
-	NewRoomHandler(rs).Route(r, secured)
-	r.ServeHTTP(w, req)
-
-	j, err := json.Marshal(result)
-	assert.NoError(t, err)
-
-	assert.EqualValues(t, http.StatusOK, w.Code)
-	assert.JSONEq(t, string(j), w.Body.String())
-}
