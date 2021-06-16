@@ -506,6 +506,26 @@ paths:
       summary: Get room by code.
       tags:
       - Rooms
+  /rooms/all:
+    get:
+      description: |-
+        Finds all the rooms that are owned by the account. The associated account will be
+        dependant on the access token identifier, since this route is secured.
+      operationId: authHeader
+      parameters:
+      - example: Bearer [your-token]
+        in: header
+        name: Authorization
+        type: string
+        x-go-name: Header
+      responses:
+        "200":
+          $ref: '#/responses/multiRoomResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Get all rooms associated with account.
+      tags:
+      - Rooms
 produces:
 - application/json
 responses:
@@ -526,6 +546,12 @@ responses:
     schema:
       items:
         $ref: '#/definitions/question'
+      type: array
+  multiRoomResponse:
+    description: List of Q&A rooms.
+    schema:
+      items:
+        $ref: '#/definitions/room'
       type: array
   questionResponse:
     description: A question that has been posted within a room.

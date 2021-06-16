@@ -71,3 +71,27 @@ func TestPostgresRoomStore_Delete(t *testing.T) {
 	err = m.Delete("wrongCode")
 	assert.Error(t, err)
 }
+
+func TestPostgresRoomStore_FindAllRooms(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatal("There was an unexpected error when mocking the database.")
+	}
+
+	result := []domain.Room {
+		{
+			Host: "Mat",
+			RoomCode: "ARoomCode",
+			AccId: 1,
+		},
+	}
+
+	mock.ExpectQuery("SELECT host, room_code, fk_account_id FROM rooms").WithArgs(1).
+		WillReturnRows(sqlmock.NewRows([]string{"host", "room_code", "fk_account_id"}).
+			AddRow("Mat", "ARoomCode", 1))
+
+	m := NewRoomStore(db)
+	rooms, err := m.FindAllRooms(1)
+	assert.NoError(t, err)
+	assert.EqualValues(t, result, rooms)
+}
