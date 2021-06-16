@@ -31,6 +31,7 @@ type RoomStore interface {
 	Delete(roomCode string) error
 	GetByRoomCode(code string) (Room, error)
 	Create(room *Room) error
+	FindAllRooms(accId int) ([]Room, error)
 }
 
 type RoomService interface {
