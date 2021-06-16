@@ -3,7 +3,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { GetRoom } from "../http/Rooms";
 import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
-import {useAuth} from "../context/AuthContext";
 import {Error} from "../components/Error";
 import {ProfileIcon} from "../components/ProfileIcon";
 

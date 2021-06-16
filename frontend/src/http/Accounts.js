@@ -25,10 +25,10 @@ export const GetAccountInfo = (username, token) => {
     return makeFetchRequest(response, request, path)
 }
 
-let loginResponse = {
+let accessResponse = {
     body: {
         access_token: '',
-        response_token: '',
+        refresh_token: '',
     },
     error: {
         message: '',
@@ -43,7 +43,7 @@ export const LoginAccount = (username, pass) => {
         username: username
     }
 
-    let response = {...loginResponse}
+    let response = {...accessResponse}
     let request = {
         method: 'POST',
         headers: {
@@ -79,13 +79,30 @@ export const CreateAccount = (username, password, name, email) => {
 
     let response = { ...signupResponse}
     let request = {
-        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
     }
     return makeFetchRequest(response, request, path)
+}
+
+export const RefreshToken = (refresh) => {
+    let path = url + '/accounts/refresh';
+    let data = {
+        refresh_token: refresh
+    }
+
+    let response = {...accessResponse};
+    let request = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+
+    return makeFetchRequest(response, request, path);
 }
 
 const makeFetchRequest = (response, request, path) => {

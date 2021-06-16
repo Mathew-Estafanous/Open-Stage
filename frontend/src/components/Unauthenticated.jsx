@@ -1,5 +1,5 @@
 import {
-    Route, Switch,
+    Route, Switch, Redirect
 } from "react-router-dom";
 import React from "react";
 import {LoginPage} from "../pages/LoginPage";
@@ -11,6 +11,7 @@ export const Unauthenticated = () => {
         <Switch>
             <Route exact path="/login" component={LoginPage} />
             <Route exact path="/signup" component={SignupPage} />
+            <Redirect from='/account' to='/login'/>
             <Route component={NotFound} />
         </Switch>
     )

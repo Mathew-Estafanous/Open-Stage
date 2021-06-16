@@ -13,17 +13,19 @@ export const AccountPage = () => {
     const {account} = useAuth();
     const history = useHistory();
 
-    useEffect(async () => {
-        let result = await GetAccountInfo(account.username, account.access_token);
-        if(result.error.status !== 200) {
-            history.push('/?error=' + result.error.message);
-            return;
-        }
+    useEffect( () => {
+        let result = GetAccountInfo(account.username, account.access_token);
+        result.then(res => {
+            if(res.error.status !== 200) {
+                history.push('/?error=' + result.error.message);
+                return;
+            }
 
-        setUsername(result.body.username);
-        setName(result.body.name);
-        setEmail(result.body.email);
-    }, [history])
+            setUsername(res.body.username);
+            setName(res.body.name);
+            setEmail(res.body.email);
+        })
+    }, [account])
     return (
         <>
         <header>

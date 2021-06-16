@@ -18,6 +18,7 @@ func NewAccountStore(db *sql.DB) domain.AccountStore {
 func (p *postgresAccountStore) Create(acc *domain.Account) error {
 	r, err := p.db.Query("INSERT INTO accounts (name, username, password, email) VALUES ($1, $2, $3, $4) RETURNING id",
 		acc.Name, acc.Username, acc.Password, acc.Email)
+	defer r.Close()
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			if err.Code.Name() == "unique_violation" {
@@ -36,6 +37,7 @@ func (p *postgresAccountStore) Create(acc *domain.Account) error {
 
 func (p *postgresAccountStore) GetByUsername(username string) (domain.Account, error) {
 	r, err := p.db.Query("SELECT id, name, username, password, email FROM accounts WHERE username = $1", username)
+	defer r.Close()
 	if err != nil {
 		return domain.Account{}, err
 	}
