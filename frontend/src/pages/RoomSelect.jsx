@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { GetRoom } from "../http/Rooms";
-import './RoomSelect.css';
+import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
+import {Error} from "../components/Error";
+import {ProfileIcon} from "../components/ProfileIcon";
 
 
 function useQuery() {
@@ -35,18 +37,17 @@ export const RoomSelect = () => {
             <img className='logo' src='/Logo.png' alt="Logo"/>
             <h1 className='title'>Open Stage</h1>
 
-            <img className='profile' src="/Profile.png" alt=""/>
+            <ProfileIcon />
         </header>
         <form className='roomCode' onSubmit={joinRoom} >
             <h1>Join Room</h1>
             <hr/>
             <div className='selector'>
                 <img className='hashtag' src="/Hashtag.png" alt="hashtag symbol"/>
-                <input maxLength={20} placeholder='Enter Room Code'
+                <input className='form-input' maxLength={20} placeholder='Enter Room Code'
                        onChange={e => setCode(e.target.value)} />
                 <button type="submit">
-                    <img className='btn'
-                         src="/Select-Arrow.png" alt=""/>
+                    <img className='btn' src="/Select-Arrow.png" alt=""/>
                 </button>
             </div>
 
@@ -57,10 +58,7 @@ export const RoomSelect = () => {
             }
 
             {query.get("error") && !isLoading?
-                    <div className='error'>
-                        <img src="/Warning.png" alt="Warning"/>
-                        <p>{query.get("error")}</p>
-                    </div>
+                <Error msg={query.get("error")}/>
                 :null
             }
         </form>

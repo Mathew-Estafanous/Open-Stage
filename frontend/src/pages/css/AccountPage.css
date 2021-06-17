@@ -1,0 +1,139 @@
+.account-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+}
+
+.account-info {
+    border-radius: 15px;
+    background-color: #393E46;
+    margin-right: 5px;
+    padding: 25px 20px;
+}
+
+.account-info-title {
+    background-color: #219897;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px;
+    margin-bottom: 10px;
+}
+
+.account-info-field {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.account-info-name {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.account-info-result {
+    font-weight: 300;
+    font-size: 15px;
+}
+
+.account-rooms {
+    border-radius: 15px;
+    background-color: #393E46;
+    padding: 25px 20px;
+    margin-left: 5px;
+    min-height: 40%;
+    min-width: 400px;
+}
+
+.account-rooms-title {
+    background-color: #219897;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px;
+    margin-bottom: 20px;
+}
+
+.account-room-list {
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.account-room-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.account-room-list::-webkit-scrollbar-track {
+    margin-left: 15px;
+    border-radius: 3px;
+}
+
+.account-room-list::-webkit-scrollbar-thumb {
+    background-color: #232931;
+}
+
+
+.account-room {
+    margin-bottom: 30px;
+}
+
+.account-rooms-hr {
+    height: 3px;
+    border-style: none;
+    background-color: #eeeeee;
+    border-radius: 3px;
+
+    margin: 30px 150px 15px 150px;
+}
+
+.account-rooms-create {
+    max-width: 40px;
+    margin-left: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.account-rooms-create:hover {
+    transform: scale(1.1);
+}
+
+.no-room {
+    background-color: #232931;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+}
+
+.no-room h3 {
+    font-weight: 400;
+    opacity: .7;
+}
+
+@media screen and (max-width: 800px) {
+    .account-rooms-hr {
+        margin: 10px 100px 5px 100px;
+    }
+
+    .account-rooms {
+        min-width: 350px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .account-wrapper {
+        flex-direction: column;
+        height: 90%;
+    }
+
+    .account-rooms {
+        min-height: fit-content;
+        min-width: fit-content;
+    }
+
+    .account-info {
+        margin-bottom: 15px;
+    }
+
+    .account-rooms-create {
+        max-width: 30px;
+    }
+}

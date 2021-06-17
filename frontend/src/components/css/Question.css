@@ -48,6 +48,7 @@ div.question {
     font-size: 25px;
     font-weight: 600;
     color: #232931;
+    transition: color 0.2s ease-in;
 }
 
 .liked {

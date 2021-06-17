@@ -4,8 +4,8 @@ import { AskQuestion } from "../components/AskQuestion";
 import { Question } from "../components/Question";
 import { GetRoom } from "../http/Rooms";
 import { GetAllQuestions } from "../http/Questions";
-import "./Room.css";
 import { Oval } from "@agney/react-loading";
+import "./css/Room.css";
 
 export const Room = () => {
     const [room, setRoom] = useState("");
@@ -46,15 +46,16 @@ export const Room = () => {
 
     useEffect(() => {
         const interval = setInterval(async () => {
-            await updateAllQuestions()
-        }, 5000)
+            await updateAllQuestions();
+        }, 5000);
         return () => clearInterval(interval)
     }, [])
 
     return (
         <>
         <header>
-            <img className='logo' src='/Logo.png' alt="Logo"/>
+            <img className='logo' src='/Logo.png' alt="Logo"
+                 onClick={() => history.push('/')} />
 
             <div className='roomInfo'>
                 <h2 className='title'>Current Room</h2>

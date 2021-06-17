@@ -1,0 +1,77 @@
+.room-clip-wrapper {
+    display: flex;
+    background-color: #232931;
+    padding: 15px 25px;
+    border-radius: 8px;
+    margin-bottom: 11px;
+
+    width: 550px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.room-clip-wrapper:hover {
+    transform: scale(1.01);
+}
+
+.room-clip-name {
+    font-weight: 400;
+    width: 50%;
+}
+
+.room-clip-wrapper img {
+    margin-left: 20px;
+    max-width: 20px;
+}
+
+.hashtag {
+    margin-left: auto;
+    opacity: 0.3;
+}
+
+.room-clip-code {
+    width: 100%;
+    font-weight: 300;
+    margin-left: 5px;
+    opacity: .7;
+}
+
+.enter, .delete {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.enter:hover, .delete:hover {
+    transform: scale(1.1);
+}
+
+@media screen and (max-width: 1050px) {
+    .room-clip-wrapper {
+        width: 430px;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .room-clip-wrapper {
+        width: 330px;
+    }
+
+    .room-clip-wrapper img {
+        margin-left: 10px;
+        max-width: 18px;
+        max-height: 18px;
+    }
+
+    .room-clip-code {
+        font-size: 13px;
+    }
+
+    .room-clip-name {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 680px) {
+    .room-clip-wrapper {
+        width: 300px;
+    }
+}

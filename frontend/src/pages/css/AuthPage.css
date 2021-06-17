@@ -1,0 +1,17 @@
+.logo {
+    width: 65px;
+    transition: transform 0.2s ease-in;
+    cursor: pointer;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.auth-section {
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

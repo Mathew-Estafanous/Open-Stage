@@ -54,7 +54,7 @@ func (p *postgresRoomStore) FindAllRooms(accId int) ([]domain.Room, error) {
 		return nil, err
 	}
 
-	var rooms []domain.Room
+	rooms := make([]domain.Room, 0)
 	for rows.Next() {
 		var r domain.Room
 		err = rows.Scan(&r.Host, &r.RoomCode, &r.AccId)

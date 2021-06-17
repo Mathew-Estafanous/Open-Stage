@@ -1,0 +1,80 @@
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 25px 20px;
+    border-radius: 10px;
+    background-color: #393E46;
+}
+
+.auth-form-header {
+    text-align: center;
+    background-color: #219897;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.form-field {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    color: #219897;
+}
+
+.form-field input {
+    font-weight: 300;
+    font-size: 15px;
+    padding: 5px 5px;
+
+    color: #393E46;
+    border-radius: 5px;
+    border-style: none;
+}
+
+.form-btn {
+    margin: 5px 35px;
+    height: 30px;
+
+    font-size: 16px;
+    font-weight: 400;
+    color: white;
+    background-color: #219897;
+    border-style: none;
+    border-radius: 15px;
+    transition: background-color 0.2s ease-in;
+}
+
+.form-btn:hover {
+    background-color: #176d6c;
+}
+
+.auth-form-divider {
+    margin: 10px 80px;
+    border-style: none;
+    height: 3px;
+    background-color: #eeeeee;
+    border-radius: 25px;
+}
+
+.have-an-account {
+    text-align: center;
+}
+
+.have-an-account a {
+    color: #219897;
+    text-decoration: none;
+    transition: color 0.2s ease-in;
+}
+
+.have-an-account a:hover {
+    color: #176d6c;
+}
