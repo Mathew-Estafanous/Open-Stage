@@ -56,10 +56,10 @@ export const DeleteRoom = (code, token) => {
     }
     let response = {...errorResponse}
     return fetch(path, request)
-        .then(res => Promise.all([res.ok , res.json()]))
+        .then(res => Promise.all([res.ok , res]))
         .then(([ok, data]) => {
             if(!ok) {
-                response = {...data}
+                response = {...data.json()}
             }
             return response
         })

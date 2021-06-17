@@ -17,6 +17,8 @@ export const RoomClip = (prop) => {
             if(resp.status !== 200) {
                 alert('We encountered an error while deleting the room.');
             }
+
+            prop.update();
         })
     }
 

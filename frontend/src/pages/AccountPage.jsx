@@ -19,6 +19,18 @@ export const AccountPage = () => {
     const {account} = useAuth();
     const history = useHistory();
 
+    const updateAllRooms = () => {
+        let result = AllRoomsAssociated(account.access_token);
+        result.then(res => {
+            if(res.error.status !== 200) {
+                history.push('/?error=' + res.error.message);
+                return;
+            }
+
+            setRooms(res.body);
+        })
+    }
+
     useEffect( () => {
         let result = GetAccountInfo(account.username, account.access_token);
         result.then(res => {
@@ -32,15 +44,7 @@ export const AccountPage = () => {
             setEmail(res.body.email);
         })
 
-        result = AllRoomsAssociated(account.access_token);
-        result.then(res => {
-            if(res.error.status !== 200) {
-                history.push('/?error=' + res.error.message);
-                return;
-            }
-
-            setRooms(res.body);
-        })
+        updateAllRooms();
     }, [account])
 
     return (
@@ -71,13 +75,16 @@ export const AccountPage = () => {
                 <h3 className='account-rooms-title'>Your Rooms</h3>
                 <div className='account-room-list'>
                     {rooms.length? (rooms.map(r => {
-                        return <RoomClip key={r.room_code} {...r} />;
+                        return <RoomClip key={r.room_code} {...r}
+                                update={updateAllRooms} />;
                     })): <NoRoom />}
                 </div>
                 <hr className='account-rooms-hr' />
                 <img className='account-rooms-create' src="/Create.png"
                      alt="Create" onClick={() => setOpen(true)} />
-                <CreateRoom trigger={isOpen} close={() => setOpen(false)} />
+                <CreateRoom trigger={isOpen}
+                            close={() => setOpen(false)}
+                            update={updateAllRooms}/>
             </div>
         </div>
         </>

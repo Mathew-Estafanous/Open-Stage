@@ -46,9 +46,8 @@ export const RoomSelect = () => {
                 <img className='hashtag' src="/Hashtag.png" alt="hashtag symbol"/>
                 <input className='form-input' maxLength={20} placeholder='Enter Room Code'
                        onChange={e => setCode(e.target.value)} />
-                <button className='form-btn' type="submit">
-                    <img className='btn'
-                         src="/Select-Arrow.png" alt=""/>
+                <button type="submit">
+                    <img className='btn' src="/Select-Arrow.png" alt=""/>
                 </button>
             </div>
 

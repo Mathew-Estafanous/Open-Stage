@@ -13,12 +13,12 @@ export const CreateRoom = (props) => {
         e.preventDefault();
         let result = CreateTheRoom(host, code, account.access_token);
         result.then(res => {
-            if(res.error.status !== 200) {
+            if(res.error.status !== 201) {
                 console.log(res.error.message);
                 return;
             }
 
-            console.log(res.body)
+            props.update();
             props.close();
         })
     }
