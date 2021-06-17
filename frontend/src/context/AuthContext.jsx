@@ -12,6 +12,11 @@ export const AuthProvider = (props) => {
     // Wrapper for the setAcc state hook. This wrapper will update the local storage
     // prior to calling the setAcc hook.
     const setAccount = (accountInfo) => {
+        if(accountInfo === null) {
+            localStorage.removeItem('account.data');
+            setAcc(null);
+            return;
+        }
         let body = jwtDecode(accountInfo.access_token);
         accountInfo.username = body.username;
 

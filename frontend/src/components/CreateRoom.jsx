@@ -42,7 +42,7 @@ export const CreateRoom = (props) => {
                             <label htmlFor="code">Room Code</label>
                             <input type="text"
                                    value={code}
-                                   placeholder='Enter room code (Optional).'
+                                   placeholder='Create a room code. (Optional)'
                                    onChange={e => setCode(e.target.value)} />
                         </div>
                         <button className='form-btn'>Create</button>

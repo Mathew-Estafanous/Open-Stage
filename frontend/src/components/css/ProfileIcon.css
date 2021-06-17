@@ -5,17 +5,25 @@
 
 .profile-username {
     font-weight: 300;
+    font-size: 22px;
     margin-right: 20px;
 }
 .profile {
     margin-left: auto;
     margin-right: 1vw;
-    max-width: 40px;
-    transition: transform 0.3s ease-in-out;
 }
 
-.profile:hover {
-    transform: scale(1.15);
+.logout {
+    margin-left: 5px;
+}
+.profile-div img {
+    max-width: 35px;
+    transition: transform 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.profile-div img:hover {
+    transform: scale(1.1);
 }
 
 @media screen and (max-width: 550px) {
@@ -24,7 +32,7 @@
         margin-right: 10px;
     }
 
-    .profile {
+    .profile-div img {
         max-width: 27px;
     }
 }
