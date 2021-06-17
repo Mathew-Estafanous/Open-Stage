@@ -79,6 +79,7 @@ export const CreateAccount = (username, password, name, email) => {
 
     let response = { ...signupResponse}
     let request = {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
