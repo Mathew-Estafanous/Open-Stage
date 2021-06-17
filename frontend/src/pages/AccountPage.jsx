@@ -6,12 +6,15 @@ import {GetAccountInfo} from "../http/Accounts";
 import {RoomClip} from "../components/RoomClip";
 import './css/AccountPage.css';
 import {CreateRoom} from "../components/CreateRoom";
+import {AllRoomsAssociated} from "../http/Rooms";
 
 export const AccountPage = () => {
     const [username, setUsername] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+
     const [isOpen, setOpen] = useState(false);
+    const [rooms, setRooms] = useState([]);
 
     const {account} = useAuth();
     const history = useHistory();
@@ -20,7 +23,7 @@ export const AccountPage = () => {
         let result = GetAccountInfo(account.username, account.access_token);
         result.then(res => {
             if(res.error.status !== 200) {
-                history.push('/?error=' + result.error.message);
+                history.push('/?error=' + res.error.message);
                 return;
             }
 
@@ -28,26 +31,17 @@ export const AccountPage = () => {
             setName(res.body.name);
             setEmail(res.body.email);
         })
-    }, [account])
 
-    let tempRoomInfo = [
-        {
-            host: 'Mathew',
-            room_code: 'goto',
-        },
-        {
-            host: 'Elijah',
-            room_code: 'GOlMkh6uME',
-        },
-        {
-            host: 'Mathew',
-            room_code: 'gto',
-        },
-        {
-            host: 'Elijah',
-            room_code: 'GOlMfsakh6uME',
-        },
-    ]
+        result = AllRoomsAssociated(account.access_token);
+        result.then(res => {
+            if(res.error.status !== 200) {
+                history.push('/?error=' + res.error.message);
+                return;
+            }
+
+            setRooms(res.body);
+        })
+    }, [account])
 
     return (
         <>
@@ -76,7 +70,7 @@ export const AccountPage = () => {
             <div className='account-rooms'>
                 <h3 className='account-rooms-title'>Your Rooms</h3>
                 <div className='account-room-list'>
-                    {tempRoomInfo.map(r => {
+                    {rooms.map(r => {
                         return <RoomClip key={r.room_code} {...r} />;
                     })}
                 </div>

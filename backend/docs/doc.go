@@ -55,7 +55,7 @@ type roomResponse struct {
 	Body domain.Room
 }
 
-// User AccountPage information
+// User Account information
 // swagger:response accountResponse
 type accountResponse struct {
 	// in: body

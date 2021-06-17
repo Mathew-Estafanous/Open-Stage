@@ -70,7 +70,7 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 		return
 	}
 
-	accId, err := strconv.Atoi(re.Header.Get("AccountPage"))
+	accId, err := strconv.Atoi(re.Header.Get("Account"))
 	room.AccId = accId
 	err = r.rs.CreateRoom(&room)
 	if err != nil {
@@ -92,7 +92,7 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	code := mux.Vars(re)["code"]
 
-	accId, err := strconv.Atoi(re.Header.Get("AccountPage"))
+	accId, err := strconv.Atoi(re.Header.Get("Account"))
 	if err != nil {
 		r.error(w, err)
 		return

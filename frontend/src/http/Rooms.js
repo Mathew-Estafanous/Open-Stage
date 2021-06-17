@@ -1,3 +1,5 @@
+import {makeFetchRequest} from "./Accounts";
+
 export const url = (process.env.REACT_APP_ENV === 'production')?
     'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
 
@@ -58,6 +60,42 @@ export const DeleteRoom = (code, token) => {
             if(!ok) {
                 response = {...data}
             }
+            return response
+        })
+}
+
+let allRoomResponse = {
+    body: [
+        {
+            room_code: '',
+            host: '',
+            account_id: 0,
+        }
+    ],
+    error: {
+        message: '',
+        status: 200
+    }
+}
+
+export const AllRoomsAssociated = (token) => {
+    let path = url + '/rooms/all'
+    let request = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+    }
+    let response = {...allRoomResponse}
+    return fetch(path, request)
+        .then(resp => Promise.all([resp.ok, resp.json()]))
+        .then(([ok, data]) => {
+            if (!ok) {
+                response.error = {...data}
+                return response
+            }
+
+            response.body = data
             return response
         })
 }

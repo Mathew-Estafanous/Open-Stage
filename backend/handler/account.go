@@ -195,7 +195,7 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accId, err := strconv.Atoi(r.Header.Get("AccountPage"))
+	accId, err := strconv.Atoi(r.Header.Get("Account"))
 	if err != nil {
 		a.error(w, err)
 		return
@@ -220,7 +220,7 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 //  500: errorResponse
 func (a accountHandler) findWithUsername(w http.ResponseWriter, r *http.Request) {
 	username := mux.Vars(r)["username"]
-	accId, err := strconv.Atoi(r.Header.Get("AccountPage"))
+	accId, err := strconv.Atoi(r.Header.Get("Account"))
 	if err != nil {
 		a.error(w, err)
 		return

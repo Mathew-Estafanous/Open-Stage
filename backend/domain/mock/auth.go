@@ -21,7 +21,7 @@ func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
 	secured := r.PathPrefix("/").Subrouter()
 	secured.Use(func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			r.Header.Set("AccountPage", strconv.Itoa(fakeId))
+			r.Header.Set("Account", strconv.Itoa(fakeId))
 			h.ServeHTTP(w, r)
 		})
 	})

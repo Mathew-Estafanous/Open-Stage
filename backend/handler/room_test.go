@@ -80,7 +80,6 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("DELETE", "/rooms/validCode", strings.NewReader(""))
 	assert.NoError(t, err)
-	req.Header.Set("AccountPage", strconv.Itoa(1))
 
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 1)
@@ -93,7 +92,6 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 	w = httptest.NewRecorder()
 	req, err = http.NewRequest("DELETE", "/rooms/wrongCode", strings.NewReader(""))
 	assert.NoError(t, err)
-	req.Header.Set("AccountPage", strconv.Itoa(1))
 
 	r.ServeHTTP(w, req)
 
