@@ -18,6 +18,15 @@
     padding: 25px 15px;
     border-radius: 15px;
     background-color: #232931;
+    min-width: 300px;
+}
+
+.popup-hr {
+    background-color: #eeeeee;
+    height: 3px;
+    border-radius: 3px;
+    border-style: none;
+    margin: 10px 0;
 }
 
 .popup-title {

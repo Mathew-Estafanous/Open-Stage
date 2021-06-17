@@ -41,6 +41,7 @@
     padding: 25px 20px;
     margin-left: 5px;
     min-height: 40%;
+    min-width: 500px;
 }
 
 .account-rooms-title {
@@ -96,9 +97,25 @@
     transform: scale(1.1);
 }
 
+.no-room {
+    background-color: #232931;
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+}
+
+.no-room h3 {
+    font-weight: 400;
+    opacity: .7;
+}
+
 @media screen and (max-width: 800px) {
     .account-rooms-hr {
         margin: 10px 100px 5px 100px;
+    }
+
+    .account-rooms {
+        min-width: 350px;
     }
 }
 
@@ -109,7 +126,8 @@
     }
 
     .account-rooms {
-        height: fit-content;
+        min-height: fit-content;
+        min-width: fit-content;
     }
 
     .account-info {

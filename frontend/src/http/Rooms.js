@@ -1,4 +1,5 @@
 import {makeFetchRequest} from "./Accounts";
+import jwtDecode from "jwt-decode";
 
 export const url = (process.env.REACT_APP_ENV === 'production')?
     'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
@@ -62,6 +63,39 @@ export const DeleteRoom = (code, token) => {
             }
             return response
         })
+}
+
+let createRoomResponse = {
+    body: {
+        host: '',
+        room_code: '',
+        account_id: 1
+    },
+    error: {
+        message: '',
+        status: 201
+    }
+}
+
+export const CreateTheRoom = (host, room_code, token) => {
+    let path = url + '/rooms'
+    let data = {
+        host: host,
+        room_code: room_code,
+        account_id: parseInt(jwtDecode(token).sub)
+    }
+
+    let request = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(data)
+    }
+
+    let response = {...createRoomResponse}
+    return makeFetchRequest(response, request, path)
 }
 
 let allRoomResponse = {

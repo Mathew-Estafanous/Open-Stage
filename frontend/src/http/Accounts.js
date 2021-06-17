@@ -105,7 +105,7 @@ export const RefreshToken = (refresh) => {
     return makeFetchRequest(response, request, path);
 }
 
-const makeFetchRequest = (response, request, path) => {
+export const makeFetchRequest = (response, request, path) => {
     return fetch(path, request)
         .then(resp => Promise.all([resp.ok, resp.json()]))
         .then(([ok, data]) => {

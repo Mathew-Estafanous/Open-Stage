@@ -4,9 +4,9 @@ import {useAuth} from "../context/AuthContext";
 import {useEffect, useState} from "react";
 import {GetAccountInfo} from "../http/Accounts";
 import {RoomClip} from "../components/RoomClip";
-import './css/AccountPage.css';
 import {CreateRoom} from "../components/CreateRoom";
 import {AllRoomsAssociated} from "../http/Rooms";
+import './css/AccountPage.css';
 
 export const AccountPage = () => {
     const [username, setUsername] = useState('');
@@ -70,9 +70,9 @@ export const AccountPage = () => {
             <div className='account-rooms'>
                 <h3 className='account-rooms-title'>Your Rooms</h3>
                 <div className='account-room-list'>
-                    {rooms.map(r => {
+                    {rooms.length? (rooms.map(r => {
                         return <RoomClip key={r.room_code} {...r} />;
-                    })}
+                    })): <NoRoom />}
                 </div>
                 <hr className='account-rooms-hr' />
                 <img className='account-rooms-create' src="/Create.png"
@@ -81,5 +81,13 @@ export const AccountPage = () => {
             </div>
         </div>
         </>
+    )
+}
+
+const NoRoom = () => {
+    return (
+        <div className='no-room'>
+            <h3>You don't have any rooms!</h3>
+        </div>
     )
 }

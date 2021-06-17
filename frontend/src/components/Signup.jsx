@@ -71,7 +71,7 @@ export const Signup = () => {
                            required />
                 </div>
                 <hr className='auth-form-divider' />
-                <button className='auth-form-btn' type='submit'>Create Account</button>
+                <button className='form-btn' type='submit'>Create Account</button>
                 <p className='have-an-account'>Have an account? <Link to="/login">Login!</Link></p>
             </div>
         </form>

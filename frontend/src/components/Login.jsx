@@ -51,7 +51,7 @@ export const Login = () => {
                            maxLength={30}
                            required />
                 </div>
-                <button className='auth-form-btn' type='submit'>Login</button>
+                <button className='form-btn' type='submit'>Login</button>
                 <hr className='auth-form-divider'/>
                 <p className='have-an-account'>Don't have an account? <Link to="/signup">Signup!</Link></p>
             </div>
