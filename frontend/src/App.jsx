@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, {useEffect} from 'react';
 import {
     BrowserRouter as Router,
     Switch,
@@ -12,6 +12,14 @@ import {Authenticated} from "./components/Authenticated";
 
 const App = () => {
     const {account} = useAuth()
+
+    useEffect(() => {
+        // Route to HTTPS if the current protocol is not secured. SSL routing is not possible
+        // through heroku, so the app itself must route.
+        if((process.env.REACT_APP_ENV === 'production') && (window.location.protocol !== "https:")) {
+            window.location.protocol = "https";
+        }
+    }, [])
 
     return (
         <>
