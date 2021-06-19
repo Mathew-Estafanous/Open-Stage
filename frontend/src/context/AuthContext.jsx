@@ -19,6 +19,7 @@ export const AuthProvider = (props) => {
         }
         let body = jwtDecode(accountInfo.access_token);
         accountInfo.username = body.username;
+        accountInfo.id = parseInt(body.sub);
 
         localStorage.setItem('account.data', JSON.stringify(accountInfo));
         setAcc(accountInfo);

@@ -11,6 +11,7 @@ div.question {
 
 .question .head {
     display: flex;
+    align-items: center;
 }
 
 .head h3 {
@@ -32,15 +33,11 @@ div.question {
     margin-right: 0;
 
     text-align: center;
-    width: 70px;
 }
 
 .head .like img {
     padding-right: 8px;
     max-width: 29px;
-}
-
-.head .like img:hover {
     cursor: pointer;
 }
 
@@ -66,6 +63,17 @@ div.question {
     font-weight: 300;
     margin-top: 10px;
     margin-bottom: 0;
+}
+
+.question-checkmark {
+    margin-right: 10px;
+
+    max-width: 32px !important;
+    transition: transform 0.2s ease-in-out;
+}
+
+.question-checkmark:hover {
+    transform: scale(1.1);
 }
 
 @media (max-width: 950px) {
@@ -94,6 +102,12 @@ div.question {
 @media (max-width: 700px) {
     div.question {
         width: 425px;
+    }
+
+    .question-checkmark {
+        margin-right: 6px;
+
+        max-width: 28px !important;
     }
 }
 

@@ -7,8 +7,8 @@ import {
 import { RoomSelect } from './pages/RoomSelect'
 import { Room } from "./pages/Room";
 import {useAuth} from "./context/AuthContext";
-import {Unauthenticated} from "./components/Unauthenticated";
-import {Authenticated} from "./components/Authenticated";
+import {Unauthenticated} from "./context/Unauthenticated";
+import {Authenticated} from "./context/Authenticated";
 
 const App = () => {
     const {account} = useAuth()

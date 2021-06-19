@@ -82,7 +82,7 @@ export const CreateTheRoom = (host, room_code, token) => {
     let data = {
         host: host,
         room_code: room_code,
-        account_id: parseInt(jwtDecode(token).sub)
+        account_id: token.id
     }
 
     let request = {
