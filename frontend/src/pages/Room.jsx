@@ -39,8 +39,6 @@ export const Room = () => {
             return false;
         }
 
-        console.log(room);
-        console.log(account.id);
         return room.account_id === account.id;
     }
 
@@ -87,7 +85,7 @@ export const Room = () => {
         }
         {questions.map(q => {
             return <Question key={q.question_id} {...q}
-                             is_owner={isOwnerOfRoom()} />;
+                             is_owner={isOwnerOfRoom()} account={account} />;
         })}
         </>
     )

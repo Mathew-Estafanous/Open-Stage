@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import "./css/Question.css"
-import {UpdateLikes} from "../http/Questions";
+import {DeleteQuestion, UpdateLikes} from "../http/Questions";
 
 export const Question = (prop) => {
     const isLiked = () => {
@@ -16,6 +16,7 @@ export const Question = (prop) => {
 
     const [liked, setLiked] = useState(isLiked());
     const [totalLikes, setTotalLikes] = useState(prop.total_likes);
+    const [answered, setAnswered] = useState(false);
 
     const updateLocalStorage = () => {
         let likeData = JSON.parse(localStorage.getItem('like.data') || '{}');
@@ -43,6 +44,18 @@ export const Question = (prop) => {
         updateLocalStorage();
     }
 
+    const clickAnswered = () => {
+        let result = DeleteQuestion(prop.question_id, prop.account);
+        result.then(res => {
+            if(res.status !== 200) {
+                alert("We encountered an issue, please try again.");
+                return;
+            }
+
+            setAnswered(true);
+        })
+    }
+
     // Update the total likes when the prop passed in is updated.
     useEffect(() => {
         setTotalLikes(prop.total_likes);
@@ -56,7 +69,13 @@ export const Question = (prop) => {
                     <img className='user' src="/User.png" alt="user"/>
                     <h3>{prop.questioner_name}</h3>
                 </div>
+
                 <div className='like'>
+                    {prop.is_owner?
+                        <img className='question-checkmark'
+                             src={!answered? "/Check.png":"/Check-Selected.png"}
+                             alt="Mark Answered" onClick={clickAnswered} />:null
+                    }
                     <img src={(liked)? "/Upvote-Blue.png": "/Upvote-Black.png"} alt="Upvote"
                         onClick={clickLike}/>
                     <h3 className={(liked)? "liked": ""}>{totalLikes}</h3>

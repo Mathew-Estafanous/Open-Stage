@@ -98,3 +98,24 @@ export const UpdateLikes = (increment, id) => {
             return response
         })
 }
+
+export const DeleteQuestion = (id, token) => {
+    let path = url + '/questions/' + id;
+    let request = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+    }
+
+    return fetch(path, request)
+        .then(resp => Promise.all([resp.ok, resp]))
+        .then(([ok, data]) => {
+            if(!ok) {
+                return {...data.json()}
+            }
+
+            return {status: 200}
+        })
+}
