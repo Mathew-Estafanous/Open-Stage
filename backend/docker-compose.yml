@@ -12,15 +12,26 @@ services:
       POSTGRES_PASSWORD: 'qa-password'
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U admin -d qa_platform" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+      interval: 5s
+      timeout: 2s
+      retries: 20
     ports:
     - "5432:5432"
     volumes:
     - pg-db:/var/lib/postgresql/data
     # Copy database schema file.
     - ./docs/sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  cache:
+    container_name: Redis-Cache
+    image: redis:6
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    ports:
+      - "6379:6379"
 
   api:
     build:

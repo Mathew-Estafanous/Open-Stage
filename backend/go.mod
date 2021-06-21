@@ -12,6 +12,8 @@ require (
 	github.com/go-openapi/strfmt v0.20.1 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-openapi/validate v0.20.2 // indirect
+	github.com/go-redis/redis/v8 v8.10.0 // indirect
+	github.com/go-redis/redismock/v8 v8.0.6 // indirect
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
