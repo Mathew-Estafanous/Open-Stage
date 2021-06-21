@@ -59,6 +59,7 @@ func TestAuthService_Refresh(t *testing.T) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
 	refreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
+	cache.On("Contains", refreshTkn).Return(false, nil)
 
 	authTkn, err := auth.Refresh(refreshTkn)
 	assert.NoError(t, err)
@@ -69,6 +70,7 @@ func TestAuthService_Refresh(t *testing.T) {
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
 	expiredRefreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
+	cache.On("Contains", expiredRefreshTkn).Return(false, nil)
 
 	_, err = auth.Refresh(expiredRefreshTkn)
 	assert.ErrorIs(t, err, domain.Unauthorized)

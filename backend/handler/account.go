@@ -135,6 +135,7 @@ func NewAccountHandler(aService domain.AccountService, authService domain.AuthSe
 func (a accountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
+	r.HandleFunc("/accounts/logout", a.logout).Methods("POST")
 	r.HandleFunc("/accounts/refresh", a.refresh).Methods("POST")
 
 	secured.HandleFunc("/accounts/{id}", a.deleteAccount).Methods("DELETE")
@@ -290,6 +291,21 @@ func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	a.respond(w, http.StatusOK, token)
+}
+
+func (a accountHandler) logout(w http.ResponseWriter, r *http.Request) {
+	var body domain.AuthToken
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
+
+	err = a.auth.Invalidate(body)
+	if err != nil {
+		a.error(w, err)
+		return
+	}
 }
 
 

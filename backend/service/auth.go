@@ -43,6 +43,14 @@ func (a authService) Authenticate(username, password string) (domain.AuthToken, 
 }
 
 func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	blacklisted, err := a.cache.Contains(refreshTkn)
+	if err != nil {
+		return domain.AuthToken{}, err
+	}
+	if blacklisted {
+		return domain.AuthToken{}, fmt.Errorf("%w: Provided token has been blacklisted", domain.Unauthorized)
+	}
+
 	tkn, err := jwt.Parse(refreshTkn, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.key), nil
 	})

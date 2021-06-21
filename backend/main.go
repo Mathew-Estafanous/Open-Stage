@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/postgres"
+	"github.com/Mathew-Estafanous/Open-Stage/infrastructure/redis"
 	"github.com/Mathew-Estafanous/Open-Stage/middleware"
 	"github.com/Mathew-Estafanous/Open-Stage/service"
 	middle "github.com/go-openapi/runtime/middleware"
+	red "github.com/go-redis/redis/v8"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	"log"
@@ -21,6 +23,13 @@ import (
 
 func main() {
 	db := connectToDB()
+	client, err := connectToRedis()
+	if err != nil {
+		log.Println("Failed to connect to required to redis client.")
+		log.Fatalf(err.Error())
+		return
+	}
+	redisCache := redis.NewMemoryCache(client)
 
 	rStore := postgres.NewRoomStore(db)
 	rService := service.NewRoomService(rStore)
@@ -32,7 +41,7 @@ func main() {
 
 	aStore := postgres.NewAccountStore(db)
 	aService := service.NewAccountService(aStore)
-	authService := service.NewAuthService(aStore)
+	authService := service.NewAuthService(aStore, redisCache)
 	accountHandler := handler.NewAccountHandler(aService, authService)
 
 	router := mux.NewRouter()
@@ -40,7 +49,7 @@ func main() {
 
 	apiRouter := router.PathPrefix("/v1").Subrouter()
 	securedRouter := apiRouter.PathPrefix("/").Subrouter()
-	securedRouter.Use(middleware.Auth)
+	securedRouter.Use(middleware.Auth(redisCache))
 
 	roomHandler.Route(apiRouter, securedRouter)
 	accountHandler.Route(apiRouter, securedRouter)
@@ -73,6 +82,17 @@ func main() {
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func connectToRedis() (*red.Client, error) {
+	client := red.NewClient(&red.Options{
+		Addr: "localhost:6379",
+	})
+
+	if err := client.Ping(context.Background()).Err(); err != nil {
+		return nil, err
+	}
+	return client, nil
 }
 
 func connectToDB() *sql.DB {

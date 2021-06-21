@@ -15,7 +15,7 @@ type redisMemoryCache struct {
 	client *redis.Client
 }
 
-func NewMemoryStore(client *redis.Client) *redisMemoryCache {
+func NewMemoryCache(client *redis.Client) *redisMemoryCache {
 	return &redisMemoryCache{
 		client: client,
 	}

@@ -24,7 +24,7 @@ func TestRedisMemoryCache_StoreToken(t *testing.T) {
 	assert.NoError(t, err)
 
 	client, mock := redismock.NewClientMock()
-	cache := NewMemoryStore(client)
+	cache := NewMemoryCache(client)
 
 	mock.ExpectSetEX(jwtTkn, "", time.Minute * 5).SetVal("OK")
 
@@ -34,7 +34,7 @@ func TestRedisMemoryCache_StoreToken(t *testing.T) {
 
 func TestRedisMemoryCache_ContainsToken(t *testing.T) {
 	client, mock := redismock.NewClientMock()
-	cache := NewMemoryStore(client)
+	cache := NewMemoryCache(client)
 
 	mock.ExpectExists("SomeJWT").SetVal(1)
 
