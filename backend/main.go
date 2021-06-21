@@ -16,19 +16,18 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 )
 
+var (
+	PROFILE = os.Getenv("PROFILE")
+)
+
 func main() {
 	db := connectToDB()
-	client, err := connectToRedis()
-	if err != nil {
-		log.Println("Failed to connect to required to redis client.")
-		log.Fatalf(err.Error())
-		return
-	}
+	client := connectToRedis()
+
 	redisCache := redis.NewMemoryCache(client)
 
 	rStore := postgres.NewRoomStore(db)
@@ -84,30 +83,6 @@ func main() {
 	}
 }
 
-func connectToRedis() (*red.Client, error) {
-	client := red.NewClient(&red.Options{
-		Addr: "localhost:6379",
-	})
-
-	if err := client.Ping(context.Background()).Err(); err != nil {
-		return nil, err
-	}
-	return client, nil
-}
-
-func connectToDB() *sql.DB {
-	dbUrl := dbUrlByProfile()
-	db, err := sql.Open("postgres", dbUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = db.Ping()
-	if err != nil {
-		log.Fatalf("Could not make a connection with the database.\n%v", err)
-	}
-	return db
-}
-
 func configureDocsRoute(router *mux.Router) {
 	opts := middle.RedocOpts{
 		SpecURL: "/docs/swagger.yaml",
@@ -127,29 +102,43 @@ func configureServer(r http.Handler, port string) *http.Server {
 	}
 }
 
+func connectToRedis() *red.Client {
+	redisUrl := os.Getenv("REDIS_URL")
+	redisOpt, err := red.ParseURL(redisUrl)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	client := red.NewClient(redisOpt)
+
+	if err := client.Ping(context.Background()).Err(); err != nil {
+		log.Fatal(err.Error())
+	}
+	return client
+}
+
+func connectToDB() *sql.DB {
+	dbUrl := os.Getenv("DATABASE_URL")
+	// If not a prod, so SSL is not required and cane be disabled.
+	if PROFILE != "prod" {
+		dbUrl += "?sslmode=disable"
+	}
+
+	db, err := sql.Open("postgres", dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("Could not make a connection with the database.\n%v", err)
+	}
+	return db
+}
+
 func portByProfile() string {
 	//If 'prod' profile, then use the assigned PORT env.
-	if os.Getenv("PROFILE") == "prod" {
+	if PROFILE == "prod" {
 		return ":" + os.Getenv("PORT")
 	}
 	//Not 'prod', so use default 8080 port.
 	return ":8080"
-}
-
-func dbUrlByProfile() string {
-	dbUrl := os.Getenv("DATABASE_URL")
-	//If the 'prod' profile, return the given database_url
-	if os.Getenv("PROFILE") == "prod" {
-		return dbUrl
-	}
-
-	//Not a prod, so SSL is not required and cane be disabled.
-	dbUrl += "?sslmode=disable"
-	//Check if profile is a container. If so, replace address with container address.
-	if os.Getenv("PROFILE") == "ctr" {
-		ctrAddr := os.Getenv("CONTAINER_ADDRESS")
-		return strings.Replace(dbUrl, "[address]", ctrAddr, 1)
-	}
-	//If profile isn't any of the above, assume 'dev' and return altered dbUrl.
-	return dbUrl
 }

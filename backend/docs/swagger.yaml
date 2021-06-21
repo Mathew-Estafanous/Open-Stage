@@ -313,6 +313,28 @@ paths:
       summary: Login and authenticate account.
       tags:
       - Accounts
+  /accounts/logout:
+    post:
+      description: |-
+        Takes both access and refresh token credentials and adds them to a blacklist. Those tokens
+        will remain blacklisted until their expiration date. Meaning that they can no longer be used
+        for secured endpoints.
+      operationId: authTokens
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/authToken'
+      responses:
+        "200":
+          description: ' OK - Account credentials have been blacklisted.'
+        "401":
+          $ref: '#/responses/errorResponse'
+        "500":
+          $ref: '#/responses/errorResponse'
+      summary: Logout from current account credentials.
+      tags:
+      - Accounts
   /accounts/refresh:
     post:
       description: |-

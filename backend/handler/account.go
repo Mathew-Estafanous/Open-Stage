@@ -293,6 +293,18 @@ func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 	a.respond(w, http.StatusOK, token)
 }
 
+// swagger:route POST /accounts/logout Accounts authTokens
+//
+// Logout from current account credentials.
+//
+// Takes both access and refresh token credentials and adds them to a blacklist. Those tokens
+// will remain blacklisted until their expiration date. Meaning that they can no longer be used
+// for secured endpoints.
+//
+// Responses:
+//  200: description: OK - Account credentials have been blacklisted.
+//  401: errorResponse
+//  500: errorResponse
 func (a accountHandler) logout(w http.ResponseWriter, r *http.Request) {
 	var body domain.AuthToken
 	err := json.NewDecoder(r.Body).Decode(&body)

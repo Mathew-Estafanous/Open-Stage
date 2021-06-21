@@ -39,12 +39,15 @@ services:
       context: .
     container_name: Open-Stage
     environment:
-      DATABASE_URL: 'postgres://admin:qa-password@[address]:5432/qa_platform'
-      PROFILE: 'ctr'
-      CONTAINER_ADDRESS: db
+      DATABASE_URL: 'postgres://admin:qa-password@db:5432/qa_platform'
+      REDIS_URL: 'redis://cache:6379/0'
+      DB_HOST: db
+      REDIS_HOST: cache
       SECRET_KEY: 'THIS_IS_A_SECRET'
     depends_on:
       db:
+        condition: service_healthy
+      cache:
         condition: service_healthy
     ports:
       - "8080:8080"
