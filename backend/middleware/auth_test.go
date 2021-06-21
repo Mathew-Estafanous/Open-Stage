@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/Mathew-Estafanous/Open-Stage/domain/mock"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -26,7 +27,10 @@ func TestAuth(t *testing.T) {
 	h := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		passedAuth = true
 	})
-	auth := Auth(h)
+	client := new(mock.AuthCache)
+	client.On("Contains", accessTkn).Return(false, nil)
+
+	auth := Auth(client)(h)
 	w := httptest.NewRecorder()
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.NoError(t, err)
@@ -41,6 +45,7 @@ func TestAuth(t *testing.T) {
 	})
 	refreshTkn, err := tkn.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
+	client.On("Contains", refreshTkn).Return(false, nil)
 
 	passedAuth = false
 	req.Header.Set("Authorization", "Bearer "+refreshTkn)

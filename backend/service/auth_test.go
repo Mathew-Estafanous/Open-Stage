@@ -15,7 +15,8 @@ func TestAuthService_Authenticate(t *testing.T) {
 	assert.NoError(t, err)
 
 	aStore := new(mock.AccountStore)
-	auth := NewAuthService(aStore)
+	cache := new(mock.AuthCache)
+	auth := NewAuthService(aStore, cache)
 
 	respAcc := domain.Account{
 		Username: "someUsername",
@@ -42,7 +43,8 @@ func TestAuthService_Refresh(t *testing.T) {
 	assert.NoError(t, err)
 
 	aStore := new(mock.AccountStore)
-	auth := NewAuthService(aStore)
+	cache := new(mock.AuthCache)
+	auth := NewAuthService(aStore, cache)
 
 	exp := time.Now().Add(time.Hour * 168).Unix()
 	refreshClaim := AccountClaims{
@@ -57,6 +59,7 @@ func TestAuthService_Refresh(t *testing.T) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
 	refreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
+	cache.On("Contains", refreshTkn).Return(false, nil)
 
 	authTkn, err := auth.Refresh(refreshTkn)
 	assert.NoError(t, err)
@@ -67,9 +70,26 @@ func TestAuthService_Refresh(t *testing.T) {
 	token = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
 	expiredRefreshTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	assert.NoError(t, err)
+	cache.On("Contains", expiredRefreshTkn).Return(false, nil)
 
 	_, err = auth.Refresh(expiredRefreshTkn)
 	assert.ErrorIs(t, err, domain.Unauthorized)
+}
+
+func TestAuthService_Invalidate(t *testing.T) {
+	aStore := new(mock.AccountStore)
+	cache := new(mock.AuthCache)
+	auth := NewAuthService(aStore, cache)
+
+	authTkn := domain.AuthToken{
+		AccessToken: "SomeAccessJWT",
+		RefreshToken: "TheRefreshJWT",
+	}
+	cache.On("Store", authTkn.AccessToken).Return(nil)
+	cache.On("Store", authTkn.RefreshToken).Return(nil)
+
+	err := auth.Invalidate(authTkn)
+	assert.NoError(t, err)
 }
 
 func validateAuthTkn(authToken domain.AuthToken, t *testing.T) {

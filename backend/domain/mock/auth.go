@@ -17,6 +17,16 @@ func (a *AuthService) Authenticate(username, password string) (domain.AuthToken,
 	return ret.Get(0).(domain.AuthToken), ret.Error(1)
 }
 
+func (a *AuthService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	ret := a.Called(refreshTkn)
+	return ret.Get(0).(domain.AuthToken), ret.Error(1)
+}
+
+func (a *AuthService) Invalidate(token domain.AuthToken) error {
+	ret := a.Called(token)
+	return ret.Error(0)
+}
+
 func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
 	secured := r.PathPrefix("/").Subrouter()
 	secured.Use(func(h http.Handler) http.Handler {
@@ -28,7 +38,17 @@ func SecureRouter(r *mux.Router, fakeId int) *mux.Router {
 	return secured
 }
 
-func (a *AuthService) Refresh(refreshTkn string) (domain.AuthToken, error) {
-	ret := a.Called(refreshTkn)
-	return ret.Get(0).(domain.AuthToken), ret.Error(1)
+type AuthCache struct {
+	mock.Mock
 }
+
+func (a *AuthCache) Contains(tkn string) (bool, error) {
+	ret := a.Called(tkn)
+	return ret.Get(0).(bool), ret.Error(1)
+}
+
+func (a *AuthCache) Store(tkn string) error {
+	ret := a.Called(tkn)
+	return ret.Error(0)
+}
+

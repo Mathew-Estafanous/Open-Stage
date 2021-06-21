@@ -12,4 +12,10 @@ type AuthToken struct {
 type AuthService interface {
 	Authenticate(username, password string) (AuthToken, error)
 	Refresh(refreshTkn string) (AuthToken, error)
+	Invalidate(token AuthToken) error
+}
+
+type AuthCache interface {
+	Contains(tkn string) (bool, error)
+	Store(tkn string) error
 }

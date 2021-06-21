@@ -12,12 +12,14 @@ import (
 
 type authService struct {
 	store domain.AccountStore
+	cache domain.AuthCache
 	key   string
 }
 
-func NewAuthService(acc domain.AccountStore) domain.AuthService {
+func NewAuthService(acc domain.AccountStore, cache domain.AuthCache) domain.AuthService {
 	return authService{
 		store: acc,
+		cache: cache,
 		key:   os.Getenv("SECRET_KEY"),
 	}
 }
@@ -41,6 +43,14 @@ func (a authService) Authenticate(username, password string) (domain.AuthToken, 
 }
 
 func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+	blacklisted, err := a.cache.Contains(refreshTkn)
+	if err != nil {
+		return domain.AuthToken{}, err
+	}
+	if blacklisted {
+		return domain.AuthToken{}, fmt.Errorf("%w: Provided token has been blacklisted", domain.Unauthorized)
+	}
+
 	tkn, err := jwt.Parse(refreshTkn, func(token *jwt.Token) (interface{}, error) {
 		return []byte(a.key), nil
 	})
@@ -55,6 +65,18 @@ func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
 	id := c["sub"].(string)
 	username := c["username"].(string)
 	return createToken(username, id, a.key)
+}
+
+func (a authService) Invalidate(token domain.AuthToken) error {
+	err := a.cache.Store(token.AccessToken)
+	if err != nil {
+		return err
+	}
+	err = a.cache.Store(token.RefreshToken)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 type AccountClaims struct {

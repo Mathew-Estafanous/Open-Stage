@@ -83,6 +83,12 @@ type errorResponse struct {
 	Body handler.ResponseError
 }
 
+// Both access and refresh tokens.
+// swagger:parameters authTokens
+type authTokenBody struct {
+	// in: body
+	Body domain.AuthToken
+}
 // swagger:parameters updateLikes
 type updateLikesBody struct {
 	// in: body
