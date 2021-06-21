@@ -21,7 +21,7 @@ func NewMemoryStore(client *redis.Client) *redisMemoryCache {
 	}
 }
 
-func (r redisMemoryCache) StoreToken(tkn string) error {
+func (r redisMemoryCache) Store(tkn string) error {
 	parser := jwt.Parser{
 		UseJSONNumber: true,
 	}
@@ -45,7 +45,7 @@ func (r redisMemoryCache) StoreToken(tkn string) error {
 	return err
 }
 
-func (r redisMemoryCache) ContainsToken(tkn string) (bool, error) {
+func (r redisMemoryCache) Contains(tkn string) (bool, error) {
 	ctx := context.Background()
 	res, err := r.client.Exists(ctx, tkn).Result()
 	if err != nil {
