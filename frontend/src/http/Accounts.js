@@ -54,6 +54,31 @@ export const LoginAccount = (username, pass) => {
     return makeFetchRequest(response, request, path)
 }
 
+export const Logout = (access, refresh) => {
+    let path = url + '/accounts/logout';
+    let data = {
+        access_token: access,
+        refresh_token: refresh,
+    }
+
+    let request = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }
+    return fetch(path, request)
+        .then(resp => Promise.all([resp.ok, resp]))
+        .then(([ok, data]) => {
+            if(!ok) {
+                return {...data.json()}
+            }
+
+            return {status: 200}
+        })
+}
+
 let signupResponse = {
     body: {
         username: '',
