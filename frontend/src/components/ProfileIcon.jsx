@@ -1,6 +1,7 @@
 import {useAuth} from "../context/AuthContext";
 import {useHistory} from "react-router-dom";
 import "./css/ProfileIcon.css";
+import {Logout} from "../http/Accounts";
 
 export const ProfileIcon = () => {
     const {account, setAccount} = useAuth();
@@ -15,8 +16,14 @@ export const ProfileIcon = () => {
     }
 
     const clickedLogout = () => {
-        history.push('/');
-        setAccount(null);
+        let result = Logout(account.access_token, account.refresh_token);
+        result.then(res => {
+            if(res.status !== 200) {
+                console.log(res.message);
+            }
+            history.push('/');
+            setAccount(null);
+        })
     }
 
     return (
