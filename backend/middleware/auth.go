@@ -2,14 +2,15 @@ package middleware
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/handle_err"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"time"
 )
 
 func Auth(cache domain.AuthCache) mux.MiddlewareFunc {
@@ -17,13 +18,17 @@ func Auth(cache domain.AuthCache) mux.MiddlewareFunc {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			auth := strings.Split(r.Header.Get("Authorization"), "Bearer ")
 			if len(auth) != 2 {
-				writeError(w, "Authorization header not formatted correctly.")
+				writeError(w, handle_err.ToHttp(NotFormatted))
 				return
 			}
 
-			blacklisted, _ := cache.Contains(auth[1])
+			blacklisted, err := cache.Contains(auth[1])
+			if err != nil {
+				writeError(w, handle_err.ToHttp(BlacklistErr))
+				return
+			}
 			if blacklisted {
-				writeError(w, "Provided token has been blacklisted.")
+				writeError(w, handle_err.ToHttp(Blacklisted))
 				return
 			}
 
@@ -31,19 +36,19 @@ func Auth(cache domain.AuthCache) mux.MiddlewareFunc {
 				return []byte(os.Getenv("SECRET_KEY")), nil
 			})
 			if err != nil {
-				writeError(w, "Invalid access token.")
+				writeError(w, handle_err.ToHttp(InvalidToken))
 				return
 			}
 
 			c := tk.Claims.(jwt.MapClaims)
 			if c["aud"] != "access" {
-				writeError(w, "Invalid access token")
+				writeError(w, handle_err.ToHttp(InvalidToken))
 				return
 			}
 
 			accId, ok := c["sub"].(string)
 			if !ok {
-				writeError(w, "Unable to identify the account holder")
+				writeError(w, handle_err.ToHttp(Unidentified))
 				return
 			}
 
@@ -53,19 +58,16 @@ func Auth(cache domain.AuthCache) mux.MiddlewareFunc {
 	}
 }
 
-type response struct {
-	Msg       string    `json:"message"`
-	Sts       int       `json:"status"`
-	TimeStamp time.Time `json:"timestamp"`
-}
+var (
+	InvalidToken = fmt.Errorf("%w: Invalid access token", domain.Unauthorized)
+	Blacklisted  = fmt.Errorf("%w: Provided token has been blacklisted", domain.Unauthorized)
+	Unidentified = fmt.Errorf("%w: Unable to identify the account holder", domain.Unauthorized)
+	NotFormatted = fmt.Errorf("%w: Authorization header not formatted correctly", domain.Unauthorized)
+	BlacklistErr = fmt.Errorf("%w: Unable to get token blacklist", domain.Internal)
+)
 
-func writeError(w http.ResponseWriter, msg string) {
+func writeError(w http.ResponseWriter, respErr handle_err.ResponseError) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	respErr := response{
-		Msg:       msg,
-		Sts:       http.StatusUnauthorized,
-		TimeStamp: time.Now(),
-	}
 	w.WriteHeader(respErr.Sts)
 	err := json.NewEncoder(w).Encode(respErr)
 	if err != nil {
