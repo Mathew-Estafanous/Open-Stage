@@ -104,11 +104,11 @@ func TestAccountHandler_findWithUsername(t *testing.T) {
 	auth := new(mock.AuthService)
 
 	acc := domain.Account{
-		Id: 5,
+		Id:       5,
 		Username: "TheUsername",
 		Password: "SecretPassword",
-		Name: "Mathew",
-		Email: "mathew@fake.com",
+		Name:     "Mathew",
+		Email:    "mathew@fake.com",
 	}
 
 	j, err := json.Marshal(accountToResp(acc))
@@ -124,7 +124,6 @@ func TestAccountHandler_findWithUsername(t *testing.T) {
 	secured := mock.SecureRouter(r, 5)
 	NewAccountHandler(as, auth).Route(r, secured)
 	r.ServeHTTP(w, req)
-
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
 	assert.JSONEq(t, string(j), w.Body.String())

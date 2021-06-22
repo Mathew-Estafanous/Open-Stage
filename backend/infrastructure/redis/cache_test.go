@@ -15,9 +15,9 @@ func TestRedisMemoryCache_StoreToken(t *testing.T) {
 
 	exp := time.Now().Add(time.Minute * 5).Unix()
 	refreshClaim := jwt.StandardClaims{
-			ExpiresAt: exp,
-			Audience:  "access",
-			Subject:   "2",
+		ExpiresAt: exp,
+		Audience:  "access",
+		Subject:   "2",
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaim)
 	jwtTkn, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -26,7 +26,7 @@ func TestRedisMemoryCache_StoreToken(t *testing.T) {
 	client, mock := redismock.NewClientMock()
 	cache := NewMemoryCache(client)
 
-	mock.ExpectSetEX(jwtTkn, "", time.Minute * 5).SetVal("OK")
+	mock.ExpectSetEX(jwtTkn, "", time.Minute*5).SetVal("OK")
 
 	err = cache.Store(jwtTkn)
 	assert.NoError(t, err)

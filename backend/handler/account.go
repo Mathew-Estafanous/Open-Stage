@@ -320,7 +320,6 @@ func (a accountHandler) logout(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func accountToResp(acc domain.Account) AccountResp {
 	return AccountResp{
 		Id:       acc.Id,

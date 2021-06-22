@@ -57,11 +57,11 @@ func TestAccountService_FindByUsername(t *testing.T) {
 	service := NewAccountService(aStore)
 
 	acc := domain.Account{
-		Id: 10,
+		Id:       10,
 		Username: "TheUsername",
-		Name: "Jackson",
+		Name:     "Jackson",
 		Password: "A-PASSWORD",
-		Email: "jackson@fake.com",
+		Email:    "jackson@fake.com",
 	}
 	aStore.On("GetByUsername", acc.Username).Return(acc, nil)
 

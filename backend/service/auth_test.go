@@ -82,7 +82,7 @@ func TestAuthService_Invalidate(t *testing.T) {
 	auth := NewAuthService(aStore, cache)
 
 	authTkn := domain.AuthToken{
-		AccessToken: "SomeAccessJWT",
+		AccessToken:  "SomeAccessJWT",
 		RefreshToken: "TheRefreshJWT",
 	}
 	cache.On("Store", authTkn.AccessToken).Return(nil)

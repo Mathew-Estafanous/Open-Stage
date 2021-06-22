@@ -78,11 +78,11 @@ func TestPostgresRoomStore_FindAllRooms(t *testing.T) {
 		t.Fatal("There was an unexpected error when mocking the database.")
 	}
 
-	result := []domain.Room {
+	result := []domain.Room{
 		{
-			Host: "Mat",
+			Host:     "Mat",
 			RoomCode: "ARoomCode",
-			AccId: 1,
+			AccId:    1,
 		},
 	}
 

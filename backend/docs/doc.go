@@ -89,6 +89,7 @@ type authTokenBody struct {
 	// in: body
 	Body domain.AuthToken
 }
+
 // swagger:parameters updateLikes
 type updateLikesBody struct {
 	// in: body

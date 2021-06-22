@@ -37,7 +37,7 @@ func (r redisMemoryCache) Store(tkn string) error {
 	if err != nil {
 		return fmt.Errorf("%w: error while parsing json number", domain.Internal)
 	}
-	dif := exp  - time.Now().Unix()
+	dif := exp - time.Now().Unix()
 	dur := time.Duration(dif) * time.Second
 
 	ctx := context.Background()

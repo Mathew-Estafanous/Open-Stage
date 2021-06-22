@@ -51,4 +51,3 @@ func (a *AuthCache) Store(tkn string) error {
 	ret := a.Called(tkn)
 	return ret.Error(0)
 }
-

@@ -65,4 +65,3 @@ func (p *postgresRoomStore) FindAllRooms(accId int) ([]domain.Room, error) {
 	}
 	return rooms, nil
 }
-

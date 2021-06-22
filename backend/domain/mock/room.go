@@ -52,5 +52,5 @@ func (m *RoomStore) Delete(code string) error {
 
 func (m *RoomStore) FindAllRooms(accId int) ([]domain.Room, error) {
 	ret := m.Called(accId)
-	return ret.Get(0).([]domain.Room),  ret.Error(1)
+	return ret.Get(0).([]domain.Room), ret.Error(1)
 }

@@ -101,16 +101,16 @@ func TestRoomHandler_DeleteRoom(t *testing.T) {
 func TestRoomHandler_GetAllRooms(t *testing.T) {
 	rs := new(mock.RoomService)
 
-	result := []domain.Room {
+	result := []domain.Room{
 		{
-			Host: "Mat",
+			Host:     "Mat",
 			RoomCode: "ARoomCode",
-			AccId: 1,
+			AccId:    1,
 		},
 		{
-			Host: "Mat",
+			Host:     "Mat",
 			RoomCode: "AnotherRoom",
-			AccId: 1,
+			AccId:    1,
 		},
 	}
 	rs.On("AllRoomsWithId", 1).Return(result, nil)

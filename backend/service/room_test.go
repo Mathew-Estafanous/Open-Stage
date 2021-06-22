@@ -79,16 +79,16 @@ func TestRoomService_AllRoomsWithId(t *testing.T) {
 	store := new(mock.RoomStore)
 	rs := NewRoomService(store)
 
-	result := []domain.Room {
+	result := []domain.Room{
 		{
-			Host: "Mat",
+			Host:     "Mat",
 			RoomCode: "ACode",
-			AccId: 1,
+			AccId:    1,
 		},
 		{
-			Host: "Mat",
+			Host:     "Mat",
 			RoomCode: "AnotherCode",
-			AccId: 1,
+			AccId:    1,
 		},
 	}
 	store.On("FindAllRooms", 1).Return(result, nil)
