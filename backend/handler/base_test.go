@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
+	"github.com/Mathew-Estafanous/Open-Stage/handle_err"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -20,7 +21,7 @@ func TestBaseHandler_error(t *testing.T) {
 
 	assert.EqualValues(t, w.Code, http.StatusBadRequest)
 
-	var resp ResponseError
+	var resp handle_err.ResponseError
 	err := json.Unmarshal([]byte(w.Body.String()), &resp)
 	assert.NoError(t, err)
 	assert.EqualValues(t, respErr.Error(), resp.Msg)
