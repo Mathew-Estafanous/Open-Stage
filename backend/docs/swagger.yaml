@@ -19,7 +19,7 @@ definitions:
         type: string
         x-go-name: TimeStamp
     type: object
-    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handler
+    x-go-package: github.com/Mathew-Estafanous/Open-Stage/handle_err
   accountResponse:
     description: username, etc.
     properties:
