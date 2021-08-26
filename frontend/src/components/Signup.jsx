@@ -16,7 +16,7 @@ export const Signup = () => {
     const submitSignup = async (e) => {
         e.preventDefault()
         let resp = await CreateAccount(username, password, name, email);
-        if (resp.error.status !== 201) {
+        if (resp.error.status !== 200) {
             if(resp.error.status === 409) {
                 setError('The username is already taken.');
             } else if(resp.error.status === 400 ) {
