@@ -31,7 +31,6 @@ package docs
 
 import (
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
-	"github.com/Mathew-Estafanous/Open-Stage/handle_err"
 	"github.com/Mathew-Estafanous/Open-Stage/handler"
 )
 
@@ -81,7 +80,7 @@ type tokenResponse struct {
 // swagger:response errorResponse
 type errorResponse struct {
 	// in: body
-	Body handle_err.ResponseError
+	Body handler.ResponseError
 }
 
 // Both access and refresh tokens.
