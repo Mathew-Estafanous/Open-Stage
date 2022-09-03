@@ -1,8 +1,6 @@
 import {makeFetchRequest} from "./Accounts";
-import jwtDecode from "jwt-decode";
 
-export const url = (process.env.REACT_APP_ENV === 'production')?
-    'https://open-stage-api.herokuapp.com/v1' :'http://localhost:8080/v1';
+export const url = process.env.REACT_APP_API_URL;
 
 const roomResponse = {
     body: {

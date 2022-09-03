@@ -16,11 +16,11 @@ services:
       timeout: 2s
       retries: 20
     ports:
-    - "5432:5432"
+      - "5432:5432"
     volumes:
     - pg-db:/var/lib/postgresql/data
     # Copy database schema file.
-    - ./docs/sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    - ./backend/docs/sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
   cache:
     container_name: Redis-Cache
@@ -36,8 +36,8 @@ services:
   api:
     build:
       dockerfile: Dockerfile
-      context: .
-    container_name: Open-Stage
+      context: backend
+    container_name: Open-Stage_API
     environment:
       DATABASE_URL: 'postgres://admin:qa-password@db:5432/qa_platform'
       REDIS_URL: 'redis://cache:6379/0'
@@ -47,8 +47,26 @@ services:
         condition: service_healthy
       cache:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/docs"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
     ports:
       - "8080:8080"
+
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: frontend
+      args:
+        REACT_APP_API_URL: 'http://localhost:8080/v1'
+    container_name: Open-Stage_Frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - '3000:3000'
 
 volumes:
   pg-db:

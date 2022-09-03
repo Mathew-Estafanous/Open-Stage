@@ -7,6 +7,7 @@ COPY . .
 RUN go build -o ./out/ .
 
 FROM alpine:3
+RUN apk --no-cache add curl
 COPY --from=builder docs/swagger.yaml ./docs/
 COPY --from=builder /out/ .
 ENTRYPOINT ["./Open-Stage"]
