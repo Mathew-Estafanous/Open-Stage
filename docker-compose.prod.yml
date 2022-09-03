@@ -1,0 +1,18 @@
+services:
+  db:
+    restart: unless-stopped
+    environment:
+      POSTGRES_USR: $OPEN_STAGE_DB_USER
+      POSTGRES_PASSWORD: $OPEN_STAGE_DB_PASSWORD
+
+  cache:
+    restart: unless-stopped
+
+  api:
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: 'postgres://${OPEN_STAGE_DB_USER}:${OPEN_STAGE_DB_PASSWORD}@db:5432/qa_platform'
+      SECRET_KEY: $OPEN_STAGE_SECRET_KEY
+
+  frontend:
+    restart: unless-stopped

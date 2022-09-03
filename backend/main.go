@@ -118,7 +118,7 @@ func connectToRedis() *red.Client {
 
 func connectToDB() *sql.DB {
 	dbUrl := os.Getenv("DATABASE_URL")
-	// If not a prod, so SSL is not required and cane be disabled.
+	// If not a prod, so SSL is not required and can be disabled.
 	if PROFILE != "prod" {
 		dbUrl += "?sslmode=disable"
 	}
@@ -136,9 +136,9 @@ func connectToDB() *sql.DB {
 
 func portByProfile() string {
 	//If 'prod' profile, then use the assigned PORT env.
-	if PROFILE == "prod" {
-		return ":" + os.Getenv("PORT")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-	//Not 'prod', so use default 8080 port.
-	return ":8080"
+	return ":" + port
 }
