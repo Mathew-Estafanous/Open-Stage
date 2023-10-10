@@ -1,7 +1,7 @@
 import './css/CreateRoom.css';
 import {useAuth} from "../context/AuthContext";
 import {useState} from "react";
-import {CreateTheRoom} from "../http/Rooms";
+import {CreateTheRoom} from "../api/Rooms";
 
 export const CreateRoom = (props) => {
     const [host, setHost] = useState('');

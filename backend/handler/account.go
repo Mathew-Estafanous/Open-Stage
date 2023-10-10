@@ -321,7 +321,11 @@ func (a AccountHandler) logout(w http.ResponseWriter, r *http.Request) {
 	err = a.auth.Invalidate(body)
 	if err != nil {
 		respondWithError(w, err)
-		return
+	} else {
+		respondWithCode(w, http.StatusOK, &GenericResponse{
+			Msg:  "successfully logged out",
+			Code: http.StatusOK,
+		})
 	}
 }
 

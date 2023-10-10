@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import "./css/AskQuestion.css"
-import { PostQuestion } from "../http/Questions";
+import { PostQuestion } from "../api/Questions";
 
 export const AskQuestion = ({code, onPost}) => {
     const [question, setQuestion] = useState('');

@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {Link, useHistory} from "react-router-dom";
-import {LoginAccount} from "../http/Accounts";
+import {LoginAccount} from "../api/Accounts";
 import {Error} from "./Error";
 import {useAuth} from "../context/AuthContext";
 import "./css/AuthForm.css";

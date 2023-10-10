@@ -1,7 +1,7 @@
 import {useState} from "react";
 import {Error} from "./Error";
 import {Link, useHistory} from "react-router-dom";
-import {CreateAccount} from "../http/Accounts";
+import {CreateAccount} from "../api/Accounts";
 import "./css/AuthForm.css";
 
 export const Signup = () => {

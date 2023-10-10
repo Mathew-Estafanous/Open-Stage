@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import "./css/Question.css"
-import {DeleteQuestion, UpdateLikes} from "../http/Questions";
+import {DeleteQuestion, UpdateLikes} from "../api/Questions";
 
 export const Question = (prop) => {
     const isLiked = () => {

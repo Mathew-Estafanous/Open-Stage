@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+type GenericResponse struct {
+	Msg  string `json:"message"`
+	Code int    `json:"code"`
+}
+
 func respondWithError(w http.ResponseWriter, err error) {
 	respError := ToHttp(err)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")

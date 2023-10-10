@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import jwtDecode from "jwt-decode";
-import {RefreshToken} from "../http/Accounts";
+import {RefreshToken} from "../api/Accounts";
 
 const AuthContext = createContext();
 

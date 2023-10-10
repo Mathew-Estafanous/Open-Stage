@@ -1,6 +1,6 @@
 import './css/RoomClip.css';
 import {useHistory} from "react-router-dom";
-import {DeleteRoom} from "../http/Rooms";
+import {DeleteRoom} from "../api/Rooms";
 import {useAuth} from "../context/AuthContext";
 
 export const RoomClip = (prop) => {

@@ -173,5 +173,10 @@ func (q QuestionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) 
 	err = q.qs.Delete(idInt)
 	if err != nil {
 		respondWithError(w, err)
+	} else {
+		respondWithCode(w, http.StatusOK, &GenericResponse{
+			Msg:  "successfully deleted",
+			Code: http.StatusOK,
+		})
 	}
 }

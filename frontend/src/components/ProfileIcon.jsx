@@ -1,7 +1,7 @@
 import {useAuth} from "../context/AuthContext";
 import {useHistory} from "react-router-dom";
 import "./css/ProfileIcon.css";
-import {Logout} from "../http/Accounts";
+import {Logout} from "../api/Accounts";
 
 export const ProfileIcon = () => {
     const {account, setAccount} = useAuth();

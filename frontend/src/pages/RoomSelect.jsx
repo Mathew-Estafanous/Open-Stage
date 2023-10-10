@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
-import { GetRoom } from "../http/Rooms";
+import { GetRoom } from "../api/Rooms";
 import './css/RoomSelect.css';
 import {Oval} from "@agney/react-loading";
 import {Error} from "../components/Error";

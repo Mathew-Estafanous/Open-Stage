@@ -2,10 +2,10 @@ import {useHistory} from "react-router-dom";
 import {ProfileIcon} from "../components/ProfileIcon";
 import {useAuth} from "../context/AuthContext";
 import {useEffect, useState} from "react";
-import {GetAccountInfo} from "../http/Accounts";
+import {GetAccountInfo} from "../api/Accounts";
 import {RoomClip} from "../components/RoomClip";
 import {CreateRoom} from "../components/CreateRoom";
-import {AllRoomsAssociated} from "../http/Rooms";
+import {AllRoomsAssociated} from "../api/Rooms";
 import './css/AccountPage.css';
 
 export const AccountPage = () => {
