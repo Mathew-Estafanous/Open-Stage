@@ -1,3 +1,4 @@
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Signup } from '../components/Signup';
 import './css/AuthPage.css';
