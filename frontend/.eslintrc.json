@@ -15,6 +15,8 @@
         "react"
     ],
     "rules": {
-        "semi": [2, "always"]
+        "semi": [2, "always"],
+        "react/prop-types": "off",
+        "react/no-unescaped-entities": 0
     }
 }
