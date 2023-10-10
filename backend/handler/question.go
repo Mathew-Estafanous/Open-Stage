@@ -49,16 +49,15 @@ type NewQuestion struct {
 	Questioner string `json:"questioner_name"`
 }
 
-type questionHandler struct {
-	baseHandler
+type QuestionHandler struct {
 	qs domain.QuestionService
 }
 
-func NewQuestionHandler(qService domain.QuestionService) *questionHandler {
-	return &questionHandler{qs: qService}
+func NewQuestionHandler(qService domain.QuestionService) *QuestionHandler {
+	return &QuestionHandler{qs: qService}
 }
 
-func (q questionHandler) Route(r *mux.Router) {
+func (q QuestionHandler) Route(r *mux.Router) {
 	r.HandleFunc("/questions", q.createQuestion).Methods("POST")
 	r.HandleFunc("/questions", q.updateTotalLikes).Methods("PUT")
 	r.HandleFunc("/questions/{roomCode}", q.getAllQuestionsInRoom).Methods("GET")
@@ -73,14 +72,15 @@ func (q questionHandler) Route(r *mux.Router) {
 // and will be left as "Anonymous" by default.
 //
 // Responses:
-//  201: questionResponse
-//  400: errorResponse
-//  500: errorResponse
-func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
+//
+//	201: questionResponse
+//	400: errorResponse
+//	500: errorResponse
+func (q QuestionHandler) createQuestion(w http.ResponseWriter, r *http.Request) {
 	var body *NewQuestion
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
@@ -92,11 +92,11 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 
 	err = q.qs.Create(question)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	q.respond(w, http.StatusCreated, question)
+	respondWithCode(w, http.StatusCreated, question)
 }
 
 // swagger:route PUT /questions Questions updateLikes
@@ -106,24 +106,25 @@ func (q questionHandler) createQuestion(w http.ResponseWriter, r *http.Request) 
 // Updates the total # of likes for the question with the matching question_id.
 //
 // Responses:
-//  200: questionResponse
-//  404: errorResponse
-//  400: errorResponse
-//  500: errorResponse
-func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request) {
+//
+//	200: questionResponse
+//	404: errorResponse
+//	400: errorResponse
+//	500: errorResponse
+func (q QuestionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request) {
 	var body UpdateLike
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	question, err := q.qs.ChangeTotalLikes(body.Id, body.LikeIncrement)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
-	q.respond(w, http.StatusOK, question)
+	respondWithCode(w, http.StatusOK, question)
 }
 
 // swagger:route GET /questions/{roomCode} Questions roomCode
@@ -133,42 +134,44 @@ func (q questionHandler) updateTotalLikes(w http.ResponseWriter, r *http.Request
 // Uses the given room code and retrieves all questions that have been posted.
 //
 // Responses:
-//  200: multiQuestionResponse
-//  404: errorResponse
-//  500: errorResponse
-func (q questionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Request) {
+//
+//	200: multiQuestionResponse
+//	404: errorResponse
+//	500: errorResponse
+func (q QuestionHandler) getAllQuestionsInRoom(w http.ResponseWriter, r *http.Request) {
 	code := mux.Vars(r)["roomCode"]
 
 	questions, err := q.qs.FindAllInRoom(code)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	q.respond(w, http.StatusOK, questions)
+	respondWithCode(w, http.StatusOK, questions)
 }
 
 // swagger:route DELETE /questions/{questionId} Questions questionId
 //
-// Delete a question by ID
+// # Delete a question by ID
 //
 // Uses the given question ID to delete the question with that ID.
 //
 // Responses:
-//  200: description: OK - Question has been properly deleted.
-//  500: errorResponse
-func (q questionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) {
+//
+//	200: description: OK - Question has been properly deleted.
+//	500: errorResponse
+func (q QuestionHandler) deleteQuestion(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["questionId"]
 
 	idInt, err := strconv.Atoi(id)
 	if err != nil {
 		err = fmt.Errorf("%w: given question id is not a valid int type", domain.BadInput)
-		q.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	err = q.qs.Delete(idInt)
 	if err != nil {
-		q.error(w, err)
+		respondWithError(w, err)
 	}
 }

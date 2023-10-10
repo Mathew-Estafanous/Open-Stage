@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/Mathew-Estafanous/Open-Stage/domain"
 	"github.com/lib/pq"
@@ -20,8 +21,9 @@ func (p *postgresAccountStore) Create(acc *domain.Account) error {
 		acc.Name, acc.Username, acc.Password, acc.Email)
 	defer r.Close()
 	if err != nil {
-		if err, ok := err.(*pq.Error); ok {
-			if err.Code.Name() == "unique_violation" {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			if pqErr.Code.Name() == "unique_violation" {
 				return fmt.Errorf("%w: duplicate username key value", domain.Conflict)
 			}
 		}

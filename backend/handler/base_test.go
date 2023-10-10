@@ -12,11 +12,9 @@ import (
 )
 
 func TestBaseHandler_error(t *testing.T) {
-	base := baseHandler{}
-
 	w := httptest.NewRecorder()
 	respErr := fmt.Errorf("%w: bad request", domain.BadInput)
-	base.error(w, respErr)
+	respondWithError(w, respErr)
 
 	assert.EqualValues(t, w.Code, http.StatusBadRequest)
 
@@ -27,15 +25,13 @@ func TestBaseHandler_error(t *testing.T) {
 	assert.EqualValues(t, http.StatusBadRequest, resp.Sts)
 
 	w = httptest.NewRecorder()
-	regErr := errors.New("this ia standard regular error")
-	base.error(w, regErr)
+	regErr := errors.New("this ia standard regular respondWithError")
+	respondWithError(w, regErr)
 
 	assert.EqualValues(t, w.Code, http.StatusInternalServerError)
 }
 
 func TestBaseHandler_respond(t *testing.T) {
-	base := baseHandler{}
-
 	type fake struct {
 		Id   int    `json:"id"`
 		Name string `json:"name"`
@@ -43,7 +39,7 @@ func TestBaseHandler_respond(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	f := fake{1, "mat"}
-	base.respond(w, http.StatusCreated, f)
+	respondWithCode(w, http.StatusCreated, f)
 
 	j, err := json.Marshal(f)
 	assert.NoError(t, err)

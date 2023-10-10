@@ -8,16 +8,15 @@ import (
 	"strconv"
 )
 
-type roomHandler struct {
-	baseHandler
+type RoomHandler struct {
 	rs domain.RoomService
 }
 
-func NewRoomHandler(roomService domain.RoomService) *roomHandler {
-	return &roomHandler{rs: roomService}
+func NewRoomHandler(roomService domain.RoomService) *RoomHandler {
+	return &RoomHandler{rs: roomService}
 }
 
-func (r roomHandler) Route(ro, secured *mux.Router) {
+func (r RoomHandler) Route(ro, secured *mux.Router) {
 	ro.HandleFunc("/rooms/{code}", r.getRoom).Methods("GET")
 
 	secured.HandleFunc("/rooms", r.createRoom).Methods("POST")
@@ -32,19 +31,20 @@ func (r roomHandler) Route(ro, secured *mux.Router) {
 // Simply fetches the room that equals the code that was passed in.
 //
 // Responses:
-//  200: roomResponse
-//  404: errorResponse
-//  500: errorResponse
-func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
+//
+//	200: roomResponse
+//	404: errorResponse
+//	500: errorResponse
+func (r RoomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 	roomCode := mux.Vars(re)["code"]
 
 	room, err := r.rs.FindRoom(roomCode)
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	r.respond(w, http.StatusOK, room)
+	respondWithCode(w, http.StatusOK, room)
 }
 
 // swagger:route POST /rooms Rooms createRoom
@@ -58,15 +58,16 @@ func (r roomHandler) getRoom(w http.ResponseWriter, re *http.Request) {
 // NOTE: This endpoint is secured, so providing the account id is not required.
 //
 // Responses:
-//  201: roomResponse
-//  400: errorResponse
-//  409: errorResponse
-//  500: errorResponse
-func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
+//
+//	201: roomResponse
+//	400: errorResponse
+//	409: errorResponse
+//	500: errorResponse
+func (r RoomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 	var room domain.Room
 	err := json.NewDecoder(re.Body).Decode(&room)
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
@@ -74,11 +75,11 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 	room.AccId = accId
 	err = r.rs.CreateRoom(&room)
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	r.respond(w, http.StatusCreated, room)
+	respondWithCode(w, http.StatusCreated, room)
 }
 
 // swagger:route DELETE /rooms/{code} Rooms delCode
@@ -86,21 +87,22 @@ func (r roomHandler) createRoom(w http.ResponseWriter, re *http.Request) {
 // Delete a room by code.
 //
 // Responses:
-//  200: description: OK
-//  403: errorResponse
-//  500: errorResponse
-func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
+//
+//	200: description: OK
+//	403: errorResponse
+//	500: errorResponse
+func (r RoomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 	code := mux.Vars(re)["code"]
 
 	accId, err := strconv.Atoi(re.Header.Get("Account"))
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	err = r.rs.DeleteRoom(code, accId)
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 	}
 }
 
@@ -109,22 +111,23 @@ func (r roomHandler) deleteRoom(w http.ResponseWriter, re *http.Request) {
 // Get all rooms associated with account.
 //
 // Finds all the rooms that are owned by the account. The associated account will be
-// dependant on the access token identifier, since this route is secured.
+// dependent on the access token identifier, since this route is secured.
 //
 // Responses:
-//  200: multiRoomResponse
-//  500: errorResponse
-func (r roomHandler) getAllRooms(w http.ResponseWriter, re *http.Request) {
+//
+//	200: multiRoomResponse
+//	500: errorResponse
+func (r RoomHandler) getAllRooms(w http.ResponseWriter, re *http.Request) {
 	accId, err := strconv.Atoi(re.Header.Get("Account"))
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	rooms, err := r.rs.AllRoomsWithId(accId)
 	if err != nil {
-		r.error(w, err)
+		respondWithError(w, err)
 		return
 	}
-	r.respond(w, http.StatusOK, rooms)
+	respondWithCode(w, http.StatusOK, rooms)
 }

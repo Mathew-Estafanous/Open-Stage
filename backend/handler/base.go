@@ -9,9 +9,7 @@ import (
 	"time"
 )
 
-type baseHandler struct{}
-
-func (h baseHandler) error(w http.ResponseWriter, err error) {
+func respondWithError(w http.ResponseWriter, err error) {
 	respError := ToHttp(err)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(respError.Sts)
@@ -21,11 +19,11 @@ func (h baseHandler) error(w http.ResponseWriter, err error) {
 	}
 }
 
-func (h baseHandler) respond(w http.ResponseWriter, code int, src interface{}) {
+func respondWithCode(w http.ResponseWriter, code int, src interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	body, err := json.Marshal(src)
 	if err != nil {
-		h.error(w, err)
+		respondWithError(w, err)
 	}
 
 	w.WriteHeader(code)

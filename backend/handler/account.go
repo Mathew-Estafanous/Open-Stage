@@ -119,20 +119,19 @@ type Refresh struct {
 	Tkn string `json:"refresh_token"`
 }
 
-type accountHandler struct {
-	baseHandler
+type AccountHandler struct {
 	as   domain.AccountService
 	auth domain.AuthService
 }
 
-func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *accountHandler {
-	return &accountHandler{
+func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *AccountHandler {
+	return &AccountHandler{
 		as:   aService,
 		auth: authService,
 	}
 }
 
-func (a accountHandler) Route(r, secured *mux.Router) {
+func (a AccountHandler) Route(r, secured *mux.Router) {
 	r.HandleFunc("/accounts/signup", a.createAccount).Methods("POST")
 	r.HandleFunc("/accounts/login", a.login).Methods("POST")
 	r.HandleFunc("/accounts/logout", a.logout).Methods("POST")
@@ -149,15 +148,16 @@ func (a accountHandler) Route(r, secured *mux.Router) {
 // Will create a new account while also ensuring the validity of the provided email.
 //
 // Responses:
-//   201: accountResponse
-//   400: errorResponse
-//   409: errorResponse
-//   500: errorResponse
-func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
+//
+//	201: accountResponse
+//	400: errorResponse
+//	409: errorResponse
+//	500: errorResponse
+func (a AccountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 	var body *CreateAccount
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
@@ -170,40 +170,41 @@ func (a accountHandler) createAccount(w http.ResponseWriter, r *http.Request) {
 
 	err = a.as.Create(&acc)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	a.respond(w, http.StatusCreated, accountToResp(acc))
+	respondWithCode(w, http.StatusCreated, accountToResp(acc))
 }
 
 // swagger:route DELETE /accounts/{accountId} Accounts accountId
 //
-// Delete an account by ID
+// # Delete an account by ID
 //
 // Will delete the user account with the correlating account 'id.'
 //
 // Responses:
-//   200: description: OK - Question has been properly deleted.
-//   400: errorResponse
-//   403: errorResponse
-//   500: errorResponse
-func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
+//
+//	200: description: OK - Question has been properly deleted.
+//	400: errorResponse
+//	403: errorResponse
+//	500: errorResponse
+func (a AccountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 	pathId := mux.Vars(r)["id"]
 	id, err := strconv.Atoi(pathId)
 	if err != nil {
-		a.error(w, fmt.Errorf("%w: given id is not a valid int", domain.BadInput))
+		respondWithError(w, fmt.Errorf("%w: given id is not a valid int", domain.BadInput))
 		return
 	}
 
 	accId, err := strconv.Atoi(r.Header.Get("Account"))
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 	err = a.as.Delete(id, accId)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 }
@@ -215,25 +216,26 @@ func (a accountHandler) deleteAccount(w http.ResponseWriter, r *http.Request) {
 // Retrieve relevant account information by providing the username.
 //
 // Responses:
-//  200: accountResponse
-//  403: errorResponse
-//  404: errorResponse
-//  500: errorResponse
-func (a accountHandler) findWithUsername(w http.ResponseWriter, r *http.Request) {
+//
+//	200: accountResponse
+//	403: errorResponse
+//	404: errorResponse
+//	500: errorResponse
+func (a AccountHandler) findWithUsername(w http.ResponseWriter, r *http.Request) {
 	username := mux.Vars(r)["username"]
 	accId, err := strconv.Atoi(r.Header.Get("Account"))
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	acc, err := a.as.FindByUsername(username, accId)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	a.respond(w, http.StatusOK, accountToResp(acc))
+	respondWithCode(w, http.StatusOK, accountToResp(acc))
 }
 
 // swagger:route POST /accounts/login Accounts loginAccount
@@ -244,24 +246,25 @@ func (a accountHandler) findWithUsername(w http.ResponseWriter, r *http.Request)
 // if authentication is successful.
 //
 // Responses:
-//   200: authToken
-//   401: errorResponse
-//   500: errorResponse
-func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
+//
+//	200: authToken
+//	401: errorResponse
+//	500: errorResponse
+func (a AccountHandler) login(w http.ResponseWriter, r *http.Request) {
 	var body Login
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	token, err := a.auth.Authenticate(body.Username, body.Password)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	a.respond(w, http.StatusOK, token)
+	respondWithCode(w, http.StatusOK, token)
 }
 
 // swagger:route POST /accounts/refresh Accounts refresh
@@ -273,24 +276,25 @@ func (a accountHandler) login(w http.ResponseWriter, r *http.Request) {
 // token is expired, you must authenticate again.
 //
 // Responses:
-//  200: authToken
-//  401: errorResponse
-//  500: errorResponse
-func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
+//
+//	200: authToken
+//	401: errorResponse
+//	500: errorResponse
+func (a AccountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 	var body Refresh
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	token, err := a.auth.Refresh(body.Tkn)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
-	a.respond(w, http.StatusOK, token)
+	respondWithCode(w, http.StatusOK, token)
 }
 
 // swagger:route POST /accounts/logout Accounts authTokens
@@ -302,20 +306,21 @@ func (a accountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 // for secured endpoints.
 //
 // Responses:
-//  200: description: OK - Account credentials have been blacklisted.
-//  401: errorResponse
-//  500: errorResponse
-func (a accountHandler) logout(w http.ResponseWriter, r *http.Request) {
+//
+//	200: description: OK - Account credentials have been blacklisted.
+//	401: errorResponse
+//	500: errorResponse
+func (a AccountHandler) logout(w http.ResponseWriter, r *http.Request) {
 	var body domain.AuthToken
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 
 	err = a.auth.Invalidate(body)
 	if err != nil {
-		a.error(w, err)
+		respondWithError(w, err)
 		return
 	}
 }
