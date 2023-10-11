@@ -3,7 +3,7 @@
   <h1 align="center">Open Stage</h1>
 
   <p align="center">
-    A live Q&A platform that stimulates conversation, even from the quetest members.
+    A live Q&A platform that stimulates conversation, even from the quietest members.
     <br />
     <a href="https://open-stage-web.herokuapp.com/"><strong>Try It Out</strong></a>
     ·
@@ -68,4 +68,4 @@ which is why unit tests should be part of any new feature.
 
 **Personal Website -** https://mathewestafanous.com/
 
-**Project Link -** https://github.com/Mathew-Estafanous/Ur-Codebin
+**Project Link -** https://github.com/Mathew-Estafanous/Open-Stage
