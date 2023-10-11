@@ -1,12 +1,19 @@
 package domain
 
+import "time"
+
+const (
+	AccessTokenTimeout  = time.Minute * 15
+	RefreshTokenTimeout = time.Hour * 168
+)
+
 // AuthToken contains both the access and refresh tokens after
 // a user has successfully authenticated.
 //
 // swagger:model authToken
 type AuthToken struct {
 	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
+	RefreshToken string `json:"-"`
 }
 
 type AuthService interface {

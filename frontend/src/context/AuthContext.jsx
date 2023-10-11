@@ -36,7 +36,7 @@ export const AuthProvider = (props) => {
   }, [account]);
 
   const refreshToken = () => {
-    RefreshToken(account.refresh_token).then(resp => {
+    RefreshToken().then(resp => {
       if (resp.error.status !== 200) {
         setAcc(null);
         return;

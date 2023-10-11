@@ -46,10 +46,9 @@ export const LoginAccount = (username, pass) => {
   });
 };
 
-export const Logout = (access, refresh) => {
+export const Logout = (access) => {
   const data = {
-    access_token: access,
-    refresh_token: refresh
+    access_token: access
   };
 
   return sendRequest({
@@ -88,15 +87,10 @@ export const CreateAccount = (username, password, name, email) => {
   });
 };
 
-export const RefreshToken = (refresh) => {
-  const data = {
-    refresh_token: refresh
-  };
-
+export const RefreshToken = () => {
   return sendRequest({
     endpoint: '/accounts/refresh',
     response: { ...AccessResponse },
-    method: POST,
-    body: data
+    method: POST
   });
 };

@@ -40,7 +40,7 @@ func TestAccountHandler_createAccount(t *testing.T) {
 
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 1)
-	NewAccountHandler(as, auth).Route(r, secured)
+	NewAccountHandler(as, auth, false).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	resp := AccountResp{
@@ -85,7 +85,7 @@ func TestAccountHandler_deleteAccount(t *testing.T) {
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 5)
-	NewAccountHandler(as, auth).Route(r, secured)
+	NewAccountHandler(as, auth, false).Route(r, secured)
 
 	r.ServeHTTP(w, req)
 	assert.EqualValues(t, http.StatusOK, w.Code)
@@ -122,7 +122,7 @@ func TestAccountHandler_findWithUsername(t *testing.T) {
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 5)
-	NewAccountHandler(as, auth).Route(r, secured)
+	NewAccountHandler(as, auth, false).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
@@ -154,7 +154,7 @@ func TestAccountHandler_login(t *testing.T) {
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 5)
-	NewAccountHandler(as, auth).Route(r, secured)
+	NewAccountHandler(as, auth, false).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)
@@ -183,10 +183,17 @@ func TestAccountHandler_refresh(t *testing.T) {
 	assert.NoError(t, err)
 
 	req, err := http.NewRequest("POST", "/accounts/refresh", strings.NewReader(string(j)))
+	cookie := http.Cookie{
+		Name:     "refreshToken",
+		Value:    "A-REFRESH-TOKEN",
+		HttpOnly: true,
+	}
+	req.AddCookie(&cookie)
+
 	w := httptest.NewRecorder()
 	r := mux.NewRouter()
 	secured := mock.SecureRouter(r, 5)
-	NewAccountHandler(as, auth).Route(r, secured)
+	NewAccountHandler(as, auth, false).Route(r, secured)
 	r.ServeHTTP(w, req)
 
 	assert.EqualValues(t, http.StatusOK, w.Code)

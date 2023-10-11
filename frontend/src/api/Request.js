@@ -20,7 +20,8 @@ export const sendRequest = ({
       'Content-Type': 'application/json',
       ...headers
     },
-    body: body ? JSON.stringify(body) : null
+    body: body ? JSON.stringify(body) : null,
+    credentials: 'include'
   };
 
   return fetch(path, request)

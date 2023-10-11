@@ -17,7 +17,7 @@ export const ProfileIcon = () => {
   };
 
   const clickedLogout = () => {
-    const result = Logout(account.access_token, account.refresh_token);
+    const result = Logout(account.access_token);
     result.then(res => {
       if (res.status !== 200) {
         console.log(res.message);

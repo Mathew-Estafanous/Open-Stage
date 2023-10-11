@@ -85,7 +85,7 @@ type AccountClaims struct {
 }
 
 func createToken(username, id, key string) (domain.AuthToken, error) {
-	exp := time.Now().Add(time.Minute * 15).Unix()
+	exp := time.Now().Add(domain.AccessTokenTimeout).Unix()
 	accessClaim := AccountClaims{
 		username,
 		jwt.StandardClaims{
@@ -100,7 +100,7 @@ func createToken(username, id, key string) (domain.AuthToken, error) {
 		return domain.AuthToken{}, err
 	}
 
-	exp = time.Now().Add(time.Hour * 168).Unix()
+	exp = time.Now().Add(domain.RefreshTokenTimeout).Unix()
 	refreshClaim := AccountClaims{
 		username,
 		jwt.StandardClaims{

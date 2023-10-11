@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // AccountResp represents a user's account information like name,
@@ -122,12 +123,15 @@ type Refresh struct {
 type AccountHandler struct {
 	as   domain.AccountService
 	auth domain.AuthService
+
+	isProd bool
 }
 
-func NewAccountHandler(aService domain.AccountService, authService domain.AuthService) *AccountHandler {
+func NewAccountHandler(aService domain.AccountService, authService domain.AuthService, isProd bool) *AccountHandler {
 	return &AccountHandler{
-		as:   aService,
-		auth: authService,
+		as:     aService,
+		auth:   authService,
+		isProd: isProd,
 	}
 }
 
@@ -264,6 +268,15 @@ func (a AccountHandler) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	refreshCookie := &http.Cookie{
+		Name:     "refreshToken",
+		Value:    token.RefreshToken,
+		Expires:  time.Now().Add(domain.RefreshTokenTimeout),
+		HttpOnly: true,
+		Secure:   a.isProd,
+	}
+
+	http.SetCookie(w, refreshCookie)
 	respondWithCode(w, http.StatusOK, token)
 }
 
@@ -281,20 +294,28 @@ func (a AccountHandler) login(w http.ResponseWriter, r *http.Request) {
 //	401: errorResponse
 //	500: errorResponse
 func (a AccountHandler) refresh(w http.ResponseWriter, r *http.Request) {
-	var body Refresh
-	err := json.NewDecoder(r.Body).Decode(&body)
+	refreshCookie, err := r.Cookie("refreshToken")
 	if err != nil {
 		respondWithError(w, err)
 		return
 	}
 
-	token, err := a.auth.Refresh(body.Tkn)
+	token, err := a.auth.Refresh(refreshCookie.Value)
 	if err != nil {
 		respondWithError(w, err)
 		return
+	}
+
+	newRefreshToken := &http.Cookie{
+		Name:     "refreshToken",
+		Value:    token.RefreshToken,
+		Expires:  time.Now().Add(domain.RefreshTokenTimeout),
+		HttpOnly: true,
+		Secure:   a.isProd,
 	}
 
 	respondWithCode(w, http.StatusOK, token)
+	http.SetCookie(w, newRefreshToken)
 }
 
 // swagger:route POST /accounts/logout Accounts authTokens
@@ -311,14 +332,21 @@ func (a AccountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 //	401: errorResponse
 //	500: errorResponse
 func (a AccountHandler) logout(w http.ResponseWriter, r *http.Request) {
-	var body domain.AuthToken
-	err := json.NewDecoder(r.Body).Decode(&body)
+	var authToken domain.AuthToken
+	err := json.NewDecoder(r.Body).Decode(&authToken)
 	if err != nil {
 		respondWithError(w, err)
 		return
 	}
 
-	err = a.auth.Invalidate(body)
+	refreshCookie, err := r.Cookie("refreshToken")
+	if err != nil {
+		respondWithError(w, err)
+		return
+	}
+	authToken.RefreshToken = refreshCookie.Value
+
+	err = a.auth.Invalidate(authToken)
 	if err != nil {
 		respondWithError(w, err)
 	} else {
