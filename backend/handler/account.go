@@ -274,6 +274,7 @@ func (a AccountHandler) login(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(domain.RefreshTokenTimeout),
 		HttpOnly: true,
 		Secure:   a.isProd,
+		SameSite: http.SameSiteNoneMode,
 	}
 
 	http.SetCookie(w, refreshCookie)
@@ -312,6 +313,7 @@ func (a AccountHandler) refresh(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(domain.RefreshTokenTimeout),
 		HttpOnly: true,
 		Secure:   a.isProd,
+		SameSite: http.SameSiteNoneMode,
 	}
 
 	respondWithCode(w, http.StatusOK, token)

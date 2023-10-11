@@ -17,6 +17,9 @@ export const AskQuestion = ({ code, onPost }) => {
       console.log(result.error);
       return;
     }
+
+    setQuestion('');
+    setName('');
     onPost();
   };
 
