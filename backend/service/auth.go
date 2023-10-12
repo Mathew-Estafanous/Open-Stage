@@ -10,21 +10,21 @@ import (
 	"time"
 )
 
-type authService struct {
+type AuthService struct {
 	store domain.AccountStore
 	cache domain.AuthCache
 	key   string
 }
 
-func NewAuthService(acc domain.AccountStore, cache domain.AuthCache) domain.AuthService {
-	return authService{
+func NewAuthService(acc domain.AccountStore, cache domain.AuthCache) *AuthService {
+	return &AuthService{
 		store: acc,
 		cache: cache,
 		key:   os.Getenv("SECRET_KEY"),
 	}
 }
 
-func (a authService) Authenticate(username, password string) (domain.AuthToken, error) {
+func (a *AuthService) Authenticate(username, password string) (domain.AuthToken, error) {
 	found, err := a.store.GetByUsername(username)
 	if err != nil {
 		return domain.AuthToken{}, fmt.Errorf("%w: could not find with that username", domain.Unauthorized)
@@ -42,7 +42,7 @@ func (a authService) Authenticate(username, password string) (domain.AuthToken, 
 	return tk, nil
 }
 
-func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
+func (a *AuthService) Refresh(refreshTkn string) (domain.AuthToken, error) {
 	blacklisted, err := a.cache.Contains(refreshTkn)
 	if err != nil {
 		return domain.AuthToken{}, err
@@ -67,7 +67,7 @@ func (a authService) Refresh(refreshTkn string) (domain.AuthToken, error) {
 	return createToken(username, id, a.key)
 }
 
-func (a authService) Invalidate(token domain.AuthToken) error {
+func (a *AuthService) Invalidate(token domain.AuthToken) error {
 	err := a.cache.Store(token.AccessToken)
 	if err != nil {
 		return err

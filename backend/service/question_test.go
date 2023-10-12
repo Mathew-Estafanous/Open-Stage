@@ -95,17 +95,18 @@ func TestQuestionService_Create(t *testing.T) {
 	err := qs.Create(&validQuestion)
 	assert.NoError(t, err)
 
-	missingQuestion := domain.Question{
-		QuestionerName: "Mat", AssociatedRoom: "room1",
+	anonymousQuestion := domain.Question{
+		Question:       "Is this a test?",
+		AssociatedRoom: "room1",
 	}
-	err = qs.Create(&missingQuestion)
-	assert.ErrorIs(t, err, errMissingQuestion)
+	qStore.On("Create", &domain.Question{
+		Question:       anonymousQuestion.Question,
+		AssociatedRoom: anonymousQuestion.AssociatedRoom,
+		QuestionerName: "Anonymous",
+	}).Return(nil)
 
-	missingRoom := domain.Question{
-		QuestionerName: "Mat", Question: "Is this a test?",
-	}
-	err = qs.Create(&missingRoom)
-	assert.Error(t, err, errQuestionMustHaveRoom)
+	err = qs.Create(&anonymousQuestion)
+	assert.NoError(t, err)
 }
 
 func TestQuestionService_Delete(t *testing.T) {

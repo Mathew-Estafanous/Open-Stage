@@ -9,17 +9,17 @@ import (
 	"strings"
 )
 
-type accountService struct {
+type AccountService struct {
 	store domain.AccountStore
 }
 
-func NewAccountService(aStore domain.AccountStore) domain.AccountService {
-	return &accountService{
+func NewAccountService(aStore domain.AccountStore) *AccountService {
+	return &AccountService{
 		store: aStore,
 	}
 }
 
-func (a *accountService) Create(acc *domain.Account) error {
+func (a *AccountService) Create(acc *domain.Account) error {
 	if !isEmailValid(acc.Email) {
 		return fmt.Errorf("%w: invalid email format", domain.BadInput)
 	}
@@ -37,7 +37,7 @@ func (a *accountService) Create(acc *domain.Account) error {
 	return nil
 }
 
-func (a *accountService) Delete(id, accId int) error {
+func (a *AccountService) Delete(id, accId int) error {
 	if accId != id {
 		return fmt.Errorf("%w: account with that id cannot be deleted", domain.Forbidden)
 	}
@@ -48,7 +48,7 @@ func (a *accountService) Delete(id, accId int) error {
 	return nil
 }
 
-func (a *accountService) FindByUsername(username string, accId int) (domain.Account, error) {
+func (a *AccountService) FindByUsername(username string, accId int) (domain.Account, error) {
 	acc, err := a.store.GetByUsername(username)
 	if err != nil {
 		return domain.Account{}, err
