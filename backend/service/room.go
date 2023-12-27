@@ -7,17 +7,17 @@ import (
 	"time"
 )
 
-type roomService struct {
+type RoomService struct {
 	rStore domain.RoomStore
 }
 
-func NewRoomService(rs domain.RoomStore) *roomService {
-	return &roomService{
+func NewRoomService(rs domain.RoomStore) *RoomService {
+	return &RoomService{
 		rStore: rs,
 	}
 }
 
-func (r *roomService) CreateRoom(room *domain.Room) error {
+func (r *RoomService) CreateRoom(room *domain.Room) error {
 	if room.Host == "" {
 		return errHostNotAssigned
 	}
@@ -33,7 +33,7 @@ func (r *roomService) CreateRoom(room *domain.Room) error {
 	return nil
 }
 
-func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
+func (r *RoomService) FindRoom(roomCode string) (domain.Room, error) {
 	room, err := r.rStore.GetByRoomCode(roomCode)
 	if err != nil {
 		return domain.Room{}, errRoomNotFound
@@ -41,7 +41,7 @@ func (r *roomService) FindRoom(roomCode string) (domain.Room, error) {
 	return room, nil
 }
 
-func (r *roomService) DeleteRoom(code string, accId int) error {
+func (r *RoomService) DeleteRoom(code string, accId int) error {
 	room, err := r.FindRoom(code)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func (r *roomService) DeleteRoom(code string, accId int) error {
 	return nil
 }
 
-func (r *roomService) AllRoomsWithId(accId int) ([]domain.Room, error) {
+func (r *RoomService) AllRoomsWithId(accId int) ([]domain.Room, error) {
 	rooms, err := r.rStore.FindAllRooms(accId)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (r *roomService) AllRoomsWithId(accId int) ([]domain.Room, error) {
 	return rooms, nil
 }
 
-func (r *roomService) generateValidCode() string {
+func (r *RoomService) generateValidCode() string {
 	charset := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	seededRand := rand.New(
 		rand.NewSource(time.Now().UnixNano()))

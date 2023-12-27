@@ -49,6 +49,21 @@ type NewQuestion struct {
 	Questioner string `json:"questioner_name"`
 }
 
+func (n *NewQuestion) UnmarshalJSON(data []byte) error {
+	type newQuestion NewQuestion
+	if err := json.Unmarshal(data, (*newQuestion)(n)); err != nil {
+		return err
+	}
+
+	if n.Question == "" {
+		return fmt.Errorf("%w: missing 'question' field", domain.BadInput)
+	}
+	if n.Room == "" {
+		return fmt.Errorf("%w: missing 'room' field", domain.BadInput)
+	}
+	return nil
+}
+
 type QuestionHandler struct {
 	qs domain.QuestionService
 }
